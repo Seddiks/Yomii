@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#FFFFFF</color>
+    <color name="colorPrimaryDark">#000</color>
+    <color name="colorAccent">#757575</color>
+
+    <color name="textColorPrimary">#FFFFFF</color>
+    <color name="windowBackground">#FFFFFF</color>
+    <color name="navigationBarColor">#000000</color>
+
+
+    <color name="purple_500">#9C27B0</color>
+    <color name="deep_purple_500">#673AB7</color>
+    <color name="indigo_500">#3F51B5</color>
+    <color name="blue_500">#2196F3</color>
+    <color name="cyan_500">#00BCD4</color>
+    <color name="light_blue_500">#03A9F4</color>
+    <color name="light_blue_600">#1E88E5</color>
+    <color name="blue_dark">#34486B</color>
+
+    <color name="grey_light">#D9D8D8</color>
+    <color name="transparent_black_2">#88000000</color>
+    <color name="transparent_black_4">#40000000</color>
+    <color name="transparent_black_6">#60000000</color>
+    <color name="transparent_black2">#20000000</color>
+    <color name="black">#000</color>
+    <color name="white">#fff</color>
+    <color name="colorControlHighlight">@color/fifty_percent_transparency_grey_400</color>
+    <color name="fifty_percent_transparency_grey_400">#80bdbdbd</color>
+    <color name="grey_700">#616161</color>
+    <color name="grey_500">#9E9E9E</color>
+    <color name="green">#04B431</color>
+    <color name="green_light">#01DF3A</color>
+    <color name="red_500">#F44336</color>
+
+
+    <color name="black_overlay">#66000000</color>
+    <color name="colorTransBg">#26000000</color>
+    <color name="transparent_white_1">#11ffffff</color>
+    <color name="transparent_white_2">#22ffffff</color>
+    <color name="transparent_white_3">#33ffffff</color>
+    <color name="transparent_white_4">#44ffffff</color>
+
+</resources>

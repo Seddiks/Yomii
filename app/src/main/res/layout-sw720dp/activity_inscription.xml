@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.app.seddik.yomii.activities.InscriptionActivity">
+
+    <LinearLayout
+        android:layout_width="368dp"
+        android:layout_height="495dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="16dp"
+        tools:layout_editor_absoluteY="8dp"
+        tools:layout_editor_absoluteX="8dp">
+
+
+
+        <EditText
+            android:id="@+id/name_xml"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="12dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/round_corner"
+            android:hint="User name"
+            android:padding="15dp" />
+
+        <EditText
+        android:id="@+id/email_xml"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="12dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/round_corner"
+        android:hint="Adresse  Email"
+        android:padding="15dp" />
+
+    <EditText
+        android:id="@+id/password_xml"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="12dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/round_corner"
+        android:hint="Mot de passe"
+        android:stateListAnimator="@null"
+        android:padding="15dp" />
+
+
+    <Button
+        android:id="@+id/btnRegister_xml"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/round_corner_blue_five"
+        android:text="Submit"
+        android:stateListAnimator="@null"
+        android:layout_marginBottom="16dp"
+        android:textColor="#03A9F4" />
+        <Button
+            android:id="@+id/btnLinkToLoginScreen"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dip"
+            android:background="@null"
+            android:text="Already registred! Login Me"
+            android:textAllCaps="false"
+            android:textSize="15dp" />
+
+</LinearLayout>
+
+</android.support.constraint.ConstraintLayout>

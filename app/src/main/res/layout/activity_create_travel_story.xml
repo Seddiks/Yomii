@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.app.seddik.yomii.activities.CreateTravelStoryActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/layout_addPhoto_exit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:elevation="4dp"
+        android:background="@color/white">
+        <ImageView
+            android:id="@+id/done"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_margin="12dp"
+            android:src="@drawable/ic_done_blue_500_24dp"/>
+
+        <ImageView
+            android:id="@+id/add_photo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/done"
+            android:layout_margin="12dp"
+            android:src="@drawable/ic_add_a_photo_black_24dp"/>
+
+        <ImageView
+            android:id="@+id/exit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_margin="12dp"
+            android:src="@drawable/ic_exit_black_24dp"/>
+
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/photo"
+        android:layout_width="match_parent"
+        android:layout_height="260dp"
+        android:layout_below="@id/layout_addPhoto_exit"
+        android:scaleType="centerCrop"
+        android:src="@drawable/hudson_background"
+        />
+
+        <TextView
+            android:id="@+id/story_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/photo"
+            android:layout_marginTop="12dp"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:text=" Story details:"/>
+
+        <EditText
+            android:id="@+id/title_story"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/story_text"
+            android:textSize="12sp"
+            android:layout_marginTop="12dp"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            android:background="@drawable/round_corner"
+            android:hint="Title of your Story"
+            android:padding="15dp" />
+        <EditText
+            android:id="@+id/location"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/title_story"
+            android:textSize="12sp"
+            android:layout_marginTop="12dp"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            android:background="@drawable/round_corner"
+            android:hint="Location"
+            android:padding="15dp" />
+        <EditText
+            android:id="@+id/story"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/location"
+            android:textSize="12sp"
+            android:layout_margin="12dp"
+            android:inputType="textMultiLine"
+            android:lines="12"
+            android:minLines="6"
+            android:gravity="top|left"
+            android:maxLines="20"
+            android:background="@drawable/round_corner"
+            android:hint="Write your full Story here..."
+            android:padding="15dp" />
+
+
+    </RelativeLayout>
+</android.support.v4.widget.NestedScrollView>

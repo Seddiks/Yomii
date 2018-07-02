@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.app.seddik.yomii.activities.PhotosToPublishActivity">
+
+    <RelativeLayout
+        android:id="@+id/relativeLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <android.support.v7.widget.Toolbar
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:local="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#fff"
+            local:theme="@style/MyToolBarStyle"
+            local:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            />
+        <TextView
+            android:id="@+id/txtViewPublish"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerInParent="true"
+            android:layout_marginRight="12dp"
+            android:text="SUIVANT"
+            android:textSize="14sp"
+            android:textColor="@color/blue_500"/>
+
+    </RelativeLayout>
+
+
+    <ImageView
+        android:id="@+id/photo"
+        android:layout_width="180dp"
+        android:layout_height="220dp"
+        android:layout_below="@+id/relativeLayout"
+        android:layout_marginBottom="24dp"
+        android:layout_centerInParent="true"/>
+    <ImageView
+        android:id="@+id/imgLegende"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:src="@drawable/ic_format_quote_black_36dp"
+        android:layout_below="@+id/photo"/>
+    <EditText
+        android:id="@+id/legende"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Ajouter une légende"
+        android:textColorHint="@color/black"
+        android:padding="16dp"
+        android:layout_below="@+id/photo"
+        android:layout_toRightOf="@+id/imgLegende"/>
+    <ImageView
+        android:id="@+id/imgPlace"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:foregroundGravity="center"
+        android:src="@drawable/ic_place_black_36dp"
+        android:layout_below="@+id/imgLegende"/>
+    <com.seatgeek.placesautocomplete.PlacesAutocompleteTextView
+        android:id="@+id/place"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:hint="Ajouter lieu"
+        android:textColorHint="@color/black"
+        android:layout_below="@+id/imgLegende"
+        android:layout_toRightOf="@+id/imgPlace"
+        app:pacv_googleMapsApiKey="@string/google_maps_api_key"
+        />
+
+
+
+</RelativeLayout>

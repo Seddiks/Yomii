@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:tools="http://schemas.android.com/tools"
+android:id="@+id/relativeLayout"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+tools:context="com.app.seddik.yomii.activities.LoginActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:text="YOMII"
+                android:layout_marginBottom="40dp"
+                android:textSize="40dp"
+                android:textColor="#000"
+                android:textStyle="bold" />
+
+
+            <EditText
+                android:id="@+id/email_xml"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="12dp"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/round_corner"
+                android:hint="Adresse  Email"
+                android:padding="15dp" />
+
+            <EditText
+                android:id="@+id/motdepasse_xml"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="12dp"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/round_corner"
+                android:hint="Mot de passe"
+                android:stateListAnimator="@null"
+                android:padding="15dp" />
+
+
+            <Button
+                android:id="@+id/btnConnexion_xml"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/round_corner_btn"
+                android:text="Connexion"
+                android:stateListAnimator="@null"
+                android:layout_marginBottom="16dp"
+                android:textColor="#9D9B9B" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:orientation="horizontal">
+            <TextView
+                android:id="@+id/infosCnx_xml"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="10sp"
+                android:text="Informations de connexion oubliées? " />
+            <TextView
+                android:id="@+id/infosCnxOublie_xml"
+                android:layout_toRightOf="@+id/infosCnx_xml"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#000"
+                android:textStyle="bold"
+                android:textSize="10sp"
+                android:onClick="onClickAide"
+                android:clickable="true"
+                android:text="Obtenez de l'aide pour vous connecter. "/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="1dp"
+                android:layout_toLeftOf="@+id/TextViewOR"
+                android:layout_centerVertical="true"
+                android:background="#c0c0c0"/>
+
+            <TextView
+                android:id="@+id/TextViewOR"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="OU"
+                android:gravity="center"
+                android:layout_centerHorizontal="true"
+                android:background="@drawable/bg_circle"
+                android:textSize="10sp"
+                />
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="1dp"
+                android:layout_toRightOf="@+id/TextViewOR"
+                android:layout_centerVertical="true"
+                android:background="#c0c0c0"/>
+
+
+
+
+        </RelativeLayout>
+
+        <Button
+            android:id="@+id/btnConnexionFB_xml"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/round_corner_btn_cnxfb"
+            android:text="Connexion facebook"
+            android:stateListAnimator="@null"
+            android:layout_marginTop="16dp"
+            android:textColor="#fff" />
+    </LinearLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+      >
+        <View
+            android:id="@+id/View"
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:background="#c0c0c0"/>
+
+        <TextView
+            android:id="@+id/pasCompte_xml"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/View"
+            android:textSize="10sp"
+            android:layout_marginBottom="16dp"
+            android:layout_marginLeft="16dp"
+            android:text="Vous n'avez pas de compte? " />
+        <TextView
+            android:id="@+id/inscrivezVous_xml"
+            android:layout_toRightOf="@+id/pasCompte_xml"
+            android:layout_below="@+id/View"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#000"
+            android:textStyle="bold"
+            android:textSize="10sp"
+            android:layout_marginBottom="16dp"
+            android:layout_marginRight="16dp"
+            android:onClick="onClickInscription"
+            android:clickable="true"
+            android:text="Inscrivez vous."/>
+
+    </RelativeLayout>
+
+
+
+</RelativeLayout>
+
+

@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appbar"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark">
+
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:id="@+id/collapse_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:contentScrim="?attr/colorPrimary"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                >
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    >
+
+                    <ImageView
+                        android:id="@+id/cover_photo"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"
+                        android:background="@drawable/bg_london"
+                        app:layout_collapseMode="parallax"
+                        android:adjustViewBounds="true"
+                        />
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        xmlns:app="http://schemas.android.com/apk/res-auto"
+                        android:id="@+id/profile_image"
+                        android:layout_width="70dp"
+                        android:layout_height="70dp"
+                        android:layout_marginTop="70dp"
+                        android:layout_marginBottom="20dp"
+                        android:src="@drawable/bgmoi"
+                        app:civ_border_width="1dp"
+                        app:civ_border_color="#fff"
+                        android:layout_centerHorizontal="true" />
+                    <TextView
+                        android:id="@+id/profile_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/profile_image"
+                        android:layout_centerHorizontal="true"
+                        android:text="Seddik Fredj"
+                        android:textColor="#fff"
+                        android:textSize="20sp"
+                        android:textStyle="bold"/>
+                    <Button
+                        android:id="@+id/following"
+                        android:layout_width="wrap_content"
+                        android:layout_height="30dp"
+                        android:layout_below="@+id/profile_name"
+                        android:layout_centerHorizontal="true"
+                        android:background="@drawable/ripple_blue_500"
+                        android:layout_margin="12dp"
+                        android:textColor="@color/blue_500"
+                        android:text="Follow"
+                        android:textSize="10sp"
+                        android:textStyle="bold"
+                        android:padding="2dp"
+                        />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="6dp"
+                        android:layout_marginTop="50dp"
+                        android:layout_marginLeft="4dp"
+                        android:layout_marginRight="4dp"
+                        android:layout_below="@+id/profile_name"
+                        android:background="@drawable/round_corner_white"
+                        android:orientation="horizontal"
+                        android:weightSum="1.5" >
+                        <TextView
+                            android:id="@+id/pubs"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.5"
+                            android:gravity="center"
+                            android:textColor="#fff"
+                            android:textSize="12sp"
+                            android:layout_gravity="center"
+                            android:textStyle="bold"
+                            android:text="55 Pubs" />
+                        <TextView
+                            android:id="@+id/abonnes"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.5"
+                            android:gravity="center"
+                            android:textColor="#fff"
+                            android:textSize="12sp"
+                            android:layout_gravity="center"
+                            android:textStyle="bold"
+                            android:text="341 Abonnés" />
+                        <TextView
+                            android:id="@+id/abonnements"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.5"
+                            android:gravity="center"
+                            android:textColor="#fff"
+                            android:textSize="12sp"
+                            android:layout_gravity="center"
+                            android:textStyle="bold"
+                            android:text="40 Abonnements" />
+
+
+                    </LinearLayout>
+
+                </RelativeLayout>
+
+
+            </LinearLayout>
+
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:layout_collapseMode="pin"
+                />
+        </android.support.design.widget.CollapsingToolbarLayout>
+    </android.support.design.widget.AppBarLayout>
+
+</android.support.v4.widget.NestedScrollView>

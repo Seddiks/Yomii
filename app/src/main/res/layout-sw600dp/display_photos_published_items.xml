@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:background="#FFFFFF"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:elevation="4dp"
+    android:layout_marginBottom="12dp">
+
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/profile_image"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentLeft="true"
+        android:layout_margin="8dp"
+        android:src="@drawable/bgmoi" />
+
+    <ImageView
+        android:id="@+id/more_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_margin="8dp"
+        android:background="@drawable/ic_more_action"
+        />
+
+     <TextView
+         android:id="@+id/profile_name"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_toRightOf="@+id/profile_image"
+         android:layout_marginTop="8dp"
+         android:layout_marginBottom="8dp"
+         android:textColor="#000"
+         android:textStyle="bold"
+         android:text="Seddik"/>
+     <TextView
+         android:id="@+id/date"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_toRightOf="@+id/profile_image"
+         android:layout_below="@+id/profile_name"
+         android:textSize="12sp"
+         android:text="24 Jan 2017"/>
+    <ImageView
+        android:id="@+id/menu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <ImageView
+        android:id="@+id/photosPublished"
+        android:adjustViewBounds="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/profile_image"
+        />
+    <ImageView
+        android:id="@+id/reaction"
+        android:adjustViewBounds="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:layout_below="@+id/photosPublished"
+        android:background="@drawable/ic_like"/>
+    <TextView
+        android:id="@+id/numberReaction"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/reaction"
+        android:layout_below="@+id/photosPublished"
+        android:layout_margin="10dp"
+        android:textColor="#000"
+        android:textSize="12sp"
+        android:text="23 Likes"/>
+
+
+</RelativeLayout>

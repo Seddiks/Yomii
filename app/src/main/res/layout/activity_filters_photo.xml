@@ -1,0 +1,176 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/rl"
+    android:background="@drawable/ripple_rv"
+    tools:context="com.app.seddik.yomii.activities.FiltersPhotoActivity">
+
+
+        <RelativeLayout
+            android:id="@+id/relativeLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        <android.support.v7.widget.Toolbar
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:local="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#fff"
+            local:theme="@style/MyToolBarStyle"
+            local:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            />
+        <TextView
+            android:id="@+id/txtViewNext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerInParent="true"
+            android:layout_marginRight="12dp"
+            android:text="SUIVANT"
+            android:textSize="14sp"
+            android:textColor="@color/blue_500"/>
+                <ImageView
+                    android:id="@+id/filterPhoto"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:src="@drawable/ic_filter_photo_on"
+                    android:background="@drawable/ripple_rv"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@+id/filterColors"
+                    android:layout_marginRight="8dp"
+                    />
+        <ImageView
+            android:id="@+id/filterColors"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/ic_filter_colors_on"
+            android:background="@drawable/ripple_rv"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            />
+
+
+
+        </RelativeLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/relativeLayout"
+            android:orientation="vertical"
+            android:weightSum="10"
+
+            >
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="7.6"
+                    >
+
+
+                <jp.co.cyberagent.android.gpuimage.GPUImageView
+            android:id="@+id/imageView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:scaleType="fitCenter"
+            android:adjustViewBounds="true"
+            />
+                        <TextView
+                            android:id="@+id/titleFilter"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:text="This is FadeTextView"
+                            android:textColor="#fff"
+                            android:textStyle="bold"
+                            android:textSize="20sp"
+                            />
+
+                </FrameLayout>
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_alignParentBottom="true"
+            android:layout_weight="2.4"
+            >
+        <android.support.v4.widget.NestedScrollView
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/container_nestedScrollView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/recycleview"
+                    android:clipToPadding="false"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    />
+
+
+        </android.support.v4.widget.NestedScrollView>
+                <TextView
+                    android:id="@+id/valueFilter"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    />
+
+                <SeekBar
+                    android:id="@+id/seekBar"
+                    android:theme="@style/SeekBarColor"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    />
+                <LinearLayout
+                    android:id="@+id/container_btns"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_gravity="bottom"
+                    android:weightSum="2">
+                        <Button
+                            android:id="@+id/cancel_btn"
+                            android:layout_width="match_parent"
+                            android:layout_height="30dp"
+                            android:layout_margin="8dp"
+                            android:layout_weight="1"
+                            android:layout_gravity="left"
+                            android:stateListAnimator="@null"
+                            android:background="@drawable/round_corner_black"
+                            android:textSize="12dp"
+                            android:textColor="@color/black"
+                            android:text="Cancel"/>
+                        <Button
+                            android:id="@+id/apply_btn"
+                            android:layout_width="match_parent"
+                            android:layout_height="30dp"
+                            android:layout_margin="8dp"
+                            android:layout_weight="1"
+                            android:layout_gravity="right"
+                            android:stateListAnimator="@null"
+                            android:background="@drawable/round_corner_black"
+                            android:textSize="12dp"
+                            android:textColor="@color/black"
+                            android:text="Apply"/>
+
+                </LinearLayout>
+
+        </FrameLayout>
+
+        </LinearLayout>
+
+</RelativeLayout>

@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.app.seddik.yomii.activities.CreateGuideActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:id="@+id/layout_addPhoto_exit_done"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:elevation="4dp"
+            android:background="@color/white">
+            <ImageView
+                android:id="@+id/done"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_margin="12dp"
+                android:src="@drawable/ic_done_blue_500_24dp"/>
+
+            <ImageView
+                android:id="@+id/add_photo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@+id/done"
+                android:layout_margin="12dp"
+                android:src="@drawable/ic_add_a_photo_black_24dp"/>
+
+            <ImageView
+                android:id="@+id/exit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_margin="12dp"
+                android:src="@drawable/ic_exit_black_24dp"/>
+
+        </RelativeLayout>
+
+        <ImageView
+            android:id="@+id/photo"
+            android:layout_width="match_parent"
+            android:layout_height="260dp"
+            android:layout_below="@id/layout_addPhoto_exit_done"
+            android:scaleType="centerCrop"
+            android:src="@drawable/hudson_background"
+            />
+
+        <TextView
+            android:id="@+id/guide_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/photo"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            android:layout_marginTop="12dp"
+            android:text=" Guide details:"
+            android:textColor="@color/black"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/title_guide"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/guide_text"
+            android:textSize="12sp"
+            android:layout_marginTop="12dp"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            android:background="@drawable/round_corner"
+            android:hint="Title of your Guide"
+            android:padding="15dp" />
+        <EditText
+            android:id="@+id/location"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/title_guide"
+            android:textSize="12sp"
+            android:layout_marginTop="12dp"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            android:background="@drawable/round_corner"
+            android:hint="Location"
+            android:padding="15dp" />
+        <EditText
+            android:id="@+id/experience"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/location"
+            android:textSize="12sp"
+            android:layout_margin="12dp"
+            android:inputType="textMultiLine"
+            android:lines="12"
+            android:minLines="6"
+            android:gravity="top|left"
+            android:maxLines="20"
+            android:background="@drawable/round_corner"
+            android:hint="Write your full Experience here..."
+            android:padding="15dp" />
+
+        <EditText
+            android:id="@+id/history"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/experience"
+            android:layout_margin="12dp"
+            android:background="@drawable/round_corner"
+            android:gravity="top|left"
+            android:hint="History of the location"
+            android:inputType="textMultiLine"
+            android:lines="4"
+            android:maxLines="4"
+            android:minLines="4"
+            android:padding="15dp"
+            android:textSize="12sp" />
+
+        <EditText
+            android:id="@+id/budget_advice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/history"
+            android:layout_margin="12dp"
+            android:background="@drawable/round_corner"
+            android:gravity="top|left"
+            android:hint="Budget advice"
+            android:inputType="textMultiLine"
+            android:lines="4"
+            android:maxLines="4"
+            android:minLines="4"
+            android:padding="15dp"
+            android:textSize="12sp" />
+
+        <EditText
+            android:id="@+id/best_time_to_visit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/budget_advice"
+            android:layout_margin="12dp"
+            android:background="@drawable/round_corner"
+            android:gravity="top|left"
+            android:hint="Best time to visit"
+            android:inputType="textMultiLine"
+            android:lines="4"
+            android:maxLines="4"
+            android:minLines="4"
+            android:padding="15dp"
+            android:textSize="12sp" />
+
+        <EditText
+            android:id="@+id/best_place_to_visit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/best_time_to_visit"
+            android:layout_margin="12dp"
+            android:background="@drawable/round_corner"
+            android:gravity="top|left"
+            android:hint="Best place to visit"
+            android:inputType="textMultiLine"
+            android:lines="4"
+            android:maxLines="4"
+            android:minLines="4"
+            android:padding="15dp"
+            android:textSize="12sp" />
+
+        <EditText
+            android:id="@+id/restaurant_suggestions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/best_place_to_visit"
+            android:layout_margin="12dp"
+            android:background="@drawable/round_corner"
+            android:gravity="top|left"
+            android:hint="Restaurant Suggestions"
+            android:inputType="textMultiLine"
+            android:lines="4"
+            android:maxLines="4"
+            android:minLines="4"
+            android:padding="15dp"
+            android:textSize="12sp" />
+
+        <EditText
+            android:id="@+id/transportation_advice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/restaurant_suggestions"
+            android:layout_margin="12dp"
+            android:background="@drawable/round_corner"
+            android:gravity="top|left"
+            android:hint="Transportation Advice"
+            android:inputType="textMultiLine"
+            android:lines="4"
+            android:maxLines="4"
+            android:minLines="4"
+            android:padding="15dp"
+            android:textSize="12sp" />
+        <EditText
+            android:id="@+id/language"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/transportation_advice"
+            android:textSize="12sp"
+            android:layout_margin="12dp"
+            android:inputType="textMultiLine"
+            android:gravity="top|left"
+            android:background="@drawable/round_corner"
+            android:hint="Language"
+            android:padding="15dp" />
+        <EditText
+            android:id="@+id/other_informations"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/language"
+            android:textSize="12sp"
+            android:layout_margin="12dp"
+            android:inputType="textMultiLine"
+            android:gravity="top|left"
+            android:background="@drawable/round_corner"
+            android:hint="Other informations"
+            android:padding="15dp" />
+
+
+
+    </RelativeLayout>
+</android.support.v4.widget.NestedScrollView>

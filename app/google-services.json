@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "854346034641",
+    "firebase_url": "https://yomii-1519082306058.firebaseio.com",
+    "project_id": "yomii-1519082306058",
+    "storage_bucket": "yomii-1519082306058.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:854346034641:android:ff862e92ba135f9c",
+        "android_client_info": {
+          "package_name": "com.app.seddik.yomii"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "854346034641-tjo7duci555jjiq3vr2si73c7k2vv45b.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "854346034641-tjo7duci555jjiq3vr2si73c7k2vv45b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAfn80WOerX1-2qbHbbV2TBU48e-gy9ero"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

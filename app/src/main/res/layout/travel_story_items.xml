@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="4dp"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+   >
+
+<FrameLayout
+    android:id="@+id/frame"
+    android:padding="4dp"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/circle_background">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/story_image"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:src="@drawable/bg_london"
+    />
+    <ImageView
+        android:id="@+id/ic_add"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:src="@drawable/ic_add_blue_500_36dp"
+        android:visibility="invisible"/>
+
+</FrameLayout>
+
+    <TextView
+        android:id="@+id/name_city"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/frame"
+        android:padding="2dp"
+        android:textSize="12sp"
+        android:textColor="@color/light_blue_600"
+        android:layout_centerHorizontal="true"
+       />
+</RelativeLayout>
