@@ -43,6 +43,11 @@ public class DisplayPhotosPublishedAdapter extends RecyclerView.Adapter<DisplayP
     private String path_photo_published;
     private String path_photo_profil;
 
+    private static final int ITEM = 0;
+    private static final int LOADING = 1;
+    private boolean isLoadingAdded = false;
+
+
 
 
     public DisplayPhotosPublishedAdapter(RequestManager glide,Context context, ArrayList<DisplayPhotosPublishedItems> galleryList,boolean showFollowingButton) {
@@ -60,6 +65,7 @@ public class DisplayPhotosPublishedAdapter extends RecyclerView.Adapter<DisplayP
 
     @Override
     public void onBindViewHolder(final DisplayPhotosPublishedAdapter.ViewHolder viewHolder, final int i) {
+
         RequestOptions requestOptions = new RequestOptions()
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE);
 
@@ -158,6 +164,12 @@ public class DisplayPhotosPublishedAdapter extends RecyclerView.Adapter<DisplayP
     public int getItemCount() {
         return galleryList.size();
     }
+
+    @Override
+    public int getItemViewType(int position) {
+        return (position == galleryList.size() && isLoadingAdded) ? LOADING : ITEM;
+    }
+
 
     public class ViewHolder extends RecyclerView.ViewHolder{
         public ImageView img_profile ,img_published;

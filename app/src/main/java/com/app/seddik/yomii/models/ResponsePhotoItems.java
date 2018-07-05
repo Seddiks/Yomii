@@ -9,6 +9,7 @@ import java.util.ArrayList;
 public class ResponsePhotoItems {
     private boolean success;
     private String message;
+    private int numberResult;
     private ArrayList<Paths> data;
 
 
@@ -40,6 +41,14 @@ public class ResponsePhotoItems {
 
     public void setData(ArrayList<Paths> data) {
         this.data = data;
+    }
+
+    public int getNumberResult() {
+        return numberResult;
+    }
+
+    public void setNumberResult(int numberResult) {
+        this.numberResult = numberResult;
     }
 
     public class Paths  {

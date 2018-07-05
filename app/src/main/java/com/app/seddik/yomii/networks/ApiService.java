@@ -13,9 +13,11 @@ import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.GET;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
+import retrofit2.http.Query;
 
 /**
  * Created by Seddik on 17/12/2017.
@@ -134,6 +136,12 @@ public interface ApiService {
     @FormUrlEncoded
     @POST("home_photos_published.php")
     Call<ResponsePhotoItems> getDetailsPhotosPublishedByUsers(@Field("action") int act);
+
+    @GET("home_photos_published.php")
+    Call<ResponsePhotoItems> getDetailsPhotos(@Query("action") int act,
+                                              @Query("number_items") int number_items,
+                                              @Query("start_from") int start_from);
+
 
 
 

@@ -62,20 +62,34 @@
         android:padding="2dp"
         />
 
+<RelativeLayout
+    android:id="@+id/rl_photo"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_below="@+id/profile_image"
+    >
 
     <ImageView
         android:id="@+id/photosPublished"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
-        android:layout_below="@+id/profile_image"
         />
+    <ProgressBar
+        android:id="@+id/photo_progress"
+        style="@style/Widget.AppCompat.ProgressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        />
+
+</RelativeLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_below="@+id/photosPublished"
+        android:layout_below="@+id/rl_photo"
         >
     <com.varunest.sparkbutton.SparkButton
         android:id="@+id/reaction"
