@@ -42,17 +42,6 @@ import static com.app.seddik.yomii.config.AppConfig.URL_UPLOAD_DATA_HOME;
 public class HomeFragment extends Fragment {
     private static final int PAGE_START = 1;
     private static  int NUMBER_ITEMS = 20;
-    private boolean isLoading = false;
-    private boolean isLastPage = false;
-    // limiting to 5 for this tutorial, since total pages in actual API is very large. Feel free to modify.
-    private int TOTAL_PAGES = 10;
-    private int currentPage = PAGE_START;
-    PaginationAdapter adapterPagination;
-    private ApiService movieService;
-
-
-
-    private SessionManager session;
     private final Integer image_ids[] = {
             R.drawable.bg_milan,
             R.drawable.bg_paris,
@@ -73,6 +62,14 @@ public class HomeFragment extends Fragment {
             R.drawable.bg_barca,
             R.drawable.bg_ny,
     };
+    PaginationAdapter adapterPagination;
+    private boolean isLoading = false;
+    private boolean isLastPage = false;
+    // limiting to 5 for this tutorial, since total pages in actual API is very large. Feel free to modify.
+    private int TOTAL_PAGES = 5;
+    private int currentPage = PAGE_START;
+    private ApiService movieService;
+    private SessionManager session;
     private Button btnFollow;
     private RecyclerView recyclerView;
     private ProgressBar progressBar;
