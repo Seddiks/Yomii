@@ -40,12 +40,12 @@ import static com.app.seddik.yomii.config.AppConfig.URL_UPLOAD_DATA_HOME;
  * A simple {@link Fragment} subclass.
  */
 public class HomeFragment extends Fragment {
-    private static final int PAGE_START = 0;
+    private static final int PAGE_START = 1;
     private static  int NUMBER_ITEMS = 20;
     private boolean isLoading = false;
     private boolean isLastPage = false;
     // limiting to 5 for this tutorial, since total pages in actual API is very large. Feel free to modify.
-    private int TOTAL_PAGES = 5;
+    private int TOTAL_PAGES = 10;
     private int currentPage = PAGE_START;
     PaginationAdapter adapterPagination;
     private ApiService movieService;
@@ -108,7 +108,7 @@ public class HomeFragment extends Fragment {
             @Override
             protected void loadMoreItems() {
                 isLoading = true;
-                currentPage += 20;
+                currentPage += 1;
 
                 // mocking network delay for API call
                 new Handler().postDelayed(new Runnable() {
@@ -181,7 +181,7 @@ public class HomeFragment extends Fragment {
                 String message = results.getMessage();
                 int numberItems = results.getNumberResult();
                 if (success){
-                    TOTAL_PAGES = numberItems;
+                  //  TOTAL_PAGES = numberItems;
                     ArrayList<DisplayPhotosPublishedItems> photosItems = new ArrayList<>();
 
                     progressBar.setVisibility(View.GONE);

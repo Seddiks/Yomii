@@ -1,7 +1,6 @@
 package com.app.seddik.yomii.adapters;
 
 import android.content.Context;
-import android.graphics.Movie;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -127,7 +126,7 @@ public class PaginationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         }
     }
 
-    public void remove(Movie r) {
+    public void remove(DisplayPhotosPublishedItems r) {
         int position = movieResults.indexOf(r);
         if (position > -1) {
             movieResults.remove(position);
