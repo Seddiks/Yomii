@@ -139,8 +139,7 @@ public interface ApiService {
 
     @GET("home_photos_published.php")
     Call<ResponsePhotoItems> getDetailsPhotos(@Query("action") int act,
-                                              @Query("number_items") int number_items,
-                                              @Query("start_from") int start_from);
+                                              @Query("currentPage") int currentPage);
 
 
 

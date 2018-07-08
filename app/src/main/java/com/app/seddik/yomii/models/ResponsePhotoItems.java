@@ -9,7 +9,7 @@ import java.util.ArrayList;
 public class ResponsePhotoItems {
     private boolean success;
     private String message;
-    private int numberResult;
+    private int number_pages;
     private ArrayList<Paths> data;
 
 
@@ -43,12 +43,12 @@ public class ResponsePhotoItems {
         this.data = data;
     }
 
-    public int getNumberResult() {
-        return numberResult;
+    public int getNumber_pages() {
+        return number_pages;
     }
 
-    public void setNumberResult(int numberResult) {
-        this.numberResult = numberResult;
+    public void setNumber_pages(int number_pages) {
+        this.number_pages = number_pages;
     }
 
     public class Paths  {

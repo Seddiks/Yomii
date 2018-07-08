@@ -32,33 +32,33 @@
                 tools:replace="android:resource" />
         </provider>
 
-        <activity android:name="com.app.seddik.yomii.activities.LoginActivity">
+        <activity android:name=".activities.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.app.seddik.yomii.activities.RegistrationActivity" />
+        <activity android:name=".activities.RegistrationActivity" />
         <activity
-            android:name="com.app.seddik.yomii.activities.ForgetPasswordActivity"
+            android:name=".activities.ForgetPasswordActivity"
             android:label="@string/title_activity_forget_password"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name="com.app.seddik.yomii.MainActivity" />
+        <activity android:name=".MainActivity" />
         <activity
-            android:name="com.app.seddik.yomii.activities.DisplayPhotosPublishedActivity"
+            android:name=".activities.DisplayPhotosPublishedActivity"
             android:label="@string/title_activity_display_photos"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name="com.app.seddik.yomii.activities.FullScreenImageActivity" />
+        <activity android:name=".activities.FullScreenImageActivity" />
         <activity
-            android:name="com.app.seddik.yomii.activities.ProfileAbonneActivity"
+            android:name=".activities.ProfileAbonneActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.app.seddik.yomii.activities.FiltersPhotoActivity"
+            android:name=".activities.FiltersPhotoActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.app.seddik.yomii.activities.PhotosToPublishActivity"
+            android:name=".activities.PhotosToPublishActivity"
             android:label="@string/title_activity_photos_to_publish"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
@@ -70,23 +70,22 @@
         <activity
             android:name=".activities.CreateGuideActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".activities.GuideActivity"
+        <activity
+            android:name=".activities.GuideActivity"
             android:theme="@style/AppTheme.NoActionBar" />
 
-        <service
-            android:name=".services.MyFirebaseInstanceIDService">
+        <service android:name=".services.MyFirebaseInstanceIDService">
             <intent-filter>
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
+            </intent-filter>
+        </service>
+        <service android:name=".services.MyFirebaseMessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
 
-        <service
-            android:name=".services.MyFirebaseMessagingService">
-            <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
-            </intent-filter>
-        </service>
-
+        <activity android:name=".activities.CommentsPhotosActivity"></activity>
     </application>
 
 </manifest>

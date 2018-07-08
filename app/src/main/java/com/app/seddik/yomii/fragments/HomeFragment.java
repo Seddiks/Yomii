@@ -41,32 +41,12 @@ import static com.app.seddik.yomii.config.AppConfig.URL_UPLOAD_DATA_HOME;
  */
 public class HomeFragment extends Fragment {
     private static final int PAGE_START = 1;
-    private static  int NUMBER_ITEMS = 20;
-    private final Integer image_ids[] = {
-            R.drawable.bg_milan,
-            R.drawable.bg_paris,
-            R.drawable.bg_london,
-            R.drawable.bg_moscow,
-            R.drawable.bg_madrid,
-            R.drawable.bg_munich,
-            R.drawable.bg_barca,
-            R.drawable.bg_ny,
-    };
-    private final Integer image_pro[] = {
-            R.drawable.bg_milan,
-            R.drawable.bg_paris,
-            R.drawable.bg_london,
-            R.drawable.bg_moscow,
-            R.drawable.bg_madrid,
-            R.drawable.bg_munich,
-            R.drawable.bg_barca,
-            R.drawable.bg_ny,
-    };
+
     PaginationAdapter adapterPagination;
     private boolean isLoading = false;
     private boolean isLastPage = false;
     // limiting to 5 for this tutorial, since total pages in actual API is very large. Feel free to modify.
-    private int TOTAL_PAGES = 5;
+    private int TOTAL_PAGES;
     private int currentPage = PAGE_START;
     private ApiService movieService;
     private SessionManager session;
@@ -166,7 +146,7 @@ public class HomeFragment extends Fragment {
                 addConverterFactory(GsonConverterFactory.create()).
                 build();
         ApiService API = retrofit.create(ApiService.class);
-        Call<ResponsePhotoItems> api =API.getDetailsPhotos(0,NUMBER_ITEMS,currentPage);
+        Call<ResponsePhotoItems> api = API.getDetailsPhotos(0, currentPage);
 
 
         api.enqueue(new Callback<ResponsePhotoItems>() {
@@ -176,9 +156,9 @@ public class HomeFragment extends Fragment {
                 ResponsePhotoItems results = response.body();
                 boolean success = results.getSuccess();
                 String message = results.getMessage();
-                int numberItems = results.getNumberResult();
+                int numberItems = results.getNumber_pages();
                 if (success){
-                  //  TOTAL_PAGES = numberItems;
+                    TOTAL_PAGES = numberItems;
                     ArrayList<DisplayPhotosPublishedItems> photosItems = new ArrayList<>();
 
                     progressBar.setVisibility(View.GONE);
@@ -209,7 +189,7 @@ public class HomeFragment extends Fragment {
                 addConverterFactory(GsonConverterFactory.create()).
                 build();
         ApiService API = retrofit.create(ApiService.class);
-        Call<ResponsePhotoItems> api =API.getDetailsPhotos(0,NUMBER_ITEMS,currentPage);
+        Call<ResponsePhotoItems> api = API.getDetailsPhotos(0, currentPage);
 
         api.enqueue(new Callback<ResponsePhotoItems>() {
             @Override

@@ -16,10 +16,10 @@ public class AppConfig {
     public static String URL_FORGET_PASSWORD = "http://192.168.1.5:81/Yomii/auth/";
 
     //Upload photos to server
-    public static String URL_UPLOAD_PHOTOS = "http://192.168.1.7:81/Yomii/profil/";
+    public static String URL_UPLOAD_PHOTOS = "http://192.168.1.9:81/Yomii/profil/";
 
     //Home page
-    public static String URL_UPLOAD_DATA_HOME = "http://192.168.1.7:81/Yomii/home/";
+    public static String URL_UPLOAD_DATA_HOME = "http://192.168.1.9:81/Yomii/home/";
 
     //Notification counter
     public static int NOTIFICATION_COUNTER = 0;

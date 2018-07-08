@@ -1,6 +1,8 @@
 package com.app.seddik.yomii.adapters;
 
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -8,10 +10,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.app.seddik.yomii.R;
+import com.app.seddik.yomii.activities.FullScreenImageActivity;
+import com.app.seddik.yomii.activities.ProfileAbonneActivity;
 import com.app.seddik.yomii.models.DisplayPhotosPublishedItems;
+import com.app.seddik.yomii.utils.GlideImageLoader;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
@@ -29,12 +35,13 @@ public class PaginationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     private static final int ITEM = 0;
     private static final int LOADING = 1;
-    private static final String BASE_URL_IMG = "https://image.tmdb.org/t/p/w150";
 
     private ArrayList<DisplayPhotosPublishedItems> movieResults;
     private Context context;
 
     private boolean isLoadingAdded = false;
+    private boolean clicked = false;
+
 
     public PaginationAdapter(Context context) {
         this.context = context;
@@ -63,27 +70,69 @@ public class PaginationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private RecyclerView.ViewHolder getViewHolder(ViewGroup parent, LayoutInflater inflater) {
         RecyclerView.ViewHolder viewHolder;
         View v1 = inflater.inflate(R.layout.display_photos_published_items, parent, false);
-        viewHolder = new MovieVH(v1);
+        viewHolder = new ViewHolder(v1);
         return viewHolder;
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
 
-        DisplayPhotosPublishedItems result = movieResults.get(position); // Movie
+        final DisplayPhotosPublishedItems result = movieResults.get(position); // Movie
 
         switch (getItemViewType(position)) {
             case ITEM:
-                final MovieVH movieVH = (MovieVH) holder;
+                final ViewHolder viewHolder = (ViewHolder) holder;
                 RequestOptions requestOptions = new RequestOptions()
-                        .diskCacheStrategy(DiskCacheStrategy.RESOURCE);
-                movieVH.tv_name.setText(result.getFull_name());
-                movieVH.tv_date.setText("28 Juin 2018");
-                movieVH.tv_likes.setText("1.3 K Likes");
-                movieVH.tv_comments.setText("94 comment");
+                        .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC);
+                viewHolder.tv_name.setText(result.getFull_name());
+                viewHolder.tv_date.setText("28 Juin 2018");
+                viewHolder.tv_likes.setText("1.3 K likes");
+                viewHolder.tv_comments.setText("94 comment");
 
                 String path_photo_published = URL_UPLOAD_PHOTOS+result.getPhoto_published();
-                Glide.with(context).load(path_photo_published).into(movieVH.img_published);
+                Glide.with(context).load(path_photo_published).into(viewHolder.img_published);
+                new GlideImageLoader(viewHolder.img_published,
+                        viewHolder.progressBar).load(path_photo_published, requestOptions);
+
+
+                viewHolder.img_profile.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(context, ProfileAbonneActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        context.startActivity(intent);
+
+                    }
+                });
+                viewHolder.img_published.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(context, FullScreenImageActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        intent.putExtra("PathPhoto", URL_UPLOAD_PHOTOS + result.getPhoto_published());
+                        context.startActivity(intent);
+
+                    }
+                });
+
+                viewHolder.btnFollowing.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (clicked == false) {
+                            viewHolder.btnFollowing.setBackgroundResource(R.drawable.ripple_after_blue_500);
+                            viewHolder.btnFollowing.setText("Following");
+                            viewHolder.btnFollowing.setTextColor(Color.WHITE);
+                            clicked = true;
+                        } else {
+                            viewHolder.btnFollowing.setBackgroundResource(R.drawable.ripple_blue_500);
+                            viewHolder.btnFollowing.setText("Follow");
+                            viewHolder.btnFollowing.setTextColor(Color.parseColor("#03A9F4"));
+                            clicked = false;
+
+                        }
+
+                    }
+                });
 
 
 
@@ -170,16 +219,18 @@ public class PaginationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     /**
      * Main list's content ViewHolder
      */
-    protected class MovieVH extends RecyclerView.ViewHolder {
+    protected class ViewHolder extends RecyclerView.ViewHolder {
         public ImageView img_profile ,img_published;
         private TextView tv_name ,tv_date ,tv_likes,tv_comments;
         private Button btnFollowing;
+        private ProgressBar progressBar;
 
-        public MovieVH(View itemView) {
+        public ViewHolder(View itemView) {
             super(itemView);
 
             img_profile = (ImageView) itemView.findViewById(R.id.profile_image);
             img_published = (ImageView) itemView.findViewById(R.id.photosPublished);
+            progressBar = itemView.findViewById(R.id.photo_progress);
             btnFollowing = (Button) itemView.findViewById(R.id.following);
             tv_name = (TextView) itemView.findViewById(R.id.profile_name);
             tv_date = (TextView) itemView.findViewById(R.id.date);
