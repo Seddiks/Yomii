@@ -14,6 +14,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.app.seddik.yomii.R;
+import com.app.seddik.yomii.activities.CommentsPhotosActivity;
 import com.app.seddik.yomii.activities.FullScreenImageActivity;
 import com.app.seddik.yomii.activities.ProfileAbonneActivity;
 import com.app.seddik.yomii.models.DisplayPhotosPublishedItems;
@@ -31,7 +32,7 @@ import static com.app.seddik.yomii.config.AppConfig.URL_UPLOAD_PHOTOS;
  * Created by Seddik on 03/07/2018.
  */
 
-public class PaginationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class HomePaginationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private static final int ITEM = 0;
     private static final int LOADING = 1;
@@ -43,7 +44,7 @@ public class PaginationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private boolean clicked = false;
 
 
-    public PaginationAdapter(Context context) {
+    public HomePaginationAdapter(Context context) {
         this.context = context;
         movieResults = new ArrayList<>();
     }
@@ -99,7 +100,6 @@ public class PaginationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                     @Override
                     public void onClick(View v) {
                         Intent intent = new Intent(context, ProfileAbonneActivity.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         context.startActivity(intent);
 
                     }
@@ -108,8 +108,24 @@ public class PaginationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                     @Override
                     public void onClick(View v) {
                         Intent intent = new Intent(context, FullScreenImageActivity.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         intent.putExtra("PathPhoto", URL_UPLOAD_PHOTOS + result.getPhoto_published());
+                        context.startActivity(intent);
+
+                    }
+                });
+
+                viewHolder.img_comment.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(context, CommentsPhotosActivity.class);
+                        context.startActivity(intent);
+
+                    }
+                });
+                viewHolder.tv_comments.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(context, CommentsPhotosActivity.class);
                         context.startActivity(intent);
 
                     }
@@ -211,6 +227,7 @@ public class PaginationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     }
 
 
+
    /*
    View Holders
    _________________________________________________________________________________________________
@@ -220,7 +237,7 @@ public class PaginationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
      * Main list's content ViewHolder
      */
     protected class ViewHolder extends RecyclerView.ViewHolder {
-        public ImageView img_profile ,img_published;
+        public ImageView img_profile, img_published, img_comment;
         private TextView tv_name ,tv_date ,tv_likes,tv_comments;
         private Button btnFollowing;
         private ProgressBar progressBar;
@@ -228,14 +245,15 @@ public class PaginationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         public ViewHolder(View itemView) {
             super(itemView);
 
-            img_profile = (ImageView) itemView.findViewById(R.id.profile_image);
-            img_published = (ImageView) itemView.findViewById(R.id.photosPublished);
+            img_profile = itemView.findViewById(R.id.profile_image);
+            img_published = itemView.findViewById(R.id.photosPublished);
+            img_comment = itemView.findViewById(R.id.comments);
             progressBar = itemView.findViewById(R.id.photo_progress);
-            btnFollowing = (Button) itemView.findViewById(R.id.following);
-            tv_name = (TextView) itemView.findViewById(R.id.profile_name);
-            tv_date = (TextView) itemView.findViewById(R.id.date);
-            tv_likes = (TextView) itemView.findViewById(R.id.numberReactions);
-            tv_comments = (TextView) itemView.findViewById(R.id.numberComments);
+            btnFollowing = itemView.findViewById(R.id.following);
+            tv_name = itemView.findViewById(R.id.profile_name);
+            tv_date = itemView.findViewById(R.id.date);
+            tv_likes = itemView.findViewById(R.id.numberReactions);
+            tv_comments = itemView.findViewById(R.id.numberComments);
         }
     }
 

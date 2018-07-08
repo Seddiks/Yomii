@@ -19,6 +19,8 @@
     <color name="blue_dark">#34486B</color>
 
     <color name="grey_light">#D9D8D8</color>
+    <color name="grey_300">#E0E0E0</color>
+    <color name="grey_400">#BDBDBD</color>
     <color name="transparent_black_2">#88000000</color>
     <color name="transparent_black_4">#40000000</color>
     <color name="transparent_black_6">#60000000</color>

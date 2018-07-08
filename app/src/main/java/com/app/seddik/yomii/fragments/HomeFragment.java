@@ -17,7 +17,7 @@ import android.widget.Toast;
 
 import com.app.seddik.yomii.R;
 import com.app.seddik.yomii.adapters.DisplayPhotosPublishedAdapter;
-import com.app.seddik.yomii.adapters.PaginationAdapter;
+import com.app.seddik.yomii.adapters.HomePaginationAdapter;
 import com.app.seddik.yomii.models.DisplayPhotosPublishedItems;
 import com.app.seddik.yomii.models.ResponsePhotoItems;
 import com.app.seddik.yomii.networks.ApiService;
@@ -42,7 +42,7 @@ import static com.app.seddik.yomii.config.AppConfig.URL_UPLOAD_DATA_HOME;
 public class HomeFragment extends Fragment {
     private static final int PAGE_START = 1;
 
-    PaginationAdapter adapterPagination;
+    HomePaginationAdapter adapterPagination;
     private boolean isLoading = false;
     private boolean isLastPage = false;
     // limiting to 5 for this tutorial, since total pages in actual API is very large. Feel free to modify.
@@ -77,7 +77,7 @@ public class HomeFragment extends Fragment {
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
 
-        adapterPagination = new PaginationAdapter(getActivity());
+        adapterPagination = new HomePaginationAdapter(getActivity());
         adapterPagination. setHasStableIds(true);
         recyclerView.setAdapter(adapterPagination);
 

@@ -85,7 +85,9 @@
             </intent-filter>
         </service>
 
-        <activity android:name=".activities.CommentsPhotosActivity"></activity>
+        <activity
+            android:name=".activities.CommentsPhotosActivity"
+            android:label="@string/title_activity_comments"></activity>
     </application>
 
 </manifest>
