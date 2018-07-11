@@ -181,19 +181,29 @@ public class HomeFragment extends Fragment {
                 isLoading = false;
 
                 ResponsePhotoItems results = response.body();
-                ArrayList<DisplayPhotosPublishedItems> photosItems = new ArrayList<>();
+                boolean success = results.getSuccess();
+                if (success) {
+                    ArrayList<DisplayPhotosPublishedItems> photosItems = new ArrayList<>();
 
-                progressBar.setVisibility(View.GONE);
-                photosItems = fillDetails(results.getData());
-                adapterPagination.addAll(photosItems);
+                    progressBar.setVisibility(View.GONE);
+                    photosItems = fillDetails(results.getData());
+                    adapterPagination.addAll(photosItems);
 
-                if (currentPage != TOTAL_PAGES) adapterPagination.addLoadingFooter();
-                else isLastPage = true;
+                    if (currentPage != TOTAL_PAGES) adapterPagination.addLoadingFooter();
+                    else isLastPage = true;
+
+                } else {
+                    progressBar.setVisibility(View.GONE);
+
+                }
+
             }
 
             @Override
             public void onFailure(Call<ResponsePhotoItems> call, Throwable t) {
                 t.printStackTrace();
+                progressBar.setVisibility(View.GONE);
+
                 // TODO: 08/11/16 handle failure
             }
         });

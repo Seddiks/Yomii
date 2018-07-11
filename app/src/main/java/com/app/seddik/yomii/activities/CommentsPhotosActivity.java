@@ -94,7 +94,7 @@ public class CommentsPhotosActivity extends AppCompatActivity {
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        //loadNextPage();
+                        loadNextPage();
                     }
                 }, 1000);
             }
@@ -131,7 +131,7 @@ public class CommentsPhotosActivity extends AppCompatActivity {
 
 
     private void loadFirstPage() {
-        Log.d("Home", "loadFirstPage: ");
+        Log.d("Comment", "loadFirstPage: ");
         Retrofit retrofit = new Retrofit.Builder().
                 baseUrl(URL_UPLOAD_DATA_HOME).
                 addConverterFactory(GsonConverterFactory.create()).
@@ -146,11 +146,8 @@ public class CommentsPhotosActivity extends AppCompatActivity {
                 // Got data. Send it to adapter
                 ResponsePhotoComments results = response.body();
                 boolean success = results.isSuccess();
-                String message = results.getMessage();
                 int numberItems = results.getNumber_pages();
                 if (success) {
-                    Log.d("Home", "Success");
-
                     TOTAL_PAGES = numberItems;
                     progressBar.setVisibility(View.GONE);
                     adapterPagination.addAll(results.getData());
@@ -174,6 +171,48 @@ public class CommentsPhotosActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void loadNextPage() {
+        Log.d("Comment", "loadNextPage: " + currentPage);
+        Retrofit retrofit = new Retrofit.Builder().
+                baseUrl(URL_UPLOAD_DATA_HOME).
+                addConverterFactory(GsonConverterFactory.create()).
+                build();
+        ApiService API = retrofit.create(ApiService.class);
+        Call<ResponsePhotoComments> api = API.getCommentsPerPhoto(0, user_id, photo_id, currentPage);
+
+        api.enqueue(new Callback<ResponsePhotoComments>() {
+            @Override
+            public void onResponse(Call<ResponsePhotoComments> call, Response<ResponsePhotoComments> response) {
+
+                adapterPagination.removeLoadingFooter();
+                isLoading = false;
+
+                ResponsePhotoComments results = response.body();
+                boolean success = results.isSuccess();
+                if (success) {
+                    progressBar.setVisibility(View.GONE);
+                    adapterPagination.addAll(results.getData());
+
+                    if (currentPage != TOTAL_PAGES) adapterPagination.addLoadingFooter();
+                    else isLastPage = true;
+
+                } else {
+                    progressBar.setVisibility(View.GONE);
+
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<ResponsePhotoComments> call, Throwable t) {
+                t.printStackTrace();
+                progressBar.setVisibility(View.GONE);
+
+                // TODO: 08/11/16 handle failure
+            }
+        });
     }
 
 

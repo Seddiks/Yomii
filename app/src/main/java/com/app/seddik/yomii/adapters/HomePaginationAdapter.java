@@ -128,7 +128,7 @@ public class HomePaginationAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                     @Override
                     public void onClick(View v) {
                         Intent intent = new Intent(context, CommentsPhotosActivity.class);
-                        intent.putExtra("photo_id", true);
+                        intent.putExtra("photo_id", result.getPhoto_id());
                         intent.putExtra("ShowKeyBoard", false);
                         context.startActivity(intent);
 
