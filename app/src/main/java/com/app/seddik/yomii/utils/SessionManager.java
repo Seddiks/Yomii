@@ -13,40 +13,30 @@ import com.app.seddik.yomii.models.UserItems;
  */
 
 public class SessionManager {
-    private static SessionManager mInstance;
-
-    // Shared Preferences
-    SharedPreferences pref;
-
-    // Editor for Shared preferences
-    Editor editor;
-
-    // Context
-    Context _context;
-
-    // Shared pref mode
-    int PRIVATE_MODE = 0;
-
+    // User ID (make variable public to access from outside)
+    public static final String KEY_ID = "user_id";
+    // User name (make variable public to access from outside)
+    public static final String KEY_NAME = "name";
+    // Email address (make variable public to access from outside)
+    public static final String KEY_EMAIL = "email";
+    // Token (make variable public to access from outside)
+    public static final String KEY_TOKEN = "token";
+    // Token Firebase (make variable public to access from outside)
+    public static final String KEY_TOKEN_FIREBASE = "token_firebase";
     // Sharedpref file name
     private static final String PREF_NAME = "YomiiPref";
 
     // All Shared Preferences Keys
     private static final String IS_LOGIN = "IsLoggedIn";
-
-    // User ID (make variable public to access from outside)
-    public static final String KEY_ID = "user_id";
-
-    // User name (make variable public to access from outside)
-    public static final String KEY_NAME = "name";
-
-    // Email address (make variable public to access from outside)
-    public static final String KEY_EMAIL = "email";
-
-    // Token (make variable public to access from outside)
-    public static final String KEY_TOKEN = "token";
-
-    // Token Firebase (make variable public to access from outside)
-    public static final String KEY_TOKEN_FIREBASE = "token_firebase";
+    private static SessionManager mInstance;
+    // Shared Preferences
+    SharedPreferences pref;
+    // Editor for Shared preferences
+    Editor editor;
+    // Context
+    Context _context;
+    // Shared pref mode
+    int PRIVATE_MODE = 0;
 
     // Constructor
     public SessionManager(Context context){
@@ -138,11 +128,21 @@ public class SessionManager {
     }
 
     /**
+     * Get User ID
+     * */
+    public int getUSER_ID() {
+
+        int id = pref.getInt(KEY_ID, 0);
+
+        return id;
+    }
+
+    /**
      * Get Token Firebase
      * */
     public String getTokenFirebase(){
 
-       String token = pref.getString(KEY_TOKEN_FIREBASE, null);
+        String token = pref.getString(KEY_TOKEN_FIREBASE, null);
 
         return token;
     }

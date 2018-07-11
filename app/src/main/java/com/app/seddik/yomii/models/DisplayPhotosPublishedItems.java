@@ -5,10 +5,19 @@ package com.app.seddik.yomii.models;
  */
 
 public class DisplayPhotosPublishedItems {
+    private int photo_id;
     private String photo_profil;
     private String photo_published;
     private String full_name;
     private String date;
+
+    public int getPhoto_id() {
+        return photo_id;
+    }
+
+    public void setPhoto_id(int photo_id) {
+        this.photo_id = photo_id;
+    }
 
     public String getPhoto_profil() {
         return photo_profil;

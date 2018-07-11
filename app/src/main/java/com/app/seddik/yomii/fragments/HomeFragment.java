@@ -13,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.app.seddik.yomii.R;
 import com.app.seddik.yomii.adapters.DisplayPhotosPublishedAdapter;
@@ -45,7 +44,6 @@ public class HomeFragment extends Fragment {
     HomePaginationAdapter adapterPagination;
     private boolean isLoading = false;
     private boolean isLastPage = false;
-    // limiting to 5 for this tutorial, since total pages in actual API is very large. Feel free to modify.
     private int TOTAL_PAGES;
     private int currentPage = PAGE_START;
     private ApiService movieService;
@@ -116,27 +114,12 @@ public class HomeFragment extends Fragment {
         movieService = Client.getClient().create(ApiService.class);
         loadFirstPage();
 
-     //   getDetailsPhotosPublishedByUsers();
 
         return rootView;
     }
 
 
 
-    private ArrayList<DisplayPhotosPublishedItems> fillDetails(ArrayList<ResponsePhotoItems.Paths> data) {
-        ArrayList<DisplayPhotosPublishedItems> photosItems = new ArrayList<>();
-
-        for (int i = 0; i < data.size(); i++) {
-            DisplayPhotosPublishedItems items = new DisplayPhotosPublishedItems();
-            items.setPhoto_profil(data.get(i).getPhoto_profil_path());
-            items.setPhoto_published(data.get(i).getPhoto_path());
-            Log.e("HomeFragment", "link " + data.get(i).getPhoto_path());
-            items.setFull_name(data.get(i).getFull_name());
-            //  items.setDate(data.get(i).);
-            photosItems.add(items);
-        }
-        return photosItems;
-    }
 
 
     private void loadFirstPage() {
@@ -216,81 +199,21 @@ public class HomeFragment extends Fragment {
         });
     }
 
-    /**
-     * Performs a Retrofit call to the top rated movies API.
-     * Same API call for Pagination.
-     * As {@link #currentPage} will be incremented automatically
-     * by @{@link PaginationScrollListener} to load next page.
-     */
-
-
-
-
-    private void getDetailsPhotosPublishedByUsers(){
-
-        Retrofit retrofit = new Retrofit.Builder().
-                baseUrl(URL_UPLOAD_DATA_HOME).
-                addConverterFactory(GsonConverterFactory.create()).
-                build();
-        ApiService API = retrofit.create(ApiService.class);
-        Call<ResponsePhotoItems> api =API.getDetailsPhotosPublishedByUsers(0);
-        api.enqueue(new Callback<ResponsePhotoItems>() {
-            @Override
-            public void onResponse(Call<ResponsePhotoItems> call, Response<ResponsePhotoItems> response) {
-                ResponsePhotoItems List = response.body();
-                boolean success = List.getSuccess();
-                String message = List.getMessage();
-                if (success){
-                    data = List.getData();
-                    fillDetailsPhotosPublished(data);
-
-                }else {
-                    Toast.makeText(getActivity(),
-                            message, Toast.LENGTH_LONG)
-                            .show();
-
-
-                }
-
-            }
-
-            @Override
-            public void onFailure(Call<ResponsePhotoItems> call, Throwable t) {
-                Toast.makeText(getActivity(),
-                        "Error", Toast.LENGTH_LONG)
-                        .show();
-
-
-            }
-        });
-
-    }
-
-    private void fillDetailsPhotosPublished(ArrayList<ResponsePhotoItems.Paths> data) {
+    private ArrayList<DisplayPhotosPublishedItems> fillDetails(ArrayList<ResponsePhotoItems.Paths> data) {
         ArrayList<DisplayPhotosPublishedItems> photosItems = new ArrayList<>();
 
-        for(int i=0 ; i <data.size(); i++){
+        for (int i = 0; i < data.size(); i++) {
             DisplayPhotosPublishedItems items = new DisplayPhotosPublishedItems();
+            items.setPhoto_id(data.get(i).getPhoto_id());
             items.setPhoto_profil(data.get(i).getPhoto_profil_path());
             items.setPhoto_published(data.get(i).getPhoto_path());
-            Log.e("HomeFragment", "link "+data.get(i).getPhoto_path());
+            Log.e("HomeFragment", "link " + data.get(i).getPhoto_path());
             items.setFull_name(data.get(i).getFull_name());
             //  items.setDate(data.get(i).);
             photosItems.add(items);
         }
-        progressBar.setVisibility(View.GONE);
-        adapterPagination.addAll(photosItems);
-
-        //adapter = new DisplayPhotosPublishedAdapter(Glide.with(this),getActivity(), photosItems,true);
-        adapterPagination.setHasStableIds(true);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setItemViewCacheSize(20);
-        recyclerView.setDrawingCacheEnabled(true);
-        recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_AUTO);
-        recyclerView.setNestedScrollingEnabled(false);
-        recyclerView.setAdapter(adapterPagination);
-
+        return photosItems;
     }
 
 
-    }
+}

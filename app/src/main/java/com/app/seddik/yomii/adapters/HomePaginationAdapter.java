@@ -37,7 +37,7 @@ public class HomePaginationAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     private static final int ITEM = 0;
     private static final int LOADING = 1;
 
-    private ArrayList<DisplayPhotosPublishedItems> movieResults;
+    private ArrayList<DisplayPhotosPublishedItems> photoResults;
     private Context context;
 
     private boolean isLoadingAdded = false;
@@ -46,7 +46,7 @@ public class HomePaginationAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     public HomePaginationAdapter(Context context) {
         this.context = context;
-        movieResults = new ArrayList<>();
+        photoResults = new ArrayList<>();
     }
 
 
@@ -78,7 +78,7 @@ public class HomePaginationAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
 
-        final DisplayPhotosPublishedItems result = movieResults.get(position); // Movie
+        final DisplayPhotosPublishedItems result = photoResults.get(position);
 
         switch (getItemViewType(position)) {
             case ITEM:
@@ -118,6 +118,8 @@ public class HomePaginationAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                     @Override
                     public void onClick(View v) {
                         Intent intent = new Intent(context, CommentsPhotosActivity.class);
+                        intent.putExtra("photo_id", result.getPhoto_id());
+                        intent.putExtra("ShowKeyBoard", true);
                         context.startActivity(intent);
 
                     }
@@ -126,6 +128,8 @@ public class HomePaginationAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                     @Override
                     public void onClick(View v) {
                         Intent intent = new Intent(context, CommentsPhotosActivity.class);
+                        intent.putExtra("photo_id", true);
+                        intent.putExtra("ShowKeyBoard", false);
                         context.startActivity(intent);
 
                     }
@@ -163,12 +167,12 @@ public class HomePaginationAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     @Override
     public int getItemCount() {
-        return movieResults == null ? 0 : movieResults.size();
+        return photoResults == null ? 0 : photoResults.size();
     }
 
     @Override
     public int getItemViewType(int position) {
-        return (position == movieResults.size() - 1 && isLoadingAdded) ? LOADING : ITEM;
+        return (position == photoResults.size() - 1 && isLoadingAdded) ? LOADING : ITEM;
     }
 
     @Override
@@ -181,20 +185,20 @@ public class HomePaginationAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     */
 
     public void add(DisplayPhotosPublishedItems r) {
-        movieResults.add(r);
-        notifyItemInserted(movieResults.size() - 1);
+        photoResults.add(r);
+        notifyItemInserted(photoResults.size() - 1);
     }
 
-    public void addAll(List<DisplayPhotosPublishedItems> moveResults) {
-        for (DisplayPhotosPublishedItems result : moveResults) {
+    public void addAll(List<DisplayPhotosPublishedItems> mResults) {
+        for (DisplayPhotosPublishedItems result : mResults) {
             add(result);
         }
     }
 
     public void remove(DisplayPhotosPublishedItems r) {
-        int position = movieResults.indexOf(r);
+        int position = photoResults.indexOf(r);
         if (position > -1) {
-            movieResults.remove(position);
+            photoResults.remove(position);
             notifyItemRemoved(position);
         }
     }
@@ -213,17 +217,17 @@ public class HomePaginationAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     public void removeLoadingFooter() {
         isLoadingAdded = false;
-        int position = movieResults.size() - 1;
+        int position = photoResults.size() - 1;
         DisplayPhotosPublishedItems result = getItem(position);
 
         if (result != null) {
-             movieResults.remove(position);
+            photoResults.remove(position);
              notifyItemRemoved(position);
             }
     }
 
     public DisplayPhotosPublishedItems getItem(int position) {
-        return movieResults.get(position);
+        return photoResults.get(position);
     }
 
 

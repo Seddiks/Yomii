@@ -2,6 +2,7 @@ package com.app.seddik.yomii.networks;
 
 import com.app.seddik.yomii.models.GuideItems;
 import com.app.seddik.yomii.models.ResponseItems;
+import com.app.seddik.yomii.models.ResponsePhotoComments;
 import com.app.seddik.yomii.models.ResponsePhotoItems;
 import com.app.seddik.yomii.models.TravelStoryItems;
 import com.app.seddik.yomii.models.UserItems;
@@ -133,14 +134,17 @@ public interface ApiService {
                                    @Part("user_id") int user_id);
 
     //Get details photos published by users and users details in Home Fragment
-    @FormUrlEncoded
-    @POST("home_photos_published.php")
-    Call<ResponsePhotoItems> getDetailsPhotosPublishedByUsers(@Field("action") int act);
-
     @GET("home_photos_published.php")
     Call<ResponsePhotoItems> getDetailsPhotos(@Query("action") int act,
                                               @Query("currentPage") int currentPage);
 
+    //Get comments per photo
+    @FormUrlEncoded
+    @POST("comments.php")
+    Call<ResponsePhotoComments> getCommentsPerPhoto(@Field("action") int act,
+                                                    @Field("user_id") int user_id,
+                                                    @Field("photo_id") int photo_id,
+                                                    @Field("currentPage") int currentPage);
 
 
 
