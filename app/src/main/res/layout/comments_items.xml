@@ -39,7 +39,8 @@
         android:layout_toRightOf="@+id/photo_profil"
         android:text="15 Juin 2018"
         android:textColor="@color/grey_500"
-        android:textSize="@dimen/standard_12sp" />
+        android:textSize="@dimen/standard_12sp"
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/delete"
@@ -50,7 +51,8 @@
         android:layout_toRightOf="@+id/date"
         android:text="Delete"
         android:textSize="@dimen/standard_12sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/publication"
@@ -60,7 +62,7 @@
         android:layout_marginRight="4dp"
         android:layout_marginTop="4dp"
         android:layout_toRightOf="@+id/photo_profil"
-        android:text="Publication"
+        android:text="Publication.."
         android:textColor="@color/grey_500"
         android:textSize="@dimen/standard_10sp"
         android:visibility="gone" />
@@ -74,6 +76,19 @@
         android:layout_marginTop="5dp"
         android:layout_toRightOf="@+id/publication"
         android:indeterminateTint="@color/grey_500"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/error"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/comment"
+        android:layout_marginRight="4dp"
+        android:layout_marginTop="4dp"
+        android:layout_toRightOf="@+id/photo_profil"
+        android:text="Error"
+        android:textColor="@color/red_500"
+        android:textSize="@dimen/standard_10sp"
         android:visibility="gone" />
 
 

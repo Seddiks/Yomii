@@ -52,7 +52,7 @@ public class GlideImageLoader {
         Glide.with(mImageView.getContext())
                 .load(url)
                 .transition(withCrossFade())
-                .apply(options.skipMemoryCache(true))
+                .apply(options.skipMemoryCache(false))
                 .listener(new RequestListener<Drawable>() {
                     @Override
                     public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {

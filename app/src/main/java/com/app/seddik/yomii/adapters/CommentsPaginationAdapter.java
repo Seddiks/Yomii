@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.app.seddik.yomii.R;
 import com.app.seddik.yomii.models.CommentItems;
+import com.app.seddik.yomii.utils.CommentUtils;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 
@@ -30,7 +31,6 @@ public class CommentsPaginationAdapter extends RecyclerView.Adapter<RecyclerView
     private Context context;
 
     private boolean isLoadingAdded = false;
-
 
     public CommentsPaginationAdapter(Context context) {
         this.context = context;
@@ -70,13 +70,39 @@ public class CommentsPaginationAdapter extends RecyclerView.Adapter<RecyclerView
         final CommentItems result = commentsResults.get(position);
         switch (getItemViewType(position)) {
             case ITEM:
-                final CommentsPaginationAdapter.ViewHolder viewHolder = (CommentsPaginationAdapter.ViewHolder) holder;
+                CommentsPaginationAdapter.ViewHolder viewHolder = (CommentsPaginationAdapter.ViewHolder) holder;
+                int Comment_ID = result.getComment_id();
+
                 Glide.with(context)
                         .load(R.drawable.bgmoi2)
                         .apply(RequestOptions.circleCropTransform())
                         .into(viewHolder.photo_profil);
                 viewHolder.tv_name.setText(result.getFull_name());
                 viewHolder.tv_comment.setText(result.getComment());
+
+                if (Comment_ID >= 0) { // case load all comments from server
+                    viewHolder.tv_date.setVisibility(View.VISIBLE);
+                    viewHolder.tv_delete.setVisibility(View.VISIBLE);
+                } else { // case insert new comment in server
+                    int USER_ID = result.getUser_id();
+                    int PHOTO_ID = result.getPhoto_id();
+                    String TheComment = result.getComment();
+                    new CommentUtils(viewHolder.tv_date, viewHolder.tv_delete, viewHolder.tv_publication, viewHolder.progressBar, viewHolder.tv_error)
+                            .insertComment(USER_ID, PHOTO_ID, TheComment, new CommentUtils.InsertCommentCallbacks() {
+                                @Override
+                                public void onInsertSuccess(int id) {
+                                    result.setComment_id(id);
+
+                                }
+
+                                @Override
+                                public void onInsertFailed(Throwable error) {
+
+                                }
+                            });
+
+
+                }
 
 
                 break;
@@ -114,6 +140,14 @@ public class CommentsPaginationAdapter extends RecyclerView.Adapter<RecyclerView
         commentsResults.add(r);
         notifyItemInserted(commentsResults.size() - 1);
     }
+
+    public void addInTop(CommentItems r) {
+        commentsResults.add(0, r);
+        notifyItemInserted(0);
+        notifyDataSetChanged();
+
+    }
+
 
     public void addAll(List<CommentItems> mResults) {
         for (CommentItems result : mResults) {
@@ -166,7 +200,7 @@ public class CommentsPaginationAdapter extends RecyclerView.Adapter<RecyclerView
      */
     protected class ViewHolder extends RecyclerView.ViewHolder {
         private ImageView photo_profil;
-        private TextView tv_name, tv_comment, tv_date, tv_delete, tv_publication;
+        private TextView tv_name, tv_comment, tv_date, tv_delete, tv_publication, tv_error;
         private ProgressBar progressBar;
 
         public ViewHolder(View itemView) {
@@ -178,6 +212,7 @@ public class CommentsPaginationAdapter extends RecyclerView.Adapter<RecyclerView
             tv_date = itemView.findViewById(R.id.date);
             tv_delete = itemView.findViewById(R.id.delete);
             tv_publication = itemView.findViewById(R.id.publication);
+            tv_error = itemView.findViewById(R.id.error);
             progressBar = itemView.findViewById(R.id.progress);
         }
     }

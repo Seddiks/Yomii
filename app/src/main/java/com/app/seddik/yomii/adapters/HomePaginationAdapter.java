@@ -19,7 +19,6 @@ import com.app.seddik.yomii.activities.FullScreenImageActivity;
 import com.app.seddik.yomii.activities.ProfileAbonneActivity;
 import com.app.seddik.yomii.models.DisplayPhotosPublishedItems;
 import com.app.seddik.yomii.utils.GlideImageLoader;
-import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 
@@ -91,7 +90,7 @@ public class HomePaginationAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 viewHolder.tv_comments.setText("94 comment");
 
                 String path_photo_published = URL_UPLOAD_PHOTOS+result.getPhoto_published();
-                Glide.with(context).load(path_photo_published).into(viewHolder.img_published);
+                // Glide.with(context).load(path_photo_published).into(viewHolder.img_published);
                 new GlideImageLoader(viewHolder.img_published,
                         viewHolder.progressBar).load(path_photo_published, requestOptions);
 

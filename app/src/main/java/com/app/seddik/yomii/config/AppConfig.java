@@ -1,7 +1,5 @@
 package com.app.seddik.yomii.config;
 
-import com.app.seddik.yomii.utils.SessionManager;
-
 /**
  * Created by Seddik on 06/11/2017.
  */
@@ -20,7 +18,6 @@ public class AppConfig {
     public static String URL_UPLOAD_DATA_HOME = "http://192.168.1.8:81/Yomii/home/";
     //Notification counter
     public static int NOTIFICATION_COUNTER = 0;
-    private SessionManager session;
 
 
 

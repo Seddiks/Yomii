@@ -13,6 +13,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -21,6 +22,7 @@ import android.widget.ProgressBar;
 
 import com.app.seddik.yomii.R;
 import com.app.seddik.yomii.adapters.CommentsPaginationAdapter;
+import com.app.seddik.yomii.models.CommentItems;
 import com.app.seddik.yomii.models.ResponsePhotoComments;
 import com.app.seddik.yomii.networks.ApiService;
 import com.app.seddik.yomii.utils.PaginationScrollListener;
@@ -39,13 +41,17 @@ import static com.app.seddik.yomii.config.AppConfig.URL_UPLOAD_DATA_HOME;
 public class CommentsPhotosActivity extends AppCompatActivity {
     private static final int PAGE_START = 1;
     CommentsPaginationAdapter adapterPagination;
+    Retrofit retrofit = new Retrofit.Builder().
+            baseUrl(URL_UPLOAD_DATA_HOME).
+            addConverterFactory(GsonConverterFactory.create()).
+            build();
+    ApiService API = retrofit.create(ApiService.class);
     private int user_id, photo_id;
     private SessionManager session;
     private boolean isLoading = false;
     private boolean isLastPage = false;
     private int TOTAL_PAGES;
     private int currentPage = PAGE_START;
-
     private Toolbar toolbar;
     private RecyclerView recyclerView;
     private ProgressBar progressBar;
@@ -123,23 +129,17 @@ public class CommentsPhotosActivity extends AppCompatActivity {
                 .apply(RequestOptions.circleCropTransform())
                 .into(photo_profil);
 
+
         showKeyboard();
-        changeColorSendButton();
+        handleSendButton();
 
 
     }
 
 
     private void loadFirstPage() {
-        Log.d("Comment", "loadFirstPage: ");
-        Retrofit retrofit = new Retrofit.Builder().
-                baseUrl(URL_UPLOAD_DATA_HOME).
-                addConverterFactory(GsonConverterFactory.create()).
-                build();
-        ApiService API = retrofit.create(ApiService.class);
+
         Call<ResponsePhotoComments> api = API.getCommentsPerPhoto(0, user_id, photo_id, currentPage);
-
-
         api.enqueue(new Callback<ResponsePhotoComments>() {
             @Override
             public void onResponse(Call<ResponsePhotoComments> call, Response<ResponsePhotoComments> response) {
@@ -175,11 +175,6 @@ public class CommentsPhotosActivity extends AppCompatActivity {
 
     private void loadNextPage() {
         Log.d("Comment", "loadNextPage: " + currentPage);
-        Retrofit retrofit = new Retrofit.Builder().
-                baseUrl(URL_UPLOAD_DATA_HOME).
-                addConverterFactory(GsonConverterFactory.create()).
-                build();
-        ApiService API = retrofit.create(ApiService.class);
         Call<ResponsePhotoComments> api = API.getCommentsPerPhoto(0, user_id, photo_id, currentPage);
 
         api.enqueue(new Callback<ResponsePhotoComments>() {
@@ -216,6 +211,71 @@ public class CommentsPhotosActivity extends AppCompatActivity {
     }
 
 
+    private void handleSendButton() {
+
+        comment.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(final CharSequence charSequence, int i, int i1, int i2) {
+                int len = charSequence.toString().trim().length();
+                if (len > 0) {
+
+                    comment.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_send_green_400_36dp, 0);
+                    comment.setOnTouchListener(new View.OnTouchListener() {
+                        @Override
+                        public boolean onTouch(View v, MotionEvent event) {
+                            //    final int DRAWABLE_LEFT = 0;
+                            //     final int DRAWABLE_TOP = 1;
+                            final int DRAWABLE_RIGHT = 2;
+                            //      final int DRAWABLE_BOTTOM = 3;
+
+                            if (event.getAction() == MotionEvent.ACTION_UP) {
+                                if (event.getRawX() >= (comment.getRight() - comment.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
+                                    comment.setText("");
+                                    CommentItems item = new CommentItems();
+                                    item.setComment_id(-1);
+                                    item.setUser_id(user_id);
+                                    item.setPhoto_id(photo_id);
+                                    item.setFull_name("Fredj Moh");
+                                    item.setComment(charSequence.toString());
+
+                                    recyclerView.smoothScrollToPosition(0);
+                                    adapterPagination.addInTop(item);
+                                    adapterPagination.notifyDataSetChanged();
+                                    //if (currentPage < TOTAL_PAGES) adapterPagination.addLoadingFooter();
+                                    // else
+                                    isLastPage = true;
+
+                                    return true;
+                                }
+                            }
+                            return false;
+                        }
+                    });
+
+
+                } else {
+                    comment.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_send_green_100_36dp, 0);
+                    comment.setOnTouchListener(null);
+
+
+                }
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
+    }
+
+
     private void showKeyboard() {
         mIntent = getIntent();
         boolean isShowKeyboard = mIntent.getBooleanExtra("ShowKeyBoard", false);
@@ -228,34 +288,6 @@ public class CommentsPhotosActivity extends AppCompatActivity {
                 }
             });
         }
-
-    }
-
-    private void changeColorSendButton() {
-
-        comment.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if (charSequence.toString().length() > 0) {
-                    comment.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_send_green_400_36dp, 0);
-
-                } else {
-                    comment.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_send_green_100_36dp, 0);
-
-                }
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-
-            }
-        });
 
     }
 
