@@ -34,25 +34,27 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/comment"
-        android:layout_marginRight="@dimen/standard_18"
         android:layout_marginTop="4dp"
         android:layout_toRightOf="@+id/photo_profil"
         android:text="15 Juin 2018"
         android:textColor="@color/grey_500"
         android:textSize="@dimen/standard_12sp"
-        android:visibility="gone" />
+        android:visibility="visible" />
 
     <TextView
         android:id="@+id/delete"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/comment"
-        android:layout_marginTop="4dp"
         android:layout_toRightOf="@+id/date"
+        android:paddingBottom="4dp"
+        android:paddingLeft="@dimen/standard_18"
+        android:paddingRight="60dp"
+        android:paddingTop="4dp"
         android:text="Delete"
         android:textSize="@dimen/standard_12sp"
         android:textStyle="bold"
-        android:visibility="gone" />
+        android:visibility="visible" />
 
     <TextView
         android:id="@+id/publication"

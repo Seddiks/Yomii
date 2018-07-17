@@ -146,13 +146,21 @@ public interface ApiService {
                                                     @Field("photo_id") int photo_id,
                                                     @Field("currentPage") int currentPage);
 
-    //Get ID comment
+    //Insert comment and Get ID comment
     @FormUrlEncoded
     @POST("comments.php")
     Call<ResponsePhotoComments> insertComment(@Field("action") int act,
                                               @Field("user_id") int user_id,
                                               @Field("photo_id") int photo_id,
                                               @Field("comment") String comment);
+
+    //Delete comment
+    @FormUrlEncoded
+    @POST("comments.php")
+    Call<ResponseItems> deleteComment(@Field("action") int act,
+                                      @Field("user_id") int user_id,
+                                      @Field("photo_id") int photo_id,
+                                      @Field("comment_id") int comment_id);
 
 
 

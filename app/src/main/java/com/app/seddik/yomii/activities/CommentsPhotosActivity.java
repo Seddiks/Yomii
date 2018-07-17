@@ -86,7 +86,7 @@ public class CommentsPhotosActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
 
-        adapterPagination = new CommentsPaginationAdapter(getApplicationContext());
+        adapterPagination = new CommentsPaginationAdapter(this);
         adapterPagination.setHasStableIds(true);
         recyclerView.setAdapter(adapterPagination);
 

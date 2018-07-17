@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.app.seddik.yomii.R;
 import com.app.seddik.yomii.models.CommentItems;
@@ -66,7 +67,7 @@ public class CommentsPaginationAdapter extends RecyclerView.Adapter<RecyclerView
 
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, final int position) {
         final CommentItems result = commentsResults.get(position);
         switch (getItemViewType(position)) {
             case ITEM:
@@ -88,7 +89,7 @@ public class CommentsPaginationAdapter extends RecyclerView.Adapter<RecyclerView
                     int PHOTO_ID = result.getPhoto_id();
                     String TheComment = result.getComment();
                     new CommentUtils(viewHolder.tv_date, viewHolder.tv_delete, viewHolder.tv_publication, viewHolder.progressBar, viewHolder.tv_error)
-                            .insertComment(USER_ID, PHOTO_ID, TheComment, new CommentUtils.InsertCommentCallbacks() {
+                            .insertComment(result, new CommentUtils.InsertCommentCallbacks() {
                                 @Override
                                 public void onInsertSuccess(int id) {
                                     result.setComment_id(id);
@@ -103,6 +104,26 @@ public class CommentsPaginationAdapter extends RecyclerView.Adapter<RecyclerView
 
 
                 }
+                // Handle click in DELETE for delete comment
+                viewHolder.tv_delete.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Toast.makeText(context, "id comment: " + result.getComment_id(), Toast.LENGTH_SHORT).show();
+                        new CommentUtils().deleteComment(context, result, new CommentUtils.DeleteCommentCallbacks() {
+                            @Override
+                            public void onConfirm() {
+                                removeItem(position);
+                            }
+
+                            @Override
+                            public void onCancel() {
+
+                            }
+                        });
+
+                    }
+                });
+
 
 
                 break;
@@ -161,6 +182,13 @@ public class CommentsPaginationAdapter extends RecyclerView.Adapter<RecyclerView
             commentsResults.remove(position);
             notifyItemRemoved(position);
         }
+    }
+
+    public void removeItem(int position) {
+        commentsResults.remove(position);
+        notifyItemRemoved(position);
+        notifyItemRangeChanged(position, commentsResults.size());
+
     }
 
 
