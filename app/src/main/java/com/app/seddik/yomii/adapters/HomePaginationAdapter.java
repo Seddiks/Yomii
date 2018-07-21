@@ -46,6 +46,7 @@ public class HomePaginationAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     public HomePaginationAdapter(Context context) {
         this.context = context;
         photoResults = new ArrayList<>();
+
     }
 
 
@@ -57,10 +58,12 @@ public class HomePaginationAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         switch (viewType) {
             case ITEM:
                 viewHolder = getViewHolder(parent, inflater);
+
                 break;
             case LOADING:
                 View v2 = inflater.inflate(R.layout.item_progress, parent, false);
                 viewHolder = new LoadingVH(v2);
+
                 break;
         }
         return viewHolder;
@@ -86,8 +89,10 @@ public class HomePaginationAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                         .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC);
                 viewHolder.tv_name.setText(result.getFull_name());
                 viewHolder.tv_date.setText("28 Juin 2018");
-                viewHolder.tv_likes.setText("1.3 K likes");
-                viewHolder.tv_comments.setText("94 comment");
+                if (result.getNumber_likes() > 0)
+                    viewHolder.tv_likes.setText(result.getNumber_likes() + " like");
+                if (result.getNumber_comments() > 0)
+                    viewHolder.tv_comments.setText(result.getNumber_comments() + " comment");
 
                 String path_photo_published = URL_UPLOAD_PHOTOS+result.getPhoto_published();
                 // Glide.with(context).load(path_photo_published).into(viewHolder.img_published);
@@ -116,8 +121,10 @@ public class HomePaginationAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 viewHolder.img_comment.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+
                         Intent intent = new Intent(context, CommentsPhotosActivity.class);
                         intent.putExtra("photo_id", result.getPhoto_id());
+                        intent.putExtra("position_photo", position);
                         intent.putExtra("ShowKeyBoard", true);
                         context.startActivity(intent);
 
@@ -126,8 +133,10 @@ public class HomePaginationAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 viewHolder.tv_comments.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+
                         Intent intent = new Intent(context, CommentsPhotosActivity.class);
                         intent.putExtra("photo_id", result.getPhoto_id());
+                        intent.putExtra("position_photo", position);
                         intent.putExtra("ShowKeyBoard", false);
                         context.startActivity(intent);
 
@@ -202,6 +211,11 @@ public class HomePaginationAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         }
     }
 
+    public void updateItem(int position, int number) {
+        photoResults.get(position).setNumber_comments(number);
+        notifyItemChanged(position);
+
+    }
 
 
     public boolean isEmpty() {
@@ -228,6 +242,7 @@ public class HomePaginationAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     public DisplayPhotosPublishedItems getItem(int position) {
         return photoResults.get(position);
     }
+
 
 
 

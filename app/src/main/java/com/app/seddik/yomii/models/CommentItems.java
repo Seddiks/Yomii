@@ -11,6 +11,7 @@ public class CommentItems {
     private String photo_profil_path;
     private String full_name;
     private String comment;
+    private String post_type;
     private String created_at;
 
     public int getComment_id() {
@@ -59,6 +60,14 @@ public class CommentItems {
 
     public void setComment(String comment) {
         this.comment = comment;
+    }
+
+    public String getPost_type() {
+        return post_type;
+    }
+
+    public void setPost_type(String post_type) {
+        this.post_type = post_type;
     }
 
     public String getCreated_at() {

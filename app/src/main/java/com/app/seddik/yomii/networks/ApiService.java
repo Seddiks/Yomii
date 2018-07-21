@@ -2,8 +2,8 @@ package com.app.seddik.yomii.networks;
 
 import com.app.seddik.yomii.models.GuideItems;
 import com.app.seddik.yomii.models.ResponseItems;
-import com.app.seddik.yomii.models.ResponsePhotoComments;
 import com.app.seddik.yomii.models.ResponsePhotoItems;
+import com.app.seddik.yomii.models.ResponsePostComments;
 import com.app.seddik.yomii.models.TravelStoryItems;
 import com.app.seddik.yomii.models.UserItems;
 
@@ -141,18 +141,18 @@ public interface ApiService {
     //Get comments per photo
     @FormUrlEncoded
     @POST("comments.php")
-    Call<ResponsePhotoComments> getCommentsPerPhoto(@Field("action") int act,
-                                                    @Field("user_id") int user_id,
-                                                    @Field("photo_id") int photo_id,
-                                                    @Field("currentPage") int currentPage);
+    Call<ResponsePostComments> getCommentsPerPhoto(@Field("action") int act,
+                                                   @Field("user_id") int user_id,
+                                                   @Field("photo_id") int photo_id,
+                                                   @Field("currentPage") int currentPage);
 
     //Insert comment and Get ID comment
     @FormUrlEncoded
     @POST("comments.php")
-    Call<ResponsePhotoComments> insertComment(@Field("action") int act,
-                                              @Field("user_id") int user_id,
-                                              @Field("photo_id") int photo_id,
-                                              @Field("comment") String comment);
+    Call<ResponsePostComments> insertComment(@Field("action") int act,
+                                             @Field("user_id") int user_id,
+                                             @Field("photo_id") int photo_id,
+                                             @Field("comment") String comment);
 
     //Delete comment
     @FormUrlEncoded

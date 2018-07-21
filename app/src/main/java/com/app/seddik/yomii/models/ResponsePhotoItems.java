@@ -10,6 +10,7 @@ public class ResponsePhotoItems {
     private boolean success;
     private String message;
     private int number_pages;
+    private ArrayList<DisplayPhotosPublishedItems> result;
     private ArrayList<Paths> data;
 
 
@@ -29,6 +30,10 @@ public class ResponsePhotoItems {
 
     public String getMessage() {
         return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 
     public boolean getSuccess() {
@@ -51,6 +56,22 @@ public class ResponsePhotoItems {
         this.number_pages = number_pages;
     }
 
+    public boolean isSuccess() {
+        return success;
+    }
+
+    public void setSuccess(boolean success) {
+        this.success = success;
+    }
+
+    public ArrayList<DisplayPhotosPublishedItems> getResult() {
+        return result;
+    }
+
+    public void setResult(ArrayList<DisplayPhotosPublishedItems> result) {
+        this.result = result;
+    }
+
     public class Paths  {
         private int photo_id;
         private String photo_path;
@@ -60,6 +81,8 @@ public class ResponsePhotoItems {
         private int user_id;
         private String photo_profil_path;
         private String full_name;
+        private int number_comments;
+        private int number_likes;
 
 
         public int getPhoto_id() {
@@ -117,5 +140,24 @@ public class ResponsePhotoItems {
         public void setFull_name(String full_name) {
             this.full_name = full_name;
         }
+
+        public int getNumber_comments() {
+            return number_comments;
+        }
+
+        public void setNumber_comments(int number_comments) {
+            this.number_comments = number_comments;
+        }
+
+        public int getNumber_likes() {
+            return number_likes;
+        }
+
+        public void setNumber_likes(int number_likes) {
+            this.number_likes = number_likes;
+        }
+
     }
+
+
 }

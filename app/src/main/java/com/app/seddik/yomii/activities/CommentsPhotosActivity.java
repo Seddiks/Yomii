@@ -23,7 +23,7 @@ import android.widget.ProgressBar;
 import com.app.seddik.yomii.R;
 import com.app.seddik.yomii.adapters.CommentsPaginationAdapter;
 import com.app.seddik.yomii.models.CommentItems;
-import com.app.seddik.yomii.models.ResponsePhotoComments;
+import com.app.seddik.yomii.models.ResponsePostComments;
 import com.app.seddik.yomii.networks.ApiService;
 import com.app.seddik.yomii.utils.PaginationScrollListener;
 import com.app.seddik.yomii.utils.SessionManager;
@@ -39,6 +39,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import static com.app.seddik.yomii.config.AppConfig.URL_UPLOAD_DATA_HOME;
 
 public class CommentsPhotosActivity extends AppCompatActivity {
+
     private static final int PAGE_START = 1;
     CommentsPaginationAdapter adapterPagination;
     Retrofit retrofit = new Retrofit.Builder().
@@ -58,6 +59,7 @@ public class CommentsPhotosActivity extends AppCompatActivity {
     private ImageView photo_profil;
     private EditText comment;
     private Intent mIntent;
+    private int postion_photo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +69,7 @@ public class CommentsPhotosActivity extends AppCompatActivity {
         user_id = session.getUSER_ID();
 
         photo_id = getIntent().getIntExtra("photo_id", -1);
+        postion_photo = getIntent().getIntExtra("position_photo", 0);
 
         toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("Comments");
@@ -86,7 +89,7 @@ public class CommentsPhotosActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
 
-        adapterPagination = new CommentsPaginationAdapter(this);
+        adapterPagination = new CommentsPaginationAdapter(this, postion_photo);
         adapterPagination.setHasStableIds(true);
         recyclerView.setAdapter(adapterPagination);
 
@@ -139,12 +142,12 @@ public class CommentsPhotosActivity extends AppCompatActivity {
 
     private void loadFirstPage() {
 
-        Call<ResponsePhotoComments> api = API.getCommentsPerPhoto(0, user_id, photo_id, currentPage);
-        api.enqueue(new Callback<ResponsePhotoComments>() {
+        Call<ResponsePostComments> api = API.getCommentsPerPhoto(0, user_id, photo_id, currentPage);
+        api.enqueue(new Callback<ResponsePostComments>() {
             @Override
-            public void onResponse(Call<ResponsePhotoComments> call, Response<ResponsePhotoComments> response) {
+            public void onResponse(Call<ResponsePostComments> call, Response<ResponsePostComments> response) {
                 // Got data. Send it to adapter
-                ResponsePhotoComments results = response.body();
+                ResponsePostComments results = response.body();
                 boolean success = results.isSuccess();
                 int numberItems = results.getNumber_pages();
                 if (success) {
@@ -163,7 +166,7 @@ public class CommentsPhotosActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<ResponsePhotoComments> call, Throwable t) {
+            public void onFailure(Call<ResponsePostComments> call, Throwable t) {
                 t.printStackTrace();
                 Log.d("Home", "Error2" + t.toString());
                 progressBar.setVisibility(View.GONE);
@@ -175,16 +178,16 @@ public class CommentsPhotosActivity extends AppCompatActivity {
 
     private void loadNextPage() {
         Log.d("Comment", "loadNextPage: " + currentPage);
-        Call<ResponsePhotoComments> api = API.getCommentsPerPhoto(0, user_id, photo_id, currentPage);
+        Call<ResponsePostComments> api = API.getCommentsPerPhoto(0, user_id, photo_id, currentPage);
 
-        api.enqueue(new Callback<ResponsePhotoComments>() {
+        api.enqueue(new Callback<ResponsePostComments>() {
             @Override
-            public void onResponse(Call<ResponsePhotoComments> call, Response<ResponsePhotoComments> response) {
+            public void onResponse(Call<ResponsePostComments> call, Response<ResponsePostComments> response) {
 
                 adapterPagination.removeLoadingFooter();
                 isLoading = false;
 
-                ResponsePhotoComments results = response.body();
+                ResponsePostComments results = response.body();
                 boolean success = results.isSuccess();
                 if (success) {
                     progressBar.setVisibility(View.GONE);
@@ -201,7 +204,7 @@ public class CommentsPhotosActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<ResponsePhotoComments> call, Throwable t) {
+            public void onFailure(Call<ResponsePostComments> call, Throwable t) {
                 t.printStackTrace();
                 progressBar.setVisibility(View.GONE);
 
@@ -300,5 +303,6 @@ public class CommentsPhotosActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
 
 }

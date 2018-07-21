@@ -10,26 +10,19 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.app.seddik.yomii.R;
+import com.app.seddik.yomii.adapters.GalleryAlbumsAdapter;
+import com.app.seddik.yomii.models.GalleryAlbumsItems;
+import com.app.seddik.yomii.models.ResponsePhotoItems;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 
-import com.app.seddik.yomii.adapters.GalleryAlbumsAdapter;
-import com.app.seddik.yomii.models.GalleryAlbumsItems;
-import com.app.seddik.yomii.models.ResponsePhotoItems;
-
 /**
  * A simple {@link Fragment} subclass.
  */
 public class AlbumsFragment extends Fragment {
-    GridLayoutManager mGridLayoutManager;
-    GalleryAlbumsAdapter adapter;
-    RecyclerView recyclerView;
-    EventBus bus = EventBus.getDefault();
-    static ResponsePhotoItems itm;
-
     private final Integer image_ids[] = {
             R.drawable.bgvenise,
             R.drawable.bg_paris,
@@ -40,7 +33,6 @@ public class AlbumsFragment extends Fragment {
             R.drawable.bg_barca,
             R.drawable.bg_ny,
     };
-
     private final String title[] = {
             "Venise",
             "Paris",
@@ -51,6 +43,10 @@ public class AlbumsFragment extends Fragment {
             "Barçelone",
             "New York",
     };
+    private GridLayoutManager mGridLayoutManager;
+    private GalleryAlbumsAdapter adapter;
+    private RecyclerView recyclerView;
+    private EventBus bus = EventBus.getDefault();
 
 
 

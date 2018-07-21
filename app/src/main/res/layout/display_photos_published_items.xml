@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:background="#FFFFFF"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginBottom="12dp"
+    android:background="#FFFFFF"
     android:elevation="4dp"
-    android:layout_marginBottom="12dp">
+    android:orientation="vertical">
 
 
     <de.hdodenhof.circleimageview.CircleImageView
@@ -23,20 +23,20 @@
          android:id="@+id/profile_name"
          android:layout_width="wrap_content"
          android:layout_height="wrap_content"
-         android:layout_toRightOf="@+id/profile_image"
-         android:layout_marginTop="8dp"
          android:layout_marginBottom="8dp"
+         android:layout_marginTop="8dp"
+         android:layout_toRightOf="@+id/profile_image"
+         android:text="Seddik"
          android:textColor="#000"
-         android:textStyle="bold"
-         android:text="Seddik"/>
+         android:textStyle="bold" />
      <TextView
          android:id="@+id/date"
          android:layout_width="wrap_content"
          android:layout_height="wrap_content"
-         android:layout_toRightOf="@+id/profile_image"
          android:layout_below="@+id/profile_name"
-         android:textSize="12sp"
-         android:text="24 Jan 2017"/>
+         android:layout_toRightOf="@+id/profile_image"
+         android:text="24 Jan 2017"
+         android:textSize="12sp" />
 
     <ImageView
         android:id="@+id/more_image"
@@ -52,14 +52,14 @@
         android:id="@+id/following"
         android:layout_width="wrap_content"
         android:layout_height="30dp"
+        android:layout_margin="12dp"
         android:layout_toLeftOf="@+id/more_image"
         android:background="@drawable/ripple_blue_500"
-        android:layout_margin="12dp"
-        android:textColor="@color/blue_500"
+        android:padding="2dp"
         android:text="Follow"
+        android:textColor="@color/blue_500"
         android:textSize="10sp"
         android:textStyle="bold"
-        android:padding="2dp"
         />
 
 <RelativeLayout
@@ -88,51 +88,53 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:layout_below="@+id/rl_photo"
+        android:orientation="horizontal"
         >
     <com.varunest.sparkbutton.SparkButton
         android:id="@+id/reaction"
-        android:adjustViewBounds="true"
         android:layout_width="24dp"
         android:layout_height="24dp"
-        app:sparkbutton_iconSize="24dp"
-        app:sparkbutton_activeImage="@drawable/ic_like"
-        app:sparkbutton_inActiveImage="@drawable/ic_unlike"
         android:layout_margin="12dp"
+        android:adjustViewBounds="true"
+        app:sparkbutton_activeImage="@drawable/ic_like"
+        app:sparkbutton_iconSize="24dp"
+        app:sparkbutton_inActiveImage="@drawable/ic_unlike"
         />
     <ImageView
         android:id="@+id/comments"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_comment"
-        android:layout_marginBottom="12dp"
-        android:layout_marginTop="12dp"
-        android:layout_marginLeft="2dp"
         android:layout_toRightOf="@+id/reaction"
+        android:paddingBottom="@dimen/standard_12"
+        android:paddingLeft="2dp"
+        android:paddingRight="70dp"
+        android:paddingTop="@dimen/standard_12"
+        android:src="@drawable/ic_comment"
         />
     <TextView
         android:id="@+id/numberReactions"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/reaction"
-        android:layout_marginRight="12dp"
-        android:layout_marginLeft="12dp"
-        android:layout_marginBottom="16dp"
+        android:paddingBottom="16dp"
+        android:paddingLeft="@dimen/standard_12"
+        android:paddingRight="@dimen/standard_12"
+        android:text=" like"
         android:textColor="@color/black"
         android:textSize="12sp"
-        android:text="23 Likes"
         />
         <TextView
             android:id="@+id/numberComments"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/numberReactions"
             android:layout_below="@+id/reaction"
-            android:layout_marginBottom="16dp"
+            android:layout_toRightOf="@+id/numberReactions"
+            android:paddingBottom="16dp"
+            android:paddingRight="60dp"
+            android:text=" comment"
             android:textColor="@color/black"
             android:textSize="12sp"
-            android:text="543 Comment"
             />
 
     <ImageView
@@ -140,9 +142,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_marginRight="12dp"
-        android:layout_marginLeft="8dp"
         android:layout_marginBottom="12dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="12dp"
         android:layout_marginTop="12dp"
         android:src="@drawable/ic_eye"
         />
@@ -150,12 +152,12 @@
         android:id="@+id/numberVue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toLeftOf="@+id/eye"
         android:layout_marginBottom="12dp"
         android:layout_marginTop="15dp"
+        android:layout_toLeftOf="@+id/eye"
+        android:text="23"
         android:textColor="@color/grey_500"
         android:textSize="10sp"
-        android:text="23"
         />
     </RelativeLayout>
 

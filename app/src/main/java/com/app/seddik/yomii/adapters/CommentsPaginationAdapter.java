@@ -30,11 +30,13 @@ public class CommentsPaginationAdapter extends RecyclerView.Adapter<RecyclerView
 
     private ArrayList<CommentItems> commentsResults;
     private Context context;
+    private int position_photo;
 
     private boolean isLoadingAdded = false;
 
-    public CommentsPaginationAdapter(Context context) {
+    public CommentsPaginationAdapter(Context context, int position_photo) {
         this.context = context;
+        this.position_photo = position_photo;
         commentsResults = new ArrayList<>();
     }
 
@@ -85,14 +87,11 @@ public class CommentsPaginationAdapter extends RecyclerView.Adapter<RecyclerView
                     viewHolder.tv_date.setVisibility(View.VISIBLE);
                     viewHolder.tv_delete.setVisibility(View.VISIBLE);
                 } else { // case insert new comment in server
-                    int USER_ID = result.getUser_id();
-                    int PHOTO_ID = result.getPhoto_id();
-                    String TheComment = result.getComment();
                     new CommentUtils(viewHolder.tv_date, viewHolder.tv_delete, viewHolder.tv_publication, viewHolder.progressBar, viewHolder.tv_error)
-                            .insertComment(result, new CommentUtils.InsertCommentCallbacks() {
+                            .insertComment(context, result, position_photo, new CommentUtils.InsertCommentCallbacks() {
                                 @Override
-                                public void onInsertSuccess(int id) {
-                                    result.setComment_id(id);
+                                public void onInsertSuccess(int comment_id, int number_comments) {
+                                    result.setComment_id(comment_id);
 
                                 }
 
@@ -109,7 +108,7 @@ public class CommentsPaginationAdapter extends RecyclerView.Adapter<RecyclerView
                     @Override
                     public void onClick(View view) {
                         Toast.makeText(context, "id comment: " + result.getComment_id(), Toast.LENGTH_SHORT).show();
-                        new CommentUtils().deleteComment(context, result, new CommentUtils.DeleteCommentCallbacks() {
+                        new CommentUtils().deleteComment(context, result, position_photo, new CommentUtils.DeleteCommentCallbacks() {
                             @Override
                             public void onConfirm() {
                                 removeItem(position);

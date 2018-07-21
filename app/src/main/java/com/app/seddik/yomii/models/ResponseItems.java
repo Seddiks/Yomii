@@ -7,6 +7,7 @@ package com.app.seddik.yomii.models;
 public class ResponseItems {
     private boolean success;
     private String message;
+    private int number_comments_per_post;
 
     public ResponseItems(boolean success, String message) {
         this.success = success;
@@ -21,4 +22,11 @@ public class ResponseItems {
         return success;
     }
 
+    public int getNumber_comments_per_post() {
+        return number_comments_per_post;
+    }
+
+    public void setNumber_comments_per_post(int number_comments_per_post) {
+        this.number_comments_per_post = number_comments_per_post;
+    }
 }

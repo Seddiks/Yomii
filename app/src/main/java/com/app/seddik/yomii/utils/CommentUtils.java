@@ -1,13 +1,16 @@
 package com.app.seddik.yomii.utils;
 
 import android.content.Context;
+import android.content.Intent;
+import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.app.seddik.yomii.models.CommentItems;
 import com.app.seddik.yomii.models.ResponseItems;
-import com.app.seddik.yomii.models.ResponsePhotoComments;
+import com.app.seddik.yomii.models.ResponsePostComments;
 import com.app.seddik.yomii.networks.ApiService;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
@@ -24,11 +27,11 @@ import static com.app.seddik.yomii.config.AppConfig.URL_UPLOAD_DATA_HOME;
  */
 
 public class CommentUtils {
-    Retrofit retrofit = new Retrofit.Builder().
+    private Retrofit retrofit = new Retrofit.Builder().
             baseUrl(URL_UPLOAD_DATA_HOME).
             addConverterFactory(GsonConverterFactory.create()).
             build();
-    ApiService API = retrofit.create(ApiService.class);
+    private ApiService API = retrofit.create(ApiService.class);
     private int comment_id;
     private TextView mDate;
     private TextView mDelete;
@@ -48,7 +51,7 @@ public class CommentUtils {
 
     }
 
-    public void insertComment(CommentItems commentItems, final InsertCommentCallbacks insertCommentCallbacks) {
+    public void insertComment(final Context context, CommentItems commentItems, final int position, final InsertCommentCallbacks insertCommentCallbacks) {
         mProgressBar.setVisibility(View.VISIBLE);
         mPublication.setVisibility(View.VISIBLE);
         mDate.setVisibility(View.GONE);
@@ -58,16 +61,20 @@ public class CommentUtils {
         int user_id = commentItems.getUser_id();
         int photo_id = commentItems.getPhoto_id();
         String commentText = commentItems.getComment();
-        Call<ResponsePhotoComments> api = API.insertComment(1, user_id, photo_id, commentText);
-        api.enqueue(new Callback<ResponsePhotoComments>() {
+        Call<ResponsePostComments> api = API.insertComment(1, user_id, photo_id, commentText);
+        api.enqueue(new Callback<ResponsePostComments>() {
             @Override
-            public void onResponse(Call<ResponsePhotoComments> call, Response<ResponsePhotoComments> response) {
-                ResponsePhotoComments results = response.body();
+            public void onResponse(Call<ResponsePostComments> call, Response<ResponsePostComments> response) {
+                ResponsePostComments results = response.body();
                 boolean success = results.isSuccess();
                 if (success) {
+                    int number_comments_per_post = results.getNumber_comments_per_post();
+                    sendNumberComments(context, number_comments_per_post, position);
                     comment_id = results.getData().get(0).getComment_id();
+
                     if (insertCommentCallbacks != null)
-                        insertCommentCallbacks.onInsertSuccess(comment_id);
+                        insertCommentCallbacks.onInsertSuccess(comment_id, number_comments_per_post);
+
                     mProgressBar.setVisibility(View.GONE);
                     mPublication.setVisibility(View.GONE);
                     mDate.setVisibility(View.VISIBLE);
@@ -83,7 +90,7 @@ public class CommentUtils {
             }
 
             @Override
-            public void onFailure(Call<ResponsePhotoComments> call, Throwable t) {
+            public void onFailure(Call<ResponsePostComments> call, Throwable t) {
                 t.printStackTrace();
                 if (insertCommentCallbacks != null) insertCommentCallbacks.onInsertFailed(t);
 
@@ -95,7 +102,7 @@ public class CommentUtils {
         });
     }
 
-    public void deleteComment(Context context, final CommentItems commentItems, final DeleteCommentCallbacks deleteCommentCallbacks) {
+    public void deleteComment(final Context context, final CommentItems commentItems, final int position, final DeleteCommentCallbacks deleteCommentCallbacks) {
         new SweetAlertDialog(context, SweetAlertDialog.WARNING_TYPE)
                 .setTitleText("Delete Comment")
                 .setContentText("Do you want delete your comment?")
@@ -107,7 +114,7 @@ public class CommentUtils {
                     public void onClick(SweetAlertDialog sDialog) {
                         sDialog.cancel();
                         deleteCommentCallbacks.onConfirm();
-                        deleteComment(commentItems);
+                        deleteComment(context, position, commentItems);
                     }
                 })
                 .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
@@ -122,7 +129,7 @@ public class CommentUtils {
 
     }
 
-    private void deleteComment(CommentItems commentItems) {
+    private void deleteComment(final Context context, final int position, CommentItems commentItems) {
         int comment_id = commentItems.getComment_id();
         int user_id = commentItems.getUser_id();
         int photo_id = commentItems.getPhoto_id();
@@ -133,6 +140,8 @@ public class CommentUtils {
                 ResponseItems results = response.body();
                 boolean success = results.getSuccess();
                 if (success) {
+                    int number_comments_per_post = results.getNumber_comments_per_post();
+                    sendNumberComments(context, number_comments_per_post, position);
 
 
                 } else {
@@ -148,8 +157,19 @@ public class CommentUtils {
         });
     }
 
+    // Send an Intent with an action named "custom-event-name". The Intent sent should
+// be received by the ReceiverActivity.
+    private void sendNumberComments(Context context, int numberComments, int position) {
+        Log.d("sender", "Broadcasting message");
+        Intent intent = new Intent("custom-event-name");
+        // You can also include some extra data.
+        intent.putExtra("NumberComments", numberComments);
+        intent.putExtra("Position", position);
+        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+    }
+
     public interface InsertCommentCallbacks {
-        void onInsertSuccess(int id);
+        void onInsertSuccess(int comment_id, int number_comment);
 
         void onInsertFailed(Throwable error);
     }
@@ -159,6 +179,5 @@ public class CommentUtils {
 
         void onCancel();
     }
-
 
 }

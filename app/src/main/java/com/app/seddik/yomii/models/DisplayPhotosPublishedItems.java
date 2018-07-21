@@ -6,10 +6,13 @@ package com.app.seddik.yomii.models;
 
 public class DisplayPhotosPublishedItems {
     private int photo_id;
+    private int user_id;
     private String photo_profil;
     private String photo_published;
     private String full_name;
     private String date;
+    private int number_comments;
+    private int number_likes;
 
     public int getPhoto_id() {
         return photo_id;
@@ -49,5 +52,29 @@ public class DisplayPhotosPublishedItems {
 
     public void setDate(String date) {
         this.date = date;
+    }
+
+    public int getUser_id() {
+        return user_id;
+    }
+
+    public void setUser_id(int user_id) {
+        this.user_id = user_id;
+    }
+
+    public int getNumber_comments() {
+        return number_comments;
+    }
+
+    public void setNumber_comments(int number_comments) {
+        this.number_comments = number_comments;
+    }
+
+    public int getNumber_likes() {
+        return number_likes;
+    }
+
+    public void setNumber_likes(int number_likes) {
+        this.number_likes = number_likes;
     }
 }
