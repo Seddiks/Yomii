@@ -38,13 +38,12 @@ public interface ApiService {
     //Registration
     @FormUrlEncoded
     @POST("register.php")
-    Call<UserItems> registration(@Field("email") String mail,
+    Call<UserItems> registration(@Field("full_name") String fname,
+                                 @Field("email") String mail,
                                  @Field("password") String password,
-                                 @Field("token_firbase") String token,
-                                 @Field("first_name") String fname,
-                                 @Field("last_name") String lname,
-                                 @Field("country") String country,
-                                 @Field("city") String city);
+                                 @Field("passwordConfirm") String passwordConfirm,
+                                 @Field("token_firebase") String token
+    );
 
     //Case forget password
     @FormUrlEncoded
@@ -136,9 +135,10 @@ public interface ApiService {
     //Get details photos published by users and users details in Home Fragment
     @GET("home_photos_published.php")
     Call<ResponsePhotoItems> getDetailsPhotos(@Query("action") int act,
+                                              @Query("user_id") int user_id,
                                               @Query("currentPage") int currentPage);
 
-    //Get comments per photo
+    //Get comments per photo and publish in Comment Photos Activity
     @FormUrlEncoded
     @POST("comments.php")
     Call<ResponsePostComments> getCommentsPerPhoto(@Field("action") int act,
@@ -151,6 +151,7 @@ public interface ApiService {
     @POST("comments.php")
     Call<ResponsePostComments> insertComment(@Field("action") int act,
                                              @Field("user_id") int user_id,
+                                             @Field("reciever_user_id") int reciever_user_id,
                                              @Field("photo_id") int photo_id,
                                              @Field("comment") String comment);
 
@@ -163,7 +164,20 @@ public interface ApiService {
                                       @Field("comment_id") int comment_id);
 
 
+    //Add Like
+    @FormUrlEncoded
+    @POST("likes.php")
+    Call<ResponseItems> addLike(@Field("action") int act,
+                                @Field("user_id") int user_id,
+                                @Field("reciever_user_id") int reciever_user_id,
+                                @Field("photo_id") int photo_id);
 
+    //delete Like
+    @FormUrlEncoded
+    @POST("likes.php")
+    Call<ResponseItems> deleteLike(@Field("action") int act,
+                                   @Field("user_id") int user_id,
+                                   @Field("photo_id") int photo_id);
 
 
 

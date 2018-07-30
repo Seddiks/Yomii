@@ -1,6 +1,5 @@
 package com.app.seddik.yomii.activities;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -9,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -17,26 +17,26 @@ import android.widget.Toast;
 
 import com.app.seddik.yomii.MainActivity;
 import com.app.seddik.yomii.R;
-
 import com.app.seddik.yomii.config.AppConfig;
 import com.app.seddik.yomii.models.UserItems;
 import com.app.seddik.yomii.networks.ApiService;
+import com.app.seddik.yomii.utils.SessionManager;
+
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import com.app.seddik.yomii.utils.SQLiteHandler;
-import com.app.seddik.yomii.utils.SessionManager;
 
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = RegistrationActivity.class.getSimpleName();
+    static boolean et1 = false, et2 = false;
     EditText etEmail,etMotDePasse;
     Button btnConnexion, btnConnexionFB;
     TextView tvMPOublie, tvInscription;
-    static boolean et1 = false, et2 = false;
-    private ProgressDialog pDialog;
+    private SweetAlertDialog pDialog;
+    private SweetAlertDialog sweetDialog;
     private SessionManager session;
-    private SQLiteHandler db;
 
 
 
@@ -61,8 +61,12 @@ public class LoginActivity extends AppCompatActivity {
         activerBtnConnexion();
 
         // Progress dialog
-        pDialog = new ProgressDialog(this);
+        pDialog = new SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE);
         pDialog.setCancelable(false);
+        sweetDialog = new SweetAlertDialog(this, SweetAlertDialog.WARNING_TYPE)
+                .setTitleText("Warning")
+                .setContentText("Your account has not been avtivated, please check your Email inbox")
+                .setConfirmText("Ok");
 
         // Session manager
         session = new SessionManager(getApplicationContext());
@@ -101,14 +105,17 @@ public class LoginActivity extends AppCompatActivity {
                 String password = etMotDePasse.getText().toString().trim();
 
                 // Check for empty data in the form
-                if (!email.isEmpty() && !password.isEmpty()) {
-                    // login user
-                    checkLogin2(email, password);
+                if (email.isEmpty() || password.isEmpty()) {
+
+                    Toast.makeText(getApplicationContext(), "Please enter the credentials!", Toast.LENGTH_LONG).show();
+
+                } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                    Toast.makeText(getApplicationContext(), "Wrong adress Email, please enter a valid adress Email", Toast.LENGTH_LONG).show();
+
+                } else if (password.trim().length() < 8) {
+                    Toast.makeText(getApplicationContext(), "Password must be at least 8 character", Toast.LENGTH_LONG).show();
                 } else {
-                    // Prompt user to enter credentials
-                    Toast.makeText(getApplicationContext(),
-                            "Please enter the credentials!", Toast.LENGTH_LONG)
-                            .show();
+                    checkLogin(email, password);
                 }
             }
 
@@ -120,9 +127,11 @@ public class LoginActivity extends AppCompatActivity {
     /**
      * function to verify login details in mysql db
      * */
-    private void checkLogin2(final String email, final String password) {
-        pDialog.setMessage("Connexion en cours ...");
-        showDialog();
+    private void checkLogin(final String email, final String password) {
+        pDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
+        pDialog.setTitleText("Login ...");
+        pDialog.setCancelable(false);
+        pDialog.show();
         Retrofit retrofit = new Retrofit.Builder().
                 baseUrl(AppConfig.URL_LOGIN).
                 addConverterFactory(GsonConverterFactory.create()).
@@ -136,21 +145,43 @@ public class LoginActivity extends AppCompatActivity {
                 UserItems List = response.body();
                 boolean success = List.getSuccess();
                 int user_id = List.getUser_id();
-                Log.e("USER ", "id: "+user_id);
+                String full_name = List.getFull_name();
+                String photo_profil = List.getPhoto_profil_path();
+                String photo_cover = List.getPhoto_cover_path();
+                String bio = List.getBio();
                 String message = List.getMessage();
                 String token = List.getToken();
+                int isConfirmed = List.getIsConfirmed();
               //  String t = response.headers().get("token");
-                Toast.makeText(getApplicationContext(),
-                        message, Toast.LENGTH_LONG)
-                        .show();
                 if (success){
-                    session.createLoginSession(user_id,"Seddik",email,token);
-                    // Launch Login activity
-                    //Log.d("TAG", "token: "+t);
-                    Intent intent = new Intent(LoginActivity.this,
-                            MainActivity.class);
-                    startActivity(intent);
-                    finish();
+                    if (isConfirmed == 1) {
+                        session.createLoginSession(user_id, full_name, photo_profil, photo_cover, bio, email, token);
+                        Intent intent = new Intent(LoginActivity.this,
+                                MainActivity.class);
+                        startActivity(intent);
+                        finish();
+
+                    } else {
+                        new SweetAlertDialog(LoginActivity.this, SweetAlertDialog.WARNING_TYPE)
+                                .setTitleText("Warning")
+                                .setContentText("Your account has not been avtivated, please check your Email inbox")
+                                .setConfirmText("Ok")
+                                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                    @Override
+                                    public void onClick(SweetAlertDialog sDialog) {
+                                        sDialog.dismissWithAnimation();
+
+                                    }
+                                })
+                                .show();
+
+
+                    }
+
+                } else {
+                    Toast.makeText(getApplicationContext(),
+                            message, Toast.LENGTH_LONG)
+                            .show();
 
                 }
 

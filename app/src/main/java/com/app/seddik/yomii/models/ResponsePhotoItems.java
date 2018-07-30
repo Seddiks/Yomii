@@ -82,6 +82,7 @@ public class ResponsePhotoItems {
         private String photo_profil_path;
         private String full_name;
         private int number_comments;
+        private boolean isLike;
         private int number_likes;
 
 
@@ -157,6 +158,13 @@ public class ResponsePhotoItems {
             this.number_likes = number_likes;
         }
 
+        public boolean isLike() {
+            return isLike;
+        }
+
+        public void setLike(boolean like) {
+            isLike = like;
+        }
     }
 
 

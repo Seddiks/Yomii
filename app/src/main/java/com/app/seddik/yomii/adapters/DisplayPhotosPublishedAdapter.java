@@ -35,16 +35,15 @@ import java.util.ArrayList;
 import static com.app.seddik.yomii.config.AppConfig.URL_UPLOAD_PHOTOS;
 
 public class DisplayPhotosPublishedAdapter extends RecyclerView.Adapter<DisplayPhotosPublishedAdapter.ViewHolder> {
+    private static final int ITEM = 0;
+    private static final int LOADING = 1;
+    private final RequestManager glide;
     private ArrayList<DisplayPhotosPublishedItems> galleryList;
     private Context context;
-    private final RequestManager glide;
     private boolean showFollowingButton;
     private boolean clicked = false;
     private String path_photo_published;
     private String path_photo_profil;
-
-    private static final int ITEM = 0;
-    private static final int LOADING = 1;
     private boolean isLoadingAdded = false;
 
 
@@ -127,15 +126,15 @@ public class DisplayPhotosPublishedAdapter extends RecyclerView.Adapter<DisplayP
         viewHolder.btnFollowing.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (clicked == false){
-                    viewHolder.btnFollowing.setBackgroundResource(R.drawable.ripple_after_blue_500);
-                    viewHolder.btnFollowing.setText("Following");
-                    viewHolder.btnFollowing.setTextColor(Color.WHITE);
+                if (clicked == false) {
+                    viewHolder.btnFollowing.setBackgroundResource(R.drawable.round_border_follwing);
+                    viewHolder.btnFollowing.setText("following");
+                    viewHolder.btnFollowing.setTextColor(Color.BLACK);
                     clicked = true;
-                }else {
-                    viewHolder.btnFollowing.setBackgroundResource(R.drawable.ripple_blue_500);
-                    viewHolder.btnFollowing.setText("Follow");
-                    viewHolder.btnFollowing.setTextColor(Color.parseColor("#03A9F4"));
+                } else {
+                    viewHolder.btnFollowing.setBackgroundResource(R.drawable.round_border_follow);
+                    viewHolder.btnFollowing.setText("follow");
+                    viewHolder.btnFollowing.setTextColor(Color.WHITE);
                     clicked = false;
 
                 }

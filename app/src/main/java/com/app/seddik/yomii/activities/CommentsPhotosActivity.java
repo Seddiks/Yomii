@@ -24,6 +24,7 @@ import com.app.seddik.yomii.R;
 import com.app.seddik.yomii.adapters.CommentsPaginationAdapter;
 import com.app.seddik.yomii.models.CommentItems;
 import com.app.seddik.yomii.models.ResponsePostComments;
+import com.app.seddik.yomii.models.UserItems;
 import com.app.seddik.yomii.networks.ApiService;
 import com.app.seddik.yomii.utils.PaginationScrollListener;
 import com.app.seddik.yomii.utils.SessionManager;
@@ -37,6 +38,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 import static com.app.seddik.yomii.config.AppConfig.URL_UPLOAD_DATA_HOME;
+import static com.app.seddik.yomii.config.AppConfig.URL_UPLOAD_PHOTOS;
 
 public class CommentsPhotosActivity extends AppCompatActivity {
 
@@ -60,6 +62,7 @@ public class CommentsPhotosActivity extends AppCompatActivity {
     private EditText comment;
     private Intent mIntent;
     private int postion_photo;
+    private UserItems userItems;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,8 +70,10 @@ public class CommentsPhotosActivity extends AppCompatActivity {
         setContentView(R.layout.activity_comments_photos);
         session = new SessionManager(getApplicationContext());
         user_id = session.getUSER_ID();
+        userItems = session.getUserDetails();
 
-        photo_id = getIntent().getIntExtra("photo_id", -1);
+        int user_idPhoto = getIntent().getIntExtra("user_id", 0);
+        photo_id = getIntent().getIntExtra("photo_id", 0);
         postion_photo = getIntent().getIntExtra("position_photo", 0);
 
         toolbar = findViewById(R.id.toolbar);
@@ -128,14 +133,16 @@ public class CommentsPhotosActivity extends AppCompatActivity {
         loadFirstPage();
 
         Glide.with(getApplicationContext())
-                .load(R.drawable.bgmoi2)
-                .apply(RequestOptions.circleCropTransform())
+                .load(URL_UPLOAD_PHOTOS + userItems.getPhoto_profil_path())
+                .apply(new RequestOptions().
+                        placeholder(R.drawable.ic_person_circle_blue_a400_36dp).
+                        error(R.drawable.ic_person_circle_blue_a400_36dp).
+                        apply(RequestOptions.circleCropTransform()))
                 .into(photo_profil);
 
 
         showKeyboard();
         handleSendButton();
-
 
     }
 
@@ -239,11 +246,13 @@ public class CommentsPhotosActivity extends AppCompatActivity {
                             if (event.getAction() == MotionEvent.ACTION_UP) {
                                 if (event.getRawX() >= (comment.getRight() - comment.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
                                     comment.setText("");
+                                    comment.setSelection(0);
                                     CommentItems item = new CommentItems();
                                     item.setComment_id(-1);
                                     item.setUser_id(user_id);
                                     item.setPhoto_id(photo_id);
-                                    item.setFull_name("Fredj Moh");
+                                    item.setFull_name(userItems.getFull_name());
+                                    item.setPhoto_profil_path(userItems.getPhoto_profil_path());
                                     item.setComment(charSequence.toString());
 
                                     recyclerView.smoothScrollToPosition(0);

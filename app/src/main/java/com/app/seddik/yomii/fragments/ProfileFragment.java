@@ -14,6 +14,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,7 +25,17 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.app.seddik.yomii.MainActivity;
 import com.app.seddik.yomii.R;
+import com.app.seddik.yomii.adapters.ProfilPagerAdapter;
+import com.app.seddik.yomii.adapters.TravelStoryAdapter;
+import com.app.seddik.yomii.models.ResponseItems;
+import com.app.seddik.yomii.models.TravelStoryItems;
+import com.app.seddik.yomii.models.UserItems;
+import com.app.seddik.yomii.networks.ApiService;
+import com.app.seddik.yomii.utils.CustomViewPager;
+import com.app.seddik.yomii.utils.FileUtils;
+import com.app.seddik.yomii.utils.SessionManager;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.zhihu.matisse.Matisse;
@@ -36,15 +47,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import com.app.seddik.yomii.MainActivity;
-import com.app.seddik.yomii.adapters.ProfilPagerAdapter;
-import com.app.seddik.yomii.adapters.TravelStoryAdapter;
 import de.hdodenhof.circleimageview.CircleImageView;
 import id.zelory.compressor.Compressor;
-import com.app.seddik.yomii.models.ResponseItems;
-import com.app.seddik.yomii.models.TravelStoryItems;
-import com.app.seddik.yomii.models.UserItems;
-import com.app.seddik.yomii.networks.ApiService;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -53,9 +57,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import com.app.seddik.yomii.utils.CustomViewPager;
-import com.app.seddik.yomii.utils.FileUtils;
-import com.app.seddik.yomii.utils.SessionManager;
 
 import static com.app.seddik.yomii.config.AppConfig.URL_UPLOAD_PHOTOS;
 
@@ -63,46 +64,38 @@ import static com.app.seddik.yomii.config.AppConfig.URL_UPLOAD_PHOTOS;
  * A simple {@link Fragment} subclass.
  */
 public class ProfileFragment extends Fragment implements View.OnClickListener{
-    private SessionManager session;
-    private UserItems user ;
-    private int id_user;
-    boolean success ;
-    String message ;
-
     static final int REQUEST_CODE_CHOOSE = 1001;
     private static int PhotoType = 0; //profil photo 1 or cover photo 2
-    private ArrayList<Uri> mSelected;
-    private File compressedImageFile;
-
-    private TabLayout tabLayout;
-    private CustomViewPager viewPager;
-    private ProfilPagerAdapter adapter;
-
-    private LinearLayout layoutDetail;
-    private LinearLayout layoutEdit;
-    private RelativeLayout layout_done_exit;
-    private TabLayout tabLayoutF;
-
-    private ImageView cover,update_cover,update_photo_profile, update_profil, settings,done, exit;
-    private CircleImageView profile_image;
-    private TextView profile_name,bio, pubs, abonnes, abonnements, travel_text;
-    private EditText full_name, username, bio_et;
-
-    private RequestBody mFullName,mBio,mUserName;
-    private MultipartBody.Part mImageProfilRequest, mImageCoverRequest;
-    private Uri mCurrentProfilPhotoUri= null,mCurrentCoverPhotoUri = null;
-
-    private TravelStoryAdapter adapterStory;
-    private TravelStoryItems travelStoryItems;
-    private RecyclerView recyclerView;
-    private LinearLayoutManager layoutManager;
-
-
+    boolean success;
+    String message;
     Retrofit retrofit = new Retrofit.Builder().
             baseUrl(URL_UPLOAD_PHOTOS).
             addConverterFactory(GsonConverterFactory.create()).
             build();
     ApiService API = retrofit.create(ApiService.class);
+    private SessionManager session;
+    private UserItems user ;
+    private int id_user;
+    private ArrayList<Uri> mSelected;
+    private File compressedImageFile;
+    private TabLayout tabLayout;
+    private CustomViewPager viewPager;
+    private ProfilPagerAdapter adapter;
+    private LinearLayout layoutDetail;
+    private LinearLayout layoutEdit;
+    private RelativeLayout layout_done_exit;
+    private TabLayout tabLayoutF;
+    private ImageView cover,update_cover,update_photo_profile, update_profil, settings,done, exit;
+    private CircleImageView profile_image;
+    private TextView profile_name,bio, pubs, abonnes, abonnements, travel_text;
+    private EditText full_name, username, bio_et;
+    private RequestBody mFullName,mBio,mUserName;
+    private MultipartBody.Part mImageProfilRequest, mImageCoverRequest;
+    private Uri mCurrentProfilPhotoUri= null,mCurrentCoverPhotoUri = null;
+    private TravelStoryAdapter adapterStory;
+    private TravelStoryItems travelStoryItems;
+    private RecyclerView recyclerView;
+    private LinearLayoutManager layoutManager;
 
 
 
@@ -127,6 +120,12 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
         update_photo_profile =  rootView.findViewById(R.id.update_profile_image);
         update_profil =  rootView.findViewById(R.id.update_profil);
         settings =  rootView.findViewById(R.id.settings);
+        settings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                session.logoutUser();
+            }
+        });
         exit =  rootView.findViewById(R.id.exit);
         done =  rootView.findViewById(R.id.done);
 
@@ -174,7 +173,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
         update_photo_profile.setOnClickListener(this);
         update_cover.setOnClickListener(this);
 
-        getUserProfilDetail();
+        getUserProfilDetail("get");
         getUserStories();
         return rootView;
     }
@@ -201,7 +200,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
 
 
      //Get details profil
-    private void getUserProfilDetail(){
+     private void getUserProfilDetail(final String typeCall) {
         Call<UserItems> api =API.getUserProfilDetails(0,id_user);
         api.enqueue(new Callback<UserItems>() {
             @Override
@@ -213,11 +212,11 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
                     //fill user profil details:
                     Glide.with(getActivity())
                             .load(URL_UPLOAD_PHOTOS+userItems.getPhoto_profil_path())
-                            .apply(new RequestOptions().placeholder(R.drawable.ic_person_white_36dp).error(R.drawable.ic_person_white_36dp))
+                            .apply(new RequestOptions().placeholder(R.drawable.ic_person_circle_blue_a400_36dp).error(R.drawable.ic_person_circle_blue_a400_36dp))
                             .into(profile_image);
                     Glide.with(getActivity())
                             .load(URL_UPLOAD_PHOTOS+userItems.getPhoto_cover_path())
-                            .apply(new RequestOptions().placeholder(R.drawable.bg_barca).error(R.drawable.bg_barca))
+                            .apply(new RequestOptions().placeholder(R.drawable.bg_cover).error(R.drawable.bg_cover))
                             .into(cover);
                     profile_name.setText(userItems.getFull_name());
                     bio.setText(userItems.getBio());
@@ -225,6 +224,12 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
                     full_name.setText(userItems.getFull_name());
                     username.setText(userItems.getUsername());
                     bio_et.setText(userItems.getBio());
+                    if (typeCall.equals("UpdateSession")) {
+                        session.createLoginSession(userItems.getUser_id(), userItems.getFull_name(), userItems.getPhoto_profil_path(), userItems.getPhoto_cover_path(), userItems.getBio(), userItems.getEmail(), userItems.getToken());
+
+                    } else {
+                        // do nothing
+                    }
 
 
                 }else {
@@ -302,12 +307,10 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
                 success = responseItems.getSuccess();
                 message = responseItems.getMessage();
                 if (success){
-                    getUserProfilDetail();
+                    getUserProfilDetail("UpdateSession");
                 }else {
-                    getUserProfilDetail();
-                    Toast.makeText(getActivity(),
-                            message, Toast.LENGTH_LONG)
-                            .show();
+                    getUserProfilDetail("UpdateSession");
+                    Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
 
                 }
 
@@ -316,7 +319,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
 
             @Override
             public void onFailure(Call<ResponseItems> call, Throwable t) {
-                getUserProfilDetail();
+                getUserProfilDetail("UpdateSession");
+                Log.e("Update:", "error: " + t.toString());
                 Toast.makeText(getActivity(),
                         "Error"+t.toString(), Toast.LENGTH_LONG)
                         .show();

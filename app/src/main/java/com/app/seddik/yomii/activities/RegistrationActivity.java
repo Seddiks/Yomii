@@ -1,23 +1,26 @@
 package com.app.seddik.yomii.activities;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import com.app.seddik.yomii.MainActivity;
 import com.app.seddik.yomii.R;
 import com.app.seddik.yomii.config.AppConfig;
 import com.app.seddik.yomii.models.UserItems;
 import com.app.seddik.yomii.networks.ApiService;
-import com.app.seddik.yomii.utils.SQLiteHandler;
+import com.app.seddik.yomii.services.MyFirebaseInstanceIDService;
 import com.app.seddik.yomii.utils.SessionManager;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Retrofit;
@@ -25,37 +28,41 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RegistrationActivity extends AppCompatActivity {
     private static final String TAG = RegistrationActivity.class.getSimpleName();
-    private Button btnRegister;
-    private Button btnLinkToLogin;
-    private EditText inputFirstName;
-    private EditText inputLastName;
-    private EditText inputCountry;
-    private EditText inputCity;
+    private EditText inputFullName;
     private EditText inputEmail;
     private EditText inputPassword;
-    private ProgressDialog pDialog;
+    private EditText inputPasswordConfirm;
+    private ImageButton btnRegister;
+    private TextView headerText;
+    private TextView backLogingText;
+    private SweetAlertDialog pDialog;
+    private SweetAlertDialog sweetDialog;
     private SessionManager session;
-    private SQLiteHandler db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_inscription);
+        setContentView(R.layout.activity_registration);
         getSupportActionBar().hide();
 
-        inputEmail = (EditText) findViewById(R.id.email_xml);
-        inputPassword = (EditText) findViewById(R.id.password_xml);
-        inputFirstName = (EditText) findViewById(R.id.fname_xml);
-        inputLastName = (EditText) findViewById(R.id.lname_xml);
-        inputCountry = (EditText) findViewById(R.id.country_xml);
-        inputCity = (EditText) findViewById(R.id.city_xml);
+        inputFullName = findViewById(R.id.fname_xml);
+        inputEmail = findViewById(R.id.email_xml);
+        inputPassword = findViewById(R.id.password_xml);
+        inputPasswordConfirm = findViewById(R.id.password_confirm_xml);
+        btnRegister = findViewById(R.id.btnRegister_xml);
+        headerText = findViewById(R.id.header_text_xml);
+        backLogingText = findViewById(R.id.backLogin_xml);
 
-        btnRegister = (Button) findViewById(R.id.btnRegister_xml);
-        btnLinkToLogin = (Button) findViewById(R.id.btnLinkToLoginScreen);
+        Typeface type = Typeface.createFromAsset(getAssets(), "Walkway_Bold.ttf");
+        headerText.setTypeface(type);
 
         // Progress dialog
-        pDialog = new ProgressDialog(this);
+        pDialog = new SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE);
         pDialog.setCancelable(false);
+        sweetDialog = new SweetAlertDialog(this, SweetAlertDialog.SUCCESS_TYPE)
+                .setTitleText("Registration")
+                .setContentText("You have created new account successfully, please check youe Email inbox for confirmation")
+                .setConfirmText("Ok");
 
         // Session manager
         //session = new SessionManager(getApplicationContext());
@@ -64,25 +71,32 @@ public class RegistrationActivity extends AppCompatActivity {
         // Register Button Click event
         btnRegister.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
+                String fname = inputFullName.getText().toString().trim();
                 String email = inputEmail.getText().toString().trim();
                 String password = inputPassword.getText().toString().trim();
-                String fname = inputFirstName.getText().toString().trim();
-                String lname = inputLastName.getText().toString().trim();
-                String country = inputCountry.getText().toString().trim();
-                String city = inputCity.getText().toString().trim();
+                String passwordConfirm = inputPasswordConfirm.getText().toString().trim();
 
-                if (!email.isEmpty() && !password.isEmpty() && !fname.isEmpty() && !lname.isEmpty() && !country.isEmpty() && !city.isEmpty()) {
-                    registerUser(email, password,fname,lname,country,city);
+
+                if (fname.isEmpty() || email.isEmpty() || password.isEmpty() || passwordConfirm.isEmpty()) {
+                    Toast.makeText(getApplicationContext(), "Required fields are missing", Toast.LENGTH_LONG).show();
+
+                } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                    Toast.makeText(getApplicationContext(), "Wrong adress Email, please enter a valid adress Email", Toast.LENGTH_LONG).show();
+
+                } else if (!password.trim().equals(passwordConfirm.trim())) {
+                    Toast.makeText(getApplicationContext(), "Passwords doesn't match", Toast.LENGTH_LONG).show();
+
+                } else if (password.trim().length() < 8 || passwordConfirm.trim().length() < 8) {
+                    Toast.makeText(getApplicationContext(), "Passwords must be at least 8 character", Toast.LENGTH_LONG).show();
                 } else {
-                    Toast.makeText(getApplicationContext(),
-                            "Required fields are missing!", Toast.LENGTH_LONG)
-                            .show();
+                    registerUser(fname, email, password, passwordConfirm);
+
                 }
             }
         });
 
         // Link to Login Screen
-        btnLinkToLogin.setOnClickListener(new View.OnClickListener() {
+        backLogingText.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View view) {
                 Intent i = new Intent(getApplicationContext(),
@@ -98,17 +112,18 @@ public class RegistrationActivity extends AppCompatActivity {
      * Function to store user in MySQL database will post params(tag, name,
      * email, password) to register url
      */
-    private void registerUser(final String email, final String password,
-                              final String fname, final String lname, final String country, final String city) {
-        String token = session.getTokenFirebase();
-        pDialog.setMessage("Registration ...");
-        showDialog();
+    private void registerUser(final String fname, final String email, final String password, final String passwordConfirm) {
+        String token = MyFirebaseInstanceIDService.Tok;
+        pDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
+        pDialog.setTitleText("Registration ...");
+        pDialog.setCancelable(false);
+        pDialog.show();
         Retrofit retrofit = new Retrofit.Builder().
                 baseUrl(AppConfig.URL_REGISTER).
                 addConverterFactory(GsonConverterFactory.create()).
                 build();
         ApiService API = retrofit.create(ApiService.class);
-        Call<UserItems> api =API.registration(email,password,token,fname,lname,country,city);
+        Call<UserItems> api = API.registration(fname, email, password, passwordConfirm, token);
         api.enqueue(new Callback<UserItems>() {
             @Override
             public void onResponse(Call<UserItems> call, retrofit2.Response<UserItems> response) {
@@ -124,11 +139,19 @@ public class RegistrationActivity extends AppCompatActivity {
                         .show();
                 if (success){
                     // Launch Main activity
-                    session.createLoginSession(user_id,fname, email,token);
-                    Intent intent = new Intent(RegistrationActivity.this,
-                            MainActivity.class);
-                    startActivity(intent);
-                    finish();
+                    //session.createLoginSession(user_id,fname, email,token);
+                    sweetDialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                        @Override
+                        public void onClick(SweetAlertDialog sDialog) {
+                            sDialog.dismissWithAnimation();
+                            Intent intent = new Intent(RegistrationActivity.this,
+                                    LoginActivity.class);
+                            startActivity(intent);
+                            finish();
+
+                        }
+                    })
+                            .show();
 
                 }
 

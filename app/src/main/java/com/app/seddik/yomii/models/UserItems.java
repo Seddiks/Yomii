@@ -8,6 +8,7 @@ public class UserItems {
     private boolean success;
     private int user_id;
     private String email;
+    private int isConfirmed;
     private String first_name;
     private String last_name;
     private String message;
@@ -71,6 +72,14 @@ public class UserItems {
 
     public void setFull_name(String full_name) {
         this.full_name = full_name;
+    }
+
+    public int getIsConfirmed() {
+        return isConfirmed;
+    }
+
+    public void setIsConfirmed(int isConfirmed) {
+        this.isConfirmed = isConfirmed;
     }
 
     public String getPhoto_profil_path() {

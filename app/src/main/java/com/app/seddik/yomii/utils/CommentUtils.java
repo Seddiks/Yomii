@@ -3,7 +3,6 @@ package com.app.seddik.yomii.utils;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -51,17 +50,17 @@ public class CommentUtils {
 
     }
 
-    public void insertComment(final Context context, CommentItems commentItems, final int position, final InsertCommentCallbacks insertCommentCallbacks) {
+    public void insertComment(final Context context, int user_id, CommentItems commentItems, final int position, final InsertCommentCallbacks insertCommentCallbacks) {
         mProgressBar.setVisibility(View.VISIBLE);
         mPublication.setVisibility(View.VISIBLE);
         mDate.setVisibility(View.GONE);
         mDelete.setVisibility(View.GONE);
         mError.setVisibility(View.GONE);
 
-        int user_id = commentItems.getUser_id();
+        int reciever_user_id = commentItems.getUser_id();
         int photo_id = commentItems.getPhoto_id();
         String commentText = commentItems.getComment();
-        Call<ResponsePostComments> api = API.insertComment(1, user_id, photo_id, commentText);
+        Call<ResponsePostComments> api = API.insertComment(1, user_id, reciever_user_id, photo_id, commentText);
         api.enqueue(new Callback<ResponsePostComments>() {
             @Override
             public void onResponse(Call<ResponsePostComments> call, Response<ResponsePostComments> response) {
@@ -102,7 +101,7 @@ public class CommentUtils {
         });
     }
 
-    public void deleteComment(final Context context, final CommentItems commentItems, final int position, final DeleteCommentCallbacks deleteCommentCallbacks) {
+    public void deleteComment(final Context context, final int user_id, final CommentItems commentItems, final int position, final DeleteCommentCallbacks deleteCommentCallbacks) {
         new SweetAlertDialog(context, SweetAlertDialog.WARNING_TYPE)
                 .setTitleText("Delete Comment")
                 .setContentText("Do you want delete your comment?")
@@ -114,7 +113,7 @@ public class CommentUtils {
                     public void onClick(SweetAlertDialog sDialog) {
                         sDialog.cancel();
                         deleteCommentCallbacks.onConfirm();
-                        deleteComment(context, position, commentItems);
+                        deleteComment(context, position, user_id, commentItems);
                     }
                 })
                 .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
@@ -129,9 +128,9 @@ public class CommentUtils {
 
     }
 
-    private void deleteComment(final Context context, final int position, CommentItems commentItems) {
+    private void deleteComment(final Context context, final int position, int user_id, CommentItems commentItems) {
         int comment_id = commentItems.getComment_id();
-        int user_id = commentItems.getUser_id();
+        // int user_id = commentItems.getUser_id();
         int photo_id = commentItems.getPhoto_id();
         Call<ResponseItems> api = API.deleteComment(2, user_id, photo_id, comment_id);
         api.enqueue(new Callback<ResponseItems>() {
@@ -160,9 +159,7 @@ public class CommentUtils {
     // Send an Intent with an action named "custom-event-name". The Intent sent should
 // be received by the ReceiverActivity.
     private void sendNumberComments(Context context, int numberComments, int position) {
-        Log.d("sender", "Broadcasting message");
-        Intent intent = new Intent("custom-event-name");
-        // You can also include some extra data.
+        Intent intent = new Intent("update_comment_number");
         intent.putExtra("NumberComments", numberComments);
         intent.putExtra("Position", position);
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);

@@ -19,6 +19,12 @@ public class SessionManager {
     public static final String KEY_NAME = "name";
     // Email address (make variable public to access from outside)
     public static final String KEY_EMAIL = "email";
+
+    public static final String KEY_PHOTO_PROFIL = "photo_profil";
+
+    public static final String KEY_PHOTO_COVER = "photo_cover";
+
+    public static final String KEY_BIO = "bio";
     // Token (make variable public to access from outside)
     public static final String KEY_TOKEN = "token";
     // Token Firebase (make variable public to access from outside)
@@ -49,7 +55,7 @@ public class SessionManager {
     /**
      * Create login session
      * */
-    public void createLoginSession(int user_id,String name, String email, String token){
+    public void createLoginSession(int user_id, String name, String photo_profil, String photo_cover, String bio, String email, String token) {
         // Storing login value as TRUE
         editor.putBoolean(IS_LOGIN, true);
 
@@ -58,6 +64,15 @@ public class SessionManager {
 
         // Storing name in pref
         editor.putString(KEY_NAME, name);
+
+        // Storing path photo profil in pref
+        editor.putString(KEY_PHOTO_PROFIL, photo_profil);
+
+        // Storing path photo profil in pref
+        editor.putString(KEY_PHOTO_COVER, photo_cover);
+
+        // Storing path photo profil in pref
+        editor.putString(KEY_BIO, bio);
 
         // Storing email in pref
         editor.putString(KEY_EMAIL, email);
@@ -111,18 +126,14 @@ public class SessionManager {
      * */
     public UserItems getUserDetails(){
         UserItems user = new UserItems();
-        // user id
-        user.setUser_id(pref.getInt(KEY_ID,0));
 
-        // user name
-        //  user.setFirst_name(pref.getString(KEY_NAME, null));
-
-        // user email id
+        user.setUser_id(pref.getInt(KEY_ID, 0));
+        user.setFull_name(pref.getString(KEY_NAME, null));
         user.setEmail(pref.getString(KEY_EMAIL, null));
-
-        // user token
-        // user.setToken(pref.getString(KEY_TOKEN, null));
-
+        user.setPhoto_profil_path(pref.getString(KEY_PHOTO_PROFIL, null));
+        user.setPhoto_cover_path(pref.getString(KEY_PHOTO_COVER, null));
+        user.setBio(pref.getString(KEY_BIO, null));
+        user.setToken(pref.getString(KEY_TOKEN, null));
         // return user
         return user;
     }

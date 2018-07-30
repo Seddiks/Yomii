@@ -19,7 +19,6 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 
 import com.app.seddik.yomii.R;
-import com.app.seddik.yomii.adapters.DisplayPhotosPublishedAdapter;
 import com.app.seddik.yomii.adapters.HomePaginationAdapter;
 import com.app.seddik.yomii.models.DisplayPhotosPublishedItems;
 import com.app.seddik.yomii.models.ResponsePhotoItems;
@@ -43,7 +42,6 @@ import static com.app.seddik.yomii.config.AppConfig.URL_UPLOAD_DATA_HOME;
  */
 public class HomeFragment extends Fragment {
     private static final int PAGE_START = 1;
-    public static int index = -1;
     public static int top = -1;
     HomePaginationAdapter adapterPagination;
     private boolean isLoading = false;
@@ -52,12 +50,12 @@ public class HomeFragment extends Fragment {
     private int currentPage = PAGE_START;
     private ApiService movieService;
     private SessionManager session;
+    private int user_id;
     private Button btnFollow;
     private RecyclerView recyclerView;
     private LinearLayoutManager layoutManager;
     private ProgressBar progressBar;
-    private DisplayPhotosPublishedAdapter adapter;
-    private ArrayList<ResponsePhotoItems.Paths> data;
+
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -78,10 +76,9 @@ public class HomeFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_home, container, false);
         session = new SessionManager(getActivity());
-
-        recyclerView =  rootView.findViewById(R.id.recycleview);
+        user_id = session.getUSER_ID();
+        recyclerView = rootView.findViewById(R.id.recycleview);
         progressBar = rootView.findViewById(R.id.main_progress);
-
 
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setHasFixedSize(true);
@@ -130,7 +127,7 @@ public class HomeFragment extends Fragment {
         // We are registering an observer (mMessageReceiver) to receive Intents
         // with actions named "custom-event-name".
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mMessageReceiver,
-                new IntentFilter("custom-event-name"));
+                new IntentFilter("update_comment_number"));
 
 
         return rootView;
@@ -151,7 +148,7 @@ public class HomeFragment extends Fragment {
                 addConverterFactory(GsonConverterFactory.create()).
                 build();
         ApiService API = retrofit.create(ApiService.class);
-        Call<ResponsePhotoItems> api = API.getDetailsPhotos(0, currentPage);
+        Call<ResponsePhotoItems> api = API.getDetailsPhotos(0, user_id, currentPage);
 
 
         api.enqueue(new Callback<ResponsePhotoItems>() {
@@ -193,7 +190,7 @@ public class HomeFragment extends Fragment {
                 addConverterFactory(GsonConverterFactory.create()).
                 build();
         ApiService API = retrofit.create(ApiService.class);
-        Call<ResponsePhotoItems> api = API.getDetailsPhotos(0, currentPage);
+        Call<ResponsePhotoItems> api = API.getDetailsPhotos(0, user_id, currentPage);
 
         api.enqueue(new Callback<ResponsePhotoItems>() {
             @Override
@@ -242,29 +239,13 @@ public class HomeFragment extends Fragment {
             items.setFull_name(data.get(i).getFull_name());
             items.setNumber_comments(data.get(i).getNumber_comments());
             items.setNumber_likes(data.get(i).getNumber_likes());
+            items.setLike(data.get(i).isLike());
             photosItems.add(items);
         }
         return photosItems;
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        //adapterPagination.updateItem(0,666);
-        //set recyclerview position
-        if (index != -1) {
-            layoutManager.scrollToPositionWithOffset(index, top);
-        }
 
-    }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        //read current recyclerview position
-        index = layoutManager.findFirstVisibleItemPosition();
-        View v = recyclerView.getChildAt(0);
-        top = (v == null) ? 0 : (v.getTop() - recyclerView.getPaddingTop());
 
-    }
 }

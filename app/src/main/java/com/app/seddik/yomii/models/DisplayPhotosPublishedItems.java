@@ -12,6 +12,7 @@ public class DisplayPhotosPublishedItems {
     private String full_name;
     private String date;
     private int number_comments;
+    private boolean isLike;
     private int number_likes;
 
     public int getPhoto_id() {
@@ -76,5 +77,13 @@ public class DisplayPhotosPublishedItems {
 
     public void setNumber_likes(int number_likes) {
         this.number_likes = number_likes;
+    }
+
+    public boolean isLike() {
+        return isLike;
+    }
+
+    public void setLike(boolean like) {
+        isLike = like;
     }
 }

@@ -8,23 +8,30 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.app.seddik.yomii.R;
 import com.app.seddik.yomii.activities.CommentsPhotosActivity;
-import com.app.seddik.yomii.activities.FullScreenImageActivity;
 import com.app.seddik.yomii.activities.ProfileAbonneActivity;
+import com.app.seddik.yomii.activities.RegistrationActivity;
 import com.app.seddik.yomii.models.DisplayPhotosPublishedItems;
 import com.app.seddik.yomii.utils.GlideImageLoader;
+import com.app.seddik.yomii.utils.LikeUtils;
+import com.app.seddik.yomii.utils.SessionManager;
+import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.app.seddik.yomii.R.id.profile_image;
 import static com.app.seddik.yomii.config.AppConfig.URL_UPLOAD_PHOTOS;
 
 /**
@@ -41,11 +48,13 @@ public class HomePaginationAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     private boolean isLoadingAdded = false;
     private boolean clicked = false;
+    private SessionManager session;
 
 
     public HomePaginationAdapter(Context context) {
         this.context = context;
         photoResults = new ArrayList<>();
+        session = new SessionManager(context);
 
     }
 
@@ -81,6 +90,10 @@ public class HomePaginationAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
 
         final DisplayPhotosPublishedItems result = photoResults.get(position);
+        final int numberLikes = result.getNumber_likes();
+        final int numberComments = result.getNumber_comments();
+        final int user_id = session.getUSER_ID();
+
 
         switch (getItemViewType(position)) {
             case ITEM:
@@ -89,10 +102,29 @@ public class HomePaginationAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                         .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC);
                 viewHolder.tv_name.setText(result.getFull_name());
                 viewHolder.tv_date.setText("28 Juin 2018");
-                if (result.getNumber_likes() > 0)
-                    viewHolder.tv_likes.setText(result.getNumber_likes() + " like");
-                if (result.getNumber_comments() > 0)
+                viewHolder.btnLike.setChecked(result.isLike());
+
+                if (numberLikes > 0) {
+                    viewHolder.tv_likes.setText(numberLikes + " like");
+                } else {
+                    viewHolder.tv_likes.setText(" like");
+
+                }
+                if (result.getNumber_comments() > 0) {
                     viewHolder.tv_comments.setText(result.getNumber_comments() + " comment");
+                } else {
+                    viewHolder.tv_comments.setText(" comment");
+
+                }
+
+                String path_photo_profil = URL_UPLOAD_PHOTOS + result.getPhoto_profil();
+                Glide.with(context)
+                        .load(path_photo_profil)
+                        .apply(new RequestOptions().
+                                placeholder(R.drawable.ic_person_circle_blue_a400_36dp).
+                                error(R.drawable.ic_person_circle_blue_a400_36dp).
+                                apply(RequestOptions.circleCropTransform()))
+                        .into(viewHolder.img_profile);
 
                 String path_photo_published = URL_UPLOAD_PHOTOS+result.getPhoto_published();
                 // Glide.with(context).load(path_photo_published).into(viewHolder.img_published);
@@ -111,18 +143,95 @@ public class HomePaginationAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 viewHolder.img_published.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent intent = new Intent(context, FullScreenImageActivity.class);
-                        intent.putExtra("PathPhoto", URL_UPLOAD_PHOTOS + result.getPhoto_published());
+                        Intent intent = new Intent(context, RegistrationActivity.class);
+                        //   intent.putExtra("PathPhoto", URL_UPLOAD_PHOTOS + result.getPhoto_published());
                         context.startActivity(intent);
 
                     }
                 });
+
+                viewHolder.btnLike.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (viewHolder.btnLike.isChecked()) {
+                            //Press Like
+                            result.setLike(true);
+                            int number = result.getNumber_likes() + 1;
+                            result.setNumber_likes(number);
+                            viewHolder.tv_likes.setText(result.getNumber_likes() + " like");
+                            // Like request
+                            new LikeUtils().Like(user_id, result.getUser_id(), result.getPhoto_id(), new LikeUtils.LikeCallbacks() {
+                                @Override
+                                public void onLikeSuccess(int number_likes) {
+                                    result.setNumber_likes(number_likes);
+                                    viewHolder.tv_likes.setText(result.getNumber_likes() + " like");
+
+                                }
+
+
+                                @Override
+                                public void onLikeFailed(String error) {
+                                    result.setLike(false);
+                                    viewHolder.btnLike.setChecked(false);
+                                    int number = result.getNumber_likes() - 1;
+                                    result.setNumber_likes(number);
+                                    if (result.getNumber_likes() > 0)
+                                        viewHolder.tv_likes.setText(result.getNumber_likes() + " like");
+                                    else viewHolder.tv_likes.setText(" like");
+
+                                }
+                            });
+
+
+                        } else {
+                            // Press Unlike
+                            result.setLike(false);
+                            int number = result.getNumber_likes() - 1;
+                            result.setNumber_likes(number);
+                            int numberLikes = result.getNumber_likes();
+                            if (numberLikes > 0) {
+                                viewHolder.tv_likes.setText(numberLikes + " like");
+                            } else {
+                                viewHolder.tv_likes.setText(" like");
+
+                            }
+                            // Unlike Request
+                            new LikeUtils().UnLike(user_id, result.getPhoto_id(), new LikeUtils.UnLikeCallbacks() {
+                                @Override
+                                public void onUnLikeSuccess(int number_likes) {
+                                    result.setNumber_likes(number_likes);
+                                    int numberLikes = result.getNumber_likes();
+                                    if (numberLikes > 0) {
+                                        viewHolder.tv_likes.setText(numberLikes + " like");
+                                    } else {
+                                        viewHolder.tv_likes.setText(" like");
+
+                                    }
+                                }
+
+                                @Override
+                                public void onUnLikeFailed(String error) {
+                                    result.setLike(true);
+                                    viewHolder.btnLike.setChecked(true);
+                                    int number = result.getNumber_likes() + 1;
+                                    result.setNumber_likes(number);
+                                    viewHolder.tv_likes.setText(result.getNumber_likes() + " like");
+
+                                }
+                            });
+
+                        }
+
+                    }
+                });
+
 
                 viewHolder.img_comment.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
 
                         Intent intent = new Intent(context, CommentsPhotosActivity.class);
+                        intent.putExtra("user_id", result.getUser_id());
                         intent.putExtra("photo_id", result.getPhoto_id());
                         intent.putExtra("position_photo", position);
                         intent.putExtra("ShowKeyBoard", true);
@@ -147,14 +256,51 @@ public class HomePaginationAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                     @Override
                     public void onClick(View v) {
                         if (clicked == false) {
-                            viewHolder.btnFollowing.setBackgroundResource(R.drawable.ripple_after_blue_500);
+                            Animation fadeIn = AnimationUtils.loadAnimation(context, R.anim.fade_in);
+                            viewHolder.btnFollowing.startAnimation(fadeIn);
+
+                            fadeIn.setAnimationListener(new Animation.AnimationListener() {
+                                @Override
+                                public void onAnimationStart(Animation animation) {
+                                }
+
+                                @Override
+                                public void onAnimationEnd(Animation animation) {
+                                    Animation fadeOut = AnimationUtils.loadAnimation(context, R.anim.fade_out);
+                                    // viewHolder.btnFollowing.startAnimation(fadeOut);
+                                }
+
+                                @Override
+                                public void onAnimationRepeat(Animation animation) {
+                                }
+                            });
+
+                            viewHolder.btnFollowing.setBackgroundResource(R.drawable.round_border_follwing);
                             viewHolder.btnFollowing.setText("Following");
-                            viewHolder.btnFollowing.setTextColor(Color.WHITE);
+                            viewHolder.btnFollowing.setTextColor(Color.parseColor("#607D8B"));
                             clicked = true;
                         } else {
-                            viewHolder.btnFollowing.setBackgroundResource(R.drawable.ripple_blue_500);
+                            Animation fadeIn = AnimationUtils.loadAnimation(context, R.anim.fade_in);
+                            viewHolder.btnFollowing.startAnimation(fadeIn);
+
+                            fadeIn.setAnimationListener(new Animation.AnimationListener() {
+                                @Override
+                                public void onAnimationStart(Animation animation) {
+                                }
+
+                                @Override
+                                public void onAnimationEnd(Animation animation) {
+                                    Animation fadeOut = AnimationUtils.loadAnimation(context, R.anim.fade_out);
+                                    //    viewHolder.btnFollowing.startAnimation(fadeOut);
+                                }
+
+                                @Override
+                                public void onAnimationRepeat(Animation animation) {
+                                }
+                            });
+                            viewHolder.btnFollowing.setBackgroundResource(R.drawable.round_border_follow);
                             viewHolder.btnFollowing.setText("Follow");
-                            viewHolder.btnFollowing.setTextColor(Color.parseColor("#03A9F4"));
+                            viewHolder.btnFollowing.setTextColor(Color.WHITE);
                             clicked = false;
 
                         }
@@ -257,16 +403,18 @@ public class HomePaginationAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     protected class ViewHolder extends RecyclerView.ViewHolder {
         public ImageView img_profile, img_published, img_comment;
         private TextView tv_name ,tv_date ,tv_likes,tv_comments;
+        private CheckBox btnLike;
         private Button btnFollowing;
         private ProgressBar progressBar;
 
         public ViewHolder(View itemView) {
             super(itemView);
 
-            img_profile = itemView.findViewById(R.id.profile_image);
+            img_profile = itemView.findViewById(profile_image);
             img_published = itemView.findViewById(R.id.photosPublished);
             img_comment = itemView.findViewById(R.id.comments);
             progressBar = itemView.findViewById(R.id.photo_progress);
+            btnLike = itemView.findViewById(R.id.reaction);
             btnFollowing = itemView.findViewById(R.id.following);
             tv_name = itemView.findViewById(R.id.profile_name);
             tv_date = itemView.findViewById(R.id.date);

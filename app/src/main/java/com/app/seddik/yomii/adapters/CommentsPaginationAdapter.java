@@ -9,16 +9,18 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.app.seddik.yomii.R;
 import com.app.seddik.yomii.models.CommentItems;
 import com.app.seddik.yomii.utils.CommentUtils;
+import com.app.seddik.yomii.utils.SessionManager;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.app.seddik.yomii.config.AppConfig.URL_UPLOAD_PHOTOS;
 
 /**
  * Created by Seddik on 09/07/2018.
@@ -33,11 +35,13 @@ public class CommentsPaginationAdapter extends RecyclerView.Adapter<RecyclerView
     private int position_photo;
 
     private boolean isLoadingAdded = false;
+    private SessionManager session;
 
     public CommentsPaginationAdapter(Context context, int position_photo) {
         this.context = context;
         this.position_photo = position_photo;
         commentsResults = new ArrayList<>();
+        session = new SessionManager(context);
     }
 
 
@@ -71,24 +75,35 @@ public class CommentsPaginationAdapter extends RecyclerView.Adapter<RecyclerView
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, final int position) {
         final CommentItems result = commentsResults.get(position);
+        final int user_id = session.getUSER_ID();
         switch (getItemViewType(position)) {
             case ITEM:
                 CommentsPaginationAdapter.ViewHolder viewHolder = (CommentsPaginationAdapter.ViewHolder) holder;
                 int Comment_ID = result.getComment_id();
-
+                String path_photo_profil = URL_UPLOAD_PHOTOS + result.getPhoto_profil_path();
                 Glide.with(context)
-                        .load(R.drawable.bgmoi2)
-                        .apply(RequestOptions.circleCropTransform())
+                        .load(path_photo_profil)
+                        .apply(new RequestOptions().
+                                placeholder(R.drawable.ic_person_circle_blue_a400_36dp).
+                                error(R.drawable.ic_person_circle_blue_a400_36dp).
+                                apply(RequestOptions.circleCropTransform()))
                         .into(viewHolder.photo_profil);
+
                 viewHolder.tv_name.setText(result.getFull_name());
                 viewHolder.tv_comment.setText(result.getComment());
 
                 if (Comment_ID >= 0) { // case load all comments from server
                     viewHolder.tv_date.setVisibility(View.VISIBLE);
-                    viewHolder.tv_delete.setVisibility(View.VISIBLE);
+                    if (user_id == result.getUser_id()) {
+                        viewHolder.tv_delete.setVisibility(View.VISIBLE);
+
+                    } else {
+                        viewHolder.tv_delete.setVisibility(View.GONE);
+
+                    }
                 } else { // case insert new comment in server
                     new CommentUtils(viewHolder.tv_date, viewHolder.tv_delete, viewHolder.tv_publication, viewHolder.progressBar, viewHolder.tv_error)
-                            .insertComment(context, result, position_photo, new CommentUtils.InsertCommentCallbacks() {
+                            .insertComment(context, user_id, result, position_photo, new CommentUtils.InsertCommentCallbacks() {
                                 @Override
                                 public void onInsertSuccess(int comment_id, int number_comments) {
                                     result.setComment_id(comment_id);
@@ -107,8 +122,7 @@ public class CommentsPaginationAdapter extends RecyclerView.Adapter<RecyclerView
                 viewHolder.tv_delete.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Toast.makeText(context, "id comment: " + result.getComment_id(), Toast.LENGTH_SHORT).show();
-                        new CommentUtils().deleteComment(context, result, position_photo, new CommentUtils.DeleteCommentCallbacks() {
+                        new CommentUtils().deleteComment(context, user_id, result, position_photo, new CommentUtils.DeleteCommentCallbacks() {
                             @Override
                             public void onConfirm() {
                                 removeItem(position);

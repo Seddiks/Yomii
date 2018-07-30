@@ -14,16 +14,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.app.seddik.yomii.R;
-
-import java.util.ArrayList;
-
 import com.app.seddik.yomii.adapters.GalleryPhotosAdapter;
 import com.app.seddik.yomii.models.GalleryPhotosItems;
 
-public class ProfileAbonneActivity extends AppCompatActivity {
-    ImageView cover;
-    TextView profile_name, pubs, abonnes, abonnements;
+import java.util.ArrayList;
 
+public class ProfileAbonneActivity extends AppCompatActivity {
     private final Integer image_ids[] = {
             R.drawable.bg_milan,
             R.drawable.bg_paris,
@@ -34,8 +30,10 @@ public class ProfileAbonneActivity extends AppCompatActivity {
             R.drawable.bg_barca,
             R.drawable.bg_ny,
     };
-    private StaggeredGridLayoutManager mGridLayoutManager;
+    ImageView cover;
+    TextView profile_name, pubs, abonnes, abonnements;
     Toolbar toolbar;
+    private StaggeredGridLayoutManager mGridLayoutManager;
     private Button btnFollow;
     private boolean clicked = false;
 
@@ -70,15 +68,15 @@ public class ProfileAbonneActivity extends AppCompatActivity {
         btnFollow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (clicked == false){
-                    btnFollow.setBackgroundResource(R.drawable.ripple_after_blue_500);
-                    btnFollow.setText("Following");
-                    btnFollow.setTextColor(Color.WHITE);
+                if (clicked == false) {
+                    btnFollow.setBackgroundResource(R.drawable.round_border_follwing);
+                    btnFollow.setText("following");
+                    btnFollow.setTextColor(Color.BLACK);
                     clicked = true;
-                }else {
-                    btnFollow.setBackgroundResource(R.drawable.ripple_blue_500);
-                    btnFollow.setText("Follow");
-                    btnFollow.setTextColor(Color.parseColor("#03A9F4"));
+                } else {
+                    btnFollow.setBackgroundResource(R.drawable.round_border_follow);
+                    btnFollow.setText("follow");
+                    btnFollow.setTextColor(Color.WHITE);
                     clicked = false;
 
                 }
