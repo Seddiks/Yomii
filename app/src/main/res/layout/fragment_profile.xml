@@ -108,8 +108,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/profile_image"
                 android:layout_centerHorizontal="true"
-                android:text="Seddik Fredj"
-                android:textColor="#fff"
+                android:textColor="@color/white"
                 android:textSize="18sp"
                 android:textStyle="bold"/>
 
@@ -119,7 +118,6 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/profile_name"
                 android:layout_centerHorizontal="true"
-                android:text="I love traveling !! ;)"
                 android:textColor="#fff"
                 android:textSize="12sp"
                 android:textStyle="italic"/>

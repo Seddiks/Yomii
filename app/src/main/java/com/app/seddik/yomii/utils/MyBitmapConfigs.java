@@ -2,6 +2,7 @@ package com.app.seddik.yomii.utils;
 
 import android.content.ContentUris;
 import android.content.Context;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -10,6 +11,7 @@ import android.os.Build;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
+import android.util.DisplayMetrics;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -217,19 +219,31 @@ public static String getRealPathFromUri(final Uri uri, Context mContext) {
     }
 
 
-    public static Bitmap getBitmapFromURL(String src) {
+    /**
+     * Downloads push notification image before displaying it in
+     * the notification tray
+     *
+     * @param strURL : URL of the notification Image
+     * @return : BitMap representation of notification Image
+     */
+    public static Bitmap getBitmapFromURL(String strURL) {
         try {
-            URL url = new URL(src);
+            URL url = new URL(strURL);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setDoInput(true);
             connection.connect();
             InputStream input = connection.getInputStream();
-            Bitmap myBitmap = BitmapFactory.decodeStream(input);
-            return myBitmap;
+            return BitmapFactory.decodeStream(input);
         } catch (IOException e) {
-            // Log exception
+            e.printStackTrace();
             return null;
         }
+    }
+
+    public static float getImageFactor(Resources r) {
+        DisplayMetrics metrics = r.getDisplayMetrics();
+        float multiplier = metrics.density / 3f;
+        return multiplier;
     }
 
 }

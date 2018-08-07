@@ -11,19 +11,19 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.app.seddik.yomii.R;
-import com.bumptech.glide.Glide;
-
 import com.app.seddik.yomii.models.TravelStoryItems;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 
 import static com.app.seddik.yomii.config.AppConfig.URL_UPLOAD_PHOTOS;
 
 public class TravelStoryActivity extends AppCompatActivity implements View.OnClickListener{
+    Uri mUriPhoto;
     private ImageView photo, update;
     private TextView location, title, full_story;
     private int travel_story_id, user_id;
     private String mPathPhoto, mLocation, mTitle, mFull_story;
     private TravelStoryItems.Data travelStoryItems;
-    Uri mUriPhoto;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,13 +70,13 @@ public class TravelStoryActivity extends AppCompatActivity implements View.OnCli
             if (mUriPhoto != null){
                 Glide.with(getApplicationContext())
                         .load(mUriPhoto)
-                        // .apply(new RequestOptions().placeholder(R.drawable.bg_barca).error(R.drawable.bg_barca))
+                        .apply(new RequestOptions().placeholder(R.drawable.bg_cover).error(R.drawable.bg_cover))
                         .into(photo);
 
             }else {
                 Glide.with(getApplicationContext())
                         .load(mPathPhoto)
-                        // .apply(new RequestOptions().placeholder(R.drawable.bg_barca).error(R.drawable.bg_barca))
+                        .apply(new RequestOptions().placeholder(R.drawable.bg_cover).error(R.drawable.bg_cover))
                         .into(photo);
 
             }

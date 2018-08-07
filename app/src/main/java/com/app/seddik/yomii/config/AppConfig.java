@@ -7,6 +7,7 @@ package com.app.seddik.yomii.config;
 public class AppConfig {
     // Server user login url
     public static String URL_LOGIN = "http://192.168.1.6:81/Yomii/auth/";
+    public static String URL_AUTH = "http://192.168.1.6:81/Yomii/auth/";
     // Server user register url
     public static String URL_REGISTER = "http://192.168.1.6:81/Yomii/auth/";
     // Server user forget password url

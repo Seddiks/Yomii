@@ -1,13 +1,14 @@
 package com.app.seddik.yomii.activities;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -22,18 +23,23 @@ import com.app.seddik.yomii.config.AppConfig;
 import com.app.seddik.yomii.models.ResponseItems;
 import com.app.seddik.yomii.models.UserItems;
 import com.app.seddik.yomii.networks.ApiService;
-import com.app.seddik.yomii.utils.MyBitmapConfigs;
 import com.app.seddik.yomii.utils.FileUtils;
+import com.app.seddik.yomii.utils.MyBitmapConfigs;
 import com.app.seddik.yomii.utils.SessionManager;
-import com.seatgeek.placesautocomplete.OnPlaceSelectedListener;
-import com.seatgeek.placesautocomplete.PlacesAutocompleteTextView;
-import com.seatgeek.placesautocomplete.model.Place;
+import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.places.AutocompleteFilter;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import id.zelory.compressor.Compressor;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -44,41 +50,43 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import static com.app.seddik.yomii.R.id.legende;
+import static com.app.seddik.yomii.R.id.place;
 import static com.app.seddik.yomii.activities.FiltersPhotoActivity.mBitmap;
 import static com.app.seddik.yomii.utils.MyBitmapConfigs.getRealPathFromUri;
 
 public class PhotosToPublishActivity extends AppCompatActivity {
+    static int typeLinkPhoto;
+    private static File file;
     SessionManager session;
     Toolbar toolbar;
     ImageView photo;
     TextView txtViewPublish;
-    EditText legende;
-    PlacesAutocompleteTextView place;
-    private static File file;
+    EditText legendeET;
+    EditText placeET;
     Bundle extras;
     ArrayList<Uri> mListCurrentPhotoUri;
     ArrayList mCurrentPhotoUri;
-    static int typeLinkPhoto;
     Boolean isMultiple = false;
+    int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
+    String mCity = "";
     private File compressedImageFile;
-    private ProgressDialog pDialog;
-
-
+    private SweetAlertDialog pDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_photos_to_publish);
-        toolbar =  findViewById(R.id.toolbar) ;
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         photo = findViewById(R.id.photo);
-        legende = findViewById(R.id.legende);
-        place = findViewById(R.id.place);
+        legendeET = findViewById(legende);
+        placeET = findViewById(place);
         // Progress dialog
-        pDialog = new ProgressDialog(this);
+        pDialog = new SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE);
         pDialog.setCancelable(false);
 
         // Get Uri's of photos selected
@@ -86,34 +94,24 @@ public class PhotosToPublishActivity extends AppCompatActivity {
         mListCurrentPhotoUri = (ArrayList<Uri>) getIntent().getSerializableExtra("UriPhotos");
         if (mListCurrentPhotoUri != null) {
             isMultiple = true;
-            mBitmap = MyBitmapConfigs.decodeSampledBitmapFromPathFile(getRealPathFromUri(mListCurrentPhotoUri.get(0),getApplicationContext()),800,800);
+            mBitmap = MyBitmapConfigs.decodeSampledBitmapFromPathFile(getRealPathFromUri(mListCurrentPhotoUri.get(0), getApplicationContext()), 800, 800);
             photo.setImageBitmap(mBitmap);
 
         }
         // Get Uri of one photo filtred
-        if (getIntent().getStringExtra("UriPhoto") != null){
+        if (getIntent().getStringExtra("UriPhoto") != null) {
             mCurrentPhotoUri = new ArrayList<>();
             Uri mUri = Uri.parse(getIntent().getStringExtra("UriPhoto"));
             mCurrentPhotoUri.add(mUri);
         }
 
 
-        // Google Key place: AIzaSyBYSIbedXNm5m20v5v_Slmdwff8b-uqmW0
-        place.setOnPlaceSelectedListener(
-                new OnPlaceSelectedListener() {
-                    @Override
-                    public void onPlaceSelected(final Place place) {
-
-                    }
-                }
-        );
-
         txtViewPublish = findViewById(R.id.txtViewPublish);
         photo.setImageBitmap(mBitmap);
         txtViewPublish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (isMultiple == true){
+                if (isMultiple == true) {
                     uploadImages(mListCurrentPhotoUri);
                 } else {
                     uploadImages(mCurrentPhotoUri);
@@ -123,87 +121,30 @@ public class PhotosToPublishActivity extends AppCompatActivity {
             }
         });
 
-        hideStatutBar();
-      //  publishPhotos();
-    }
-/**
-    private void publishPhotos(Bitmap bitmap){
-                String FileName = System.currentTimeMillis() + ".jpg";
-                File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
-                file = new File(path, "Yomii" + "/" + FileName);
-                file.getParentFile().mkdirs();
-                new SingleMediaScanner(getApplicationContext(), file);
-
-                FileOutputStream out = null;
-                try {
-                    out = new FileOutputStream(file);
-                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                } finally {
-                    try {
-                        if (out != null) {
-                            out.close();
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-                 uploadPhotos(file);
-
-    }
-
-
-
-    private void uploadPhotos(File f){
-        session = new SessionManager(getApplicationContext());
-        UserItems user ;
-        user = session.getUserDetails();
-        int id_user = user.getUser_id();
-        Retrofit retrofit = new Retrofit.Builder().
-                baseUrl(AppConfig.URL_UPLOAD_PHOTOS).
-                addConverterFactory(GsonConverterFactory.create()).
-                build();
-
-        RequestBody country = RequestBody.create(MediaType.parse("multipart/form-data"), "Algeria");
-        RequestBody city = RequestBody.create(MediaType.parse("multipart/form-data"), "Annaba");
-        MultipartBody.Part filePart = MultipartBody.Part.createFormData("file", f.getName(), RequestBody.create(MediaType.parse("image/*"), f));
-
-        ApiService API = retrofit.create(ApiService.class);
-        Call<ResponseItems> api =API.uploadPhotos(id_user,
-                country,
-                city,
-                filePart);
-        api.enqueue(new Callback<ResponseItems>() {
+        placeET.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onResponse(Call<ResponseItems> call, Response<ResponseItems> response) {
-
-                Log.e(" code 200",response.toString());
-                ResponseItems List = response.body();
-                boolean success = List.getSuccess();
-                if (success) {
-                    Log.e("Response",List.getMessage());
-                }else {
-                    Log.e("Response Error",List.getMessage());
-                }
-
-            }
-
-            @Override
-            public void onFailure(Call<ResponseItems> call, Throwable t) {
-                Log.e(" Response Error2",t.toString());
+            public void onClick(View view) {
+                openAutocompleteActivity();
             }
         });
-    } **/
+
+        hideStatutBar();
+        //  publishPhotos();
+
+
+    }
+
+
 
     private void uploadImages(List<Uri> paths) {
         session = new SessionManager(getApplicationContext());
-        UserItems user ;
+        UserItems user;
         user = session.getUserDetails();
         int id_user = user.getUser_id();
-        pDialog.setMessage("Téléchargement en cours ...");
-        showDialog();
+        pDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
+        pDialog.setTitleText("Publish ...");
+        pDialog.setCancelable(false);
+        pDialog.show();
         Retrofit retrofit = new Retrofit.Builder().
                 baseUrl(AppConfig.URL_UPLOAD_PHOTOS).
                 addConverterFactory(GsonConverterFactory.create()).
@@ -217,15 +158,16 @@ public class PhotosToPublishActivity extends AppCompatActivity {
             MultipartBody.Part imageRequest = prepareFilePart("file[]", uri);
             list.add(imageRequest);
         }
-        RequestBody country = RequestBody.create(MediaType.parse("multipart/form-data"), "Algeria");
-        RequestBody city = RequestBody.create(MediaType.parse("multipart/form-data"), "Annaba");
+        String mLocation = placeET.getText().toString();
+        String mLegende = legendeET.getText().toString();
+
+        RequestBody location = RequestBody.create(MediaType.parse("multipart/form-data"), mLocation);
+        RequestBody city = RequestBody.create(MediaType.parse("multipart/form-data"), mCity);
+        RequestBody legende = RequestBody.create(MediaType.parse("multipart/form-data"), mLegende);
 
 
         ApiService API = retrofit.create(ApiService.class);
-        Call<ResponseItems> api =API.uploadImages(0,id_user,
-                country,
-                city,
-                list);
+        Call<ResponseItems> api = API.uploadImages(0, id_user, location, city, list, legende);
         api.enqueue(new Callback<ResponseItems>() {
             @Override
             public void onResponse(Call<ResponseItems> call, Response<ResponseItems> response) {
@@ -233,13 +175,13 @@ public class PhotosToPublishActivity extends AppCompatActivity {
                 ResponseItems responseItems = response.body();
                 boolean success = responseItems.getSuccess();
                 String message = responseItems.getMessage();
-                if (success){
-                    Intent intent = new Intent(PhotosToPublishActivity.this,MainActivity.class);
-                    intent.putExtra("NumTab", "0");
+                if (success) {
+                    Intent intent = new Intent(PhotosToPublishActivity.this, MainActivity.class);
+                    intent.putExtra("NumTab", "4");
                     startActivity(intent);
                     finish();
 
-                }else {
+                } else {
                     Toast.makeText(getApplicationContext(),
                             message, Toast.LENGTH_LONG)
                             .show();
@@ -258,20 +200,21 @@ public class PhotosToPublishActivity extends AppCompatActivity {
 
 
     }
+
     @NonNull
     private MultipartBody.Part prepareFilePart(String partName, Uri fileUri) {
         // https://github.com/iPaulPro/aFileChooser/blob/master/aFileChooser/src/com/ipaulpro/afilechooser/utils/FileUtils.java
         // use the FileUtils to get the actual file by uri
         File file = FileUtils.getFile(this, fileUri);
         //compress the image using Compressor lib
-       // Log.d("size of image before compression --> " + file.getTotalSpace());
+        // Log.d("size of image before compression --> " + file.getTotalSpace());
         try {
-             compressedImageFile = new Compressor(this).compressToFile(file);
+            compressedImageFile = new Compressor(this).compressToFile(file);
 
-        }catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
-      //  PhotosToPublishActivity.d("size of image after compression --> " + compressedImageFile.getTotalSpace());
+        //  PhotosToPublishActivity.d("size of image after compression --> " + compressedImageFile.getTotalSpace());
         // create RequestBody instance from file
         RequestBody requestFile =
                 RequestBody.create(
@@ -282,7 +225,7 @@ public class PhotosToPublishActivity extends AppCompatActivity {
         return MultipartBody.Part.createFormData(partName, file.getName(), requestFile);
     }
 
-    public void hideStatutBar(){
+    public void hideStatutBar() {
         // If the Android version is lower than Jellybean, use this call to hide
         // the status bar.
         if (Build.VERSION.SDK_INT < 16) {
@@ -303,6 +246,7 @@ public class PhotosToPublishActivity extends AppCompatActivity {
         onBackPressed();
         return true;
     }
+
     private void showDialog() {
         if (!pDialog.isShowing())
             pDialog.show();
@@ -311,6 +255,71 @@ public class PhotosToPublishActivity extends AppCompatActivity {
     private void hideDialog() {
         if (pDialog.isShowing())
             pDialog.dismiss();
+    }
+
+    private void openAutocompleteActivity() {
+        try {
+            // The autocomplete activity requires Google Play Services to be available. The intent
+            // builder checks this and throws an exception if it is not the case.
+
+            AutocompleteFilter autocompleteFilter = new AutocompleteFilter.Builder()
+                    .setTypeFilter(Place.TYPE_COUNTRY)
+                    //.setCountry(countryCode)
+                    .build();
+
+            Intent intent = new PlaceAutocomplete
+                    .IntentBuilder(PlaceAutocomplete.MODE_FULLSCREEN)
+                    //    .setFilter(autocompleteFilter)
+                    .build(this);
+            startActivityForResult(intent, PLACE_AUTOCOMPLETE_REQUEST_CODE);
+        } catch (GooglePlayServicesRepairableException e) {
+            // Indicates that Google Play Services is either not installed or not up to date. Prompt
+            // the user to correct the issue.
+            GoogleApiAvailability.getInstance().getErrorDialog(this, e.getConnectionStatusCode(),
+                    0 /* requestCode */).show();
+        } catch (GooglePlayServicesNotAvailableException e) {
+            // Indicates that Google Play Services is not available and the problem is not easily
+            // resolvable.
+            String message = "Google Play Services is not available: " +
+                    GoogleApiAvailability.getInstance().getErrorString(e.errorCode);
+
+            Log.e("ActivityPHotos", message);
+            Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    /**
+     * Called after the autocomplete activity has finished to return its result.
+     */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        // Check that the result was from the autocomplete widget.
+        if (requestCode == PLACE_AUTOCOMPLETE_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                // Get the user's selected place from the Intent.
+                Place place = PlaceAutocomplete.getPlace(this, data);
+                placeET.setText(place.getAddress().toString());
+                mCity = place.getName().toString();
+
+                // Display attributions if required.
+                CharSequence attributions = place.getAttributions();
+                if (!TextUtils.isEmpty(attributions)) {
+                    //  mPlaceAttribution.setText(Html.fromHtml(attributions.toString()));
+                } else {
+                    //  mPlaceAttribution.setText("");
+                }
+            } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
+                Status status = PlaceAutocomplete.getStatus(this, data);
+                Log.e("ActivityPHotos", "Error: Status = " + status.toString());
+            } else if (resultCode == RESULT_CANCELED) {
+                // Indicates that the activity closed before a selection was made. For example if
+                // the user pressed the back button.
+                Log.e("ActivityPHotos", "Error: Canceled!");
+
+            }
+        }
     }
 
 

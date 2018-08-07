@@ -77,6 +77,7 @@ public class HomeFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_home, container, false);
         session = new SessionManager(getActivity());
         user_id = session.getUSER_ID();
+
         recyclerView = rootView.findViewById(R.id.recycleview);
         progressBar = rootView.findViewById(R.id.main_progress);
 
@@ -240,6 +241,9 @@ public class HomeFragment extends Fragment {
             items.setNumber_comments(data.get(i).getNumber_comments());
             items.setNumber_likes(data.get(i).getNumber_likes());
             items.setLike(data.get(i).isLike());
+            items.setLocation(data.get(i).getLocation());
+            items.setLegende(data.get(i).getLegende());
+            items.setCreated_at(data.get(i).getCreated_at());
             photosItems.add(items);
         }
         return photosItems;

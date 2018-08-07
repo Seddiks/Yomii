@@ -8,23 +8,27 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 import android.text.Html;
+import android.text.SpannableString;
+import android.text.style.StyleSpan;
 
 import com.app.seddik.yomii.MainActivity;
 import com.app.seddik.yomii.R;
 import com.app.seddik.yomii.activities.CreateTravelStoryActivity;
+import com.app.seddik.yomii.config.AppConfig;
 import com.app.seddik.yomii.models.NotificationVO;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
-import java.net.URL;
+
+import static com.app.seddik.yomii.utils.MyBitmapConfigs.getBitmapFromURL;
 
 /**
  * Created by Seddik on 20/06/2018.
@@ -56,14 +60,24 @@ public class NotificationUtils {
         {
             String message = notificationVO.getMessage();
             String title = notificationVO.getTitle();
-            String iconUrl = notificationVO.getPath_big_photo();
+            String iconUrlBigPhoto = AppConfig.URL_UPLOAD_PHOTOS + notificationVO.getPath_big_photo();
+            String iconUrlPhotoProfil = AppConfig.URL_UPLOAD_PHOTOS + notificationVO.getPath_photo_profil();
             String action = notificationVO.getAction();
             String destination = notificationVO.getActionDestination();
-            Bitmap iconBitMap = null;
-            if (iconUrl != null) {
-                iconBitMap = getBitmapFromURL(iconUrl);
+            Bitmap largeBitMap = null;
+            Bitmap profilBitMap = null;
+
+            if (iconUrlBigPhoto != null) {
+                largeBitMap = getBitmapFromURL(iconUrlBigPhoto);
             }
-            final int icon = R.mipmap.ic_launcher;
+
+            if (iconUrlPhotoProfil != null) {
+                profilBitMap = getBitmapFromURL(iconUrlPhotoProfil);
+                float multiplier = MyBitmapConfigs.getImageFactor(mContext.getResources());
+                profilBitMap = Bitmap.createScaledBitmap(profilBitMap, (int) (profilBitMap.getWidth() * multiplier), (int) (profilBitMap.getHeight() * multiplier), false);
+
+            }
+            final int icon = R.drawable.ic_person_circle_blue_a400_36dp;
 
             PendingIntent resultPendingIntent;
 
@@ -98,7 +112,7 @@ public class NotificationUtils {
 
             Notification notification;
 
-            if (iconBitMap == null) {
+            if (largeBitMap == null) {
                 //When Inbox Style is applied, user can expand the notification
                 NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
 
@@ -115,18 +129,25 @@ public class NotificationUtils {
 
             } else {
                 //If Bitmap is created from URL, show big icon
+                SpannableString spanString = new SpannableString(title);
+                spanString.setSpan(new StyleSpan(Typeface.BOLD), 0, spanString.length(), 0);
+
                 NotificationCompat.BigPictureStyle bigPictureStyle = new NotificationCompat.BigPictureStyle();
-                bigPictureStyle.setBigContentTitle(title);
+                bigPictureStyle.setBigContentTitle(spanString);
                 bigPictureStyle.setSummaryText(Html.fromHtml(message).toString());
-                bigPictureStyle.bigPicture(iconBitMap);
+                bigPictureStyle.bigPicture(largeBitMap);
                 notification = mBuilder.setSmallIcon(icon).setTicker(title).setWhen(0)
                         .setAutoCancel(true)
-                        .setContentTitle(title)
+                        .setContentTitle(spanString)
                         .setContentIntent(resultPendingIntent)
                         .setStyle(bigPictureStyle)
-                        .setSmallIcon(R.mipmap.ic_launcher_round)
-                        .setLargeIcon(BitmapFactory.decodeResource(mContext.getResources(), icon))
+                        .setSmallIcon(R.drawable.ic_notifications_light_blue_200_18dp)
+                        .setColor(Color.parseColor("#81D4FA"))
+                        // .setLargeIcon(BitmapFactory.decodeResource(mContext.getResources(), icon))
+                        .setLargeIcon(profilBitMap)
                         .setContentText(message)
+                        .setWhen(Calendar.getInstance().getTimeInMillis())
+                        .setShowWhen(true)
                         .build();
             }
 
@@ -135,26 +156,6 @@ public class NotificationUtils {
         }
     }
 
-    /**
-     * Downloads push notification image before displaying it in
-     * the notification tray
-     *
-     * @param strURL : URL of the notification Image
-     * @return : BitMap representation of notification Image
-     */
-    private Bitmap getBitmapFromURL(String strURL) {
-        try {
-            URL url = new URL(strURL);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setDoInput(true);
-            connection.connect();
-            InputStream input = connection.getInputStream();
-            return BitmapFactory.decodeStream(input);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
 
     /**
      * Playing notification sound

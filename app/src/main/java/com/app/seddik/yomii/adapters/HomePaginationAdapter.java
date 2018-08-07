@@ -3,6 +3,7 @@ package com.app.seddik.yomii.adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -18,8 +19,8 @@ import android.widget.TextView;
 
 import com.app.seddik.yomii.R;
 import com.app.seddik.yomii.activities.CommentsPhotosActivity;
+import com.app.seddik.yomii.activities.FullScreenImageActivity;
 import com.app.seddik.yomii.activities.ProfileAbonneActivity;
-import com.app.seddik.yomii.activities.RegistrationActivity;
 import com.app.seddik.yomii.models.DisplayPhotosPublishedItems;
 import com.app.seddik.yomii.utils.GlideImageLoader;
 import com.app.seddik.yomii.utils.LikeUtils;
@@ -91,7 +92,6 @@ public class HomePaginationAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
         final DisplayPhotosPublishedItems result = photoResults.get(position);
         final int numberLikes = result.getNumber_likes();
-        final int numberComments = result.getNumber_comments();
         final int user_id = session.getUSER_ID();
 
 
@@ -101,8 +101,27 @@ public class HomePaginationAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 RequestOptions requestOptions = new RequestOptions()
                         .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC);
                 viewHolder.tv_name.setText(result.getFull_name());
-                viewHolder.tv_date.setText("28 Juin 2018");
+                viewHolder.tv_date.setText(result.getCreated_at());
                 viewHolder.btnLike.setChecked(result.isLike());
+
+                if (!result.getLocation().isEmpty()) {
+                    viewHolder.tv_location.setVisibility(View.VISIBLE);
+                    viewHolder.tv_location.setText(result.getLocation());
+                } else {
+                    viewHolder.tv_location.setVisibility(View.GONE);
+                }
+
+                if (!result.getLegende().isEmpty()) {
+                    viewHolder.tv_legende.setVisibility(View.VISIBLE);
+                    viewHolder.tv_legende.setText(result.getLegende());
+                    viewHolder.img_legende.setVisibility(View.VISIBLE);
+                } else {
+                    viewHolder.tv_legende.setVisibility(View.GONE);
+                    viewHolder.img_legende.setVisibility(View.GONE);
+                }
+
+                Typeface typeJosefinSansBold = Typeface.createFromAsset(context.getAssets(), "JosefinSans-Bold.ttf");
+                viewHolder.tv_location.setTypeface(typeJosefinSansBold);
 
                 if (numberLikes > 0) {
                     viewHolder.tv_likes.setText(numberLikes + " like");
@@ -143,8 +162,8 @@ public class HomePaginationAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 viewHolder.img_published.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent intent = new Intent(context, RegistrationActivity.class);
-                        //   intent.putExtra("PathPhoto", URL_UPLOAD_PHOTOS + result.getPhoto_published());
+                        Intent intent = new Intent(context, FullScreenImageActivity.class);
+                        intent.putExtra("PathPhoto", URL_UPLOAD_PHOTOS + result.getPhoto_published());
                         context.startActivity(intent);
 
                     }
@@ -244,6 +263,7 @@ public class HomePaginationAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                     public void onClick(View v) {
 
                         Intent intent = new Intent(context, CommentsPhotosActivity.class);
+                        intent.putExtra("user_id", result.getUser_id());
                         intent.putExtra("photo_id", result.getPhoto_id());
                         intent.putExtra("position_photo", position);
                         intent.putExtra("ShowKeyBoard", false);
@@ -401,8 +421,8 @@ public class HomePaginationAdapter extends RecyclerView.Adapter<RecyclerView.Vie
      * Main list's content ViewHolder
      */
     protected class ViewHolder extends RecyclerView.ViewHolder {
-        public ImageView img_profile, img_published, img_comment;
-        private TextView tv_name ,tv_date ,tv_likes,tv_comments;
+        public ImageView img_profile, img_published, img_comment, img_legende;
+        private TextView tv_name, tv_date, tv_location, tv_likes, tv_comments, tv_legende;
         private CheckBox btnLike;
         private Button btnFollowing;
         private ProgressBar progressBar;
@@ -420,6 +440,10 @@ public class HomePaginationAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             tv_date = itemView.findViewById(R.id.date);
             tv_likes = itemView.findViewById(R.id.numberReactions);
             tv_comments = itemView.findViewById(R.id.numberComments);
+            tv_location = itemView.findViewById(R.id.location);
+            tv_legende = itemView.findViewById(R.id.legende);
+            img_legende = itemView.findViewById(R.id.legende_img);
+
         }
     }
 

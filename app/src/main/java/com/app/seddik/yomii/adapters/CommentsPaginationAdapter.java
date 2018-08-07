@@ -91,6 +91,7 @@ public class CommentsPaginationAdapter extends RecyclerView.Adapter<RecyclerView
 
                 viewHolder.tv_name.setText(result.getFull_name());
                 viewHolder.tv_comment.setText(result.getComment());
+                viewHolder.tv_date.setText(result.getCreated_at());
 
                 if (Comment_ID >= 0) { // case load all comments from server
                     viewHolder.tv_date.setVisibility(View.VISIBLE);

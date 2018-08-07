@@ -14,6 +14,26 @@ public class DisplayPhotosPublishedItems {
     private int number_comments;
     private boolean isLike;
     private int number_likes;
+    private String location;
+    private String legende;
+    private String created_at;
+
+    public String getLegende() {
+        return legende;
+    }
+
+    public void setLegende(String legende) {
+        this.legende = legende;
+    }
+
+    public String getLocation() {
+
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
 
     public int getPhoto_id() {
         return photo_id;
@@ -85,5 +105,14 @@ public class DisplayPhotosPublishedItems {
 
     public void setLike(boolean like) {
         isLike = like;
+    }
+
+
+    public String getCreated_at() {
+        return created_at;
+    }
+
+    public void setCreated_at(String created_at) {
+        this.created_at = created_at;
     }
 }

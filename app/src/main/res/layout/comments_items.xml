@@ -36,7 +36,6 @@
         android:layout_below="@+id/comment"
         android:layout_marginTop="4dp"
         android:layout_toRightOf="@+id/photo_profil"
-        android:text="15 Juin 2018"
         android:textColor="@color/grey_500"
         android:textSize="@dimen/standard_12sp"
         android:visibility="gone" />
@@ -64,15 +63,15 @@
         android:layout_marginRight="4dp"
         android:layout_marginTop="4dp"
         android:layout_toRightOf="@+id/photo_profil"
-        android:text="Publication.."
+        android:text="Publication ..."
         android:textColor="@color/grey_500"
-        android:textSize="@dimen/standard_10sp"
+        android:textSize="@dimen/standard_12sp"
         android:visibility="gone" />
 
     <ProgressBar
         android:id="@+id/progress"
-        android:layout_width="@dimen/standard_10"
-        android:layout_height="@dimen/standard_10"
+        android:layout_width="@dimen/standard_12"
+        android:layout_height="@dimen/standard_12"
         android:layout_below="@+id/comment"
         android:layout_marginRight="@dimen/standard_18"
         android:layout_marginTop="5dp"

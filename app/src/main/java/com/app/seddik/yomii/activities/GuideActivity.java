@@ -14,10 +14,12 @@ import android.widget.TextView;
 import com.app.seddik.yomii.R;
 import com.app.seddik.yomii.models.GuideItems;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 
 import static com.app.seddik.yomii.config.AppConfig.URL_UPLOAD_PHOTOS;
 
 public class GuideActivity extends AppCompatActivity {
+    Uri mUriPhoto;
     private FrameLayout frameExperience,frameHistory,frameBudget, frameBestTime, frameBestPlace,frameRestaurant,
             frameTransportation, frameLanguage, frameOtherInfo;
     private TextView title, location, experience, history, budget_advice, best_time_to_visit, best_place_to_visit,restaurant_suggestions,
@@ -25,9 +27,6 @@ public class GuideActivity extends AppCompatActivity {
     private ImageView photo, update;
     private GuideItems.Data guideItems;
     private String mPathPhoto;
-    Uri mUriPhoto;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,13 +87,13 @@ public class GuideActivity extends AppCompatActivity {
             if (mUriPhoto != null){
                 Glide.with(getApplicationContext())
                         .load(mUriPhoto)
-                        // .apply(new RequestOptions().placeholder(R.drawable.bg_barca).error(R.drawable.bg_barca))
+                        .apply(new RequestOptions().placeholder(R.drawable.bg_cover).error(R.drawable.bg_cover))
                         .into(photo);
 
             }else {
                 Glide.with(getApplicationContext())
                         .load(mPathPhoto)
-                        // .apply(new RequestOptions().placeholder(R.drawable.bg_barca).error(R.drawable.bg_barca))
+                        .apply(new RequestOptions().placeholder(R.drawable.bg_cover).error(R.drawable.bg_cover))
                         .into(photo);
 
             }

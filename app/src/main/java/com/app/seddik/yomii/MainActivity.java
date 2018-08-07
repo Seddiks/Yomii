@@ -34,6 +34,9 @@ import com.app.seddik.yomii.activities.PhotosToPublishActivity;
 import com.app.seddik.yomii.adapters.MainPagerAdapter;
 import com.app.seddik.yomii.config.AppConfig;
 import com.app.seddik.yomii.utils.SessionManager;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 import com.zhihu.matisse.Matisse;
 import com.zhihu.matisse.MimeType;
 import com.zhihu.matisse.engine.impl.PicassoEngine;
@@ -49,25 +52,22 @@ import static com.app.seddik.yomii.R.id.tv_count;
 import static com.app.seddik.yomii.utils.MyBitmapConfigs.getRealPathFromUri;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
-    private Boolean isFabOpen = false;
-    public FloatingActionButton fab,fab1,fab2,fab3, fab4, fab5;
-    private Animation fab_open,fab_close,rotate_forward,rotate_backward;
-    LinearLayout fabLayout1, fabLayout2, fabLayout3,fabLayout4,fabLayout5;
-    View fabBGLayout;
-    boolean isFABOpen=false;
-
-
     static final int REQUEST_IMAGE_CAPTURE = 1;
     static final int REQUEST_CODE_CHOOSE = 1001;
     static final int REQUEST_TAKE_PHOTO = 1;
+    static int typeLinkPhoto;
+    public FloatingActionButton fab,fab1,fab2,fab3, fab4, fab5;
+    public TabLayout tabLayout;
+    LinearLayout fabLayout1, fabLayout2, fabLayout3,fabLayout4,fabLayout5;
+    View fabBGLayout;
+    boolean isFABOpen=false;
     String mCurrentPhotoPath;
     Uri mCurrentPhotoUri;
     ArrayList<String> mListCurrentPhotoPath;
     ArrayList<Uri> mSelected;
-    static int typeLinkPhoto;
-
+    private Boolean isFabOpen = false;
+    private Animation fab_open, fab_close, rotate_forward, rotate_backward;
     private SessionManager session;
-    public TabLayout tabLayout;
     private ViewPager viewPager;
     private MainPagerAdapter adapter;
     private int[] tabIcons = {
@@ -191,7 +191,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
         // After uploading photos go to Profil Tab!
         if (getIntent().getStringExtra("NumTab") != null){
-            viewPager.setCurrentItem(4); // Profil tab number 4
+            viewPager.setCurrentItem(0); //  tab number 0 "Home Fragment"
 
         }
 
@@ -473,25 +473,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
     }
 
-    private class MyBroadcastReceiver extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Bundle extras = intent.getExtras();
-            int counter = extras.getInt("CounterNotification",0);
-            View view = tabLayout.getTabAt(3).getCustomView();
-            TextView counterTV =  view.findViewById(tv_count);
-            if (counter > 0){
-                counterTV.setVisibility(View.VISIBLE);
-                counterTV.setText(""+counter);
-
-            }
-
-        }
-    }
-
     @Override
     protected void onResume() {
         super.onResume();
+        FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(MainActivity.this, new OnSuccessListener<InstanceIdResult>() {
+            @Override
+            public void onSuccess(InstanceIdResult instanceIdResult) {
+                String TokenFirebase = instanceIdResult.getToken();
+                Log.e("newTokenLogin Main", TokenFirebase);
+
+            }
+        });
+
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction("com.app.seddik.yomii.onMessageReceived");
         MyBroadcastReceiver receiver = new MyBroadcastReceiver();
@@ -505,6 +498,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             closeFABMenu();
         }else{
             super.onBackPressed();
+        }
+    }
+
+    private class MyBroadcastReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Bundle extras = intent.getExtras();
+            int counter = extras.getInt("CounterNotification", 0);
+            View view = tabLayout.getTabAt(3).getCustomView();
+            TextView counterTV = view.findViewById(tv_count);
+            if (counter > 0) {
+                counterTV.setVisibility(View.VISIBLE);
+                counterTV.setText("" + counter);
+
+            }
+
         }
     }
 

@@ -18,17 +18,22 @@ import java.util.Map;
  */
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
-    Context context;
     private static final String TAG = "MyFirebaseMsgService";
     private static final String TITLE = "title";
     private static final String EMPTY = "";
     private static final String MESSAGE = "message";
     private static final String IMAGE = "path_big_photo";
+    private static final String IMAGE_PROFIL = "path_photo_profil";
     private static final String ACTION = "action";
     private static final String DATA = "data";
     private static final String ACTION_DESTINATION = "action_destination";
+    public static String Token_Firebase = "";
+    Context context;
 
-
+    @Override
+    public void onNewToken(String s) {
+        super.onNewToken(s);
+    }
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
@@ -72,12 +77,14 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         String title = data.get(TITLE);
         String message = data.get(MESSAGE);
         String iconUrl = data.get(IMAGE);
+        String iconUrlProfil = data.get(IMAGE_PROFIL);
         String action = data.get(ACTION);
         String actionDestination = data.get(ACTION_DESTINATION);
         NotificationVO notificationVO = new NotificationVO();
         notificationVO.setTitle(title);
         notificationVO.setMessage(message);
         notificationVO.setPath_big_photo(iconUrl);
+        notificationVO.setPath_photo_profil(iconUrlProfil);
         notificationVO.setAction(action);
         notificationVO.setActionDestination(actionDestination);
 
@@ -88,4 +95,10 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         notificationUtils.playNotificationSound();
 
     }
+
+    public interface TokenFirebaseCallbacks {
+        void onGetTokeFirebaseSuccess(String token);
+
+    }
+
 }

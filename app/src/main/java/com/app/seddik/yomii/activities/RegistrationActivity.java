@@ -17,7 +17,6 @@ import com.app.seddik.yomii.R;
 import com.app.seddik.yomii.config.AppConfig;
 import com.app.seddik.yomii.models.UserItems;
 import com.app.seddik.yomii.networks.ApiService;
-import com.app.seddik.yomii.services.MyFirebaseInstanceIDService;
 import com.app.seddik.yomii.utils.SessionManager;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
@@ -55,6 +54,7 @@ public class RegistrationActivity extends AppCompatActivity {
 
         Typeface type = Typeface.createFromAsset(getAssets(), "Walkway_Bold.ttf");
         headerText.setTypeface(type);
+
 
         // Progress dialog
         pDialog = new SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE);
@@ -113,7 +113,6 @@ public class RegistrationActivity extends AppCompatActivity {
      * email, password) to register url
      */
     private void registerUser(final String fname, final String email, final String password, final String passwordConfirm) {
-        String token = MyFirebaseInstanceIDService.Tok;
         pDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
         pDialog.setTitleText("Registration ...");
         pDialog.setCancelable(false);
@@ -123,7 +122,7 @@ public class RegistrationActivity extends AppCompatActivity {
                 addConverterFactory(GsonConverterFactory.create()).
                 build();
         ApiService API = retrofit.create(ApiService.class);
-        Call<UserItems> api = API.registration(fname, email, password, passwordConfirm, token);
+        Call<UserItems> api = API.registration(fname, email, password, passwordConfirm, "");
         api.enqueue(new Callback<UserItems>() {
             @Override
             public void onResponse(Call<UserItems> call, retrofit2.Response<UserItems> response) {

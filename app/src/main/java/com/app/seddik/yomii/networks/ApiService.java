@@ -33,7 +33,15 @@ public interface ApiService {
     @FormUrlEncoded
     @POST("login.php")
     Call<UserItems> login(@Field("email") String msg,
-                          @Field("password") String password);
+                          @Field("password") String password,
+                          @Field("token_firebase") String token_firebase);
+
+    //Logout
+    @FormUrlEncoded
+    @POST("logout.php")
+    Call<ResponseItems> logout(@Field("user_id") int user_id,
+                               @Field("type_token_firebase") int type_token_firebase,
+                               @Field("token_firebase") String token_firebase);
 
     //Registration
     @FormUrlEncoded
@@ -55,9 +63,10 @@ public interface ApiService {
     @POST("treatment_photos.php")
     Call<ResponseItems> uploadImages(@Part("action")  int act,
                                      @Part("user_id")  int id,
-                                     @Part("country") RequestBody country,
+                                     @Part("location") RequestBody location,
                                      @Part("city") RequestBody city,
-                                     @Part List<MultipartBody.Part> images);
+                                     @Part List<MultipartBody.Part> images,
+                                     @Part("legende") RequestBody legende);
 
     //Get Paths photos published by user
     @FormUrlEncoded

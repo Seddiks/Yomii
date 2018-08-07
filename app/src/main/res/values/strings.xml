@@ -21,6 +21,7 @@
     <string name="internal_storage">Internal storage</string>
 
     <string name="google_maps_api_key">AIzaSyBYSIbedXNm5m20v5v_Slmdwff8b-uqmW0</string>
+    <string name="google_places_api_key">AIzaSyCv_itm3keheDzww7fD4vAlRiVl6V4Vlvc</string>
     <string name="title_activity_scrolling">ScrollingActivity</string>
     <string name="large_text">
         "Material is the metaphor.\n\n"

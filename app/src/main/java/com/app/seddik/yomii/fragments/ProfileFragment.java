@@ -7,6 +7,7 @@ import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
@@ -29,6 +30,7 @@ import com.app.seddik.yomii.MainActivity;
 import com.app.seddik.yomii.R;
 import com.app.seddik.yomii.adapters.ProfilPagerAdapter;
 import com.app.seddik.yomii.adapters.TravelStoryAdapter;
+import com.app.seddik.yomii.config.AppConfig;
 import com.app.seddik.yomii.models.ResponseItems;
 import com.app.seddik.yomii.models.TravelStoryItems;
 import com.app.seddik.yomii.models.UserItems;
@@ -38,6 +40,7 @@ import com.app.seddik.yomii.utils.FileUtils;
 import com.app.seddik.yomii.utils.SessionManager;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.zhihu.matisse.Matisse;
 import com.zhihu.matisse.MimeType;
 import com.zhihu.matisse.engine.impl.PicassoEngine;
@@ -47,6 +50,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import de.hdodenhof.circleimageview.CircleImageView;
 import id.zelory.compressor.Compressor;
 import okhttp3.MediaType;
@@ -96,6 +100,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
     private TravelStoryItems travelStoryItems;
     private RecyclerView recyclerView;
     private LinearLayoutManager layoutManager;
+    private SweetAlertDialog pDialog;
+
 
 
 
@@ -112,6 +118,9 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
         session = new SessionManager(getActivity());
         user = session.getUserDetails();
         id_user = user.getUser_id();
+        // Progress dialog
+        pDialog = new SweetAlertDialog(getActivity(), SweetAlertDialog.PROGRESS_TYPE);
+        pDialog.setCancelable(false);
 
         profile_image =  rootView.findViewById(R.id.profile_image);
         cover =  rootView.findViewById(R.id.cover_photo);
@@ -123,7 +132,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
         settings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                session.logoutUser();
+                logOutUser();
             }
         });
         exit =  rootView.findViewById(R.id.exit);
@@ -329,6 +338,76 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
             }
         });
 
+
+    }
+
+    private void logOutUser() {
+        pDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
+        pDialog.setTitleText("Logout ...");
+        pDialog.setCancelable(false);
+        pDialog.show();
+
+        String token = session.getTokenFirebase();
+        Retrofit retrofit = new Retrofit.Builder().
+                baseUrl(AppConfig.URL_AUTH).
+                addConverterFactory(GsonConverterFactory.create()).
+                build();
+        ApiService API = retrofit.create(ApiService.class);
+        Call<ResponseItems> api = API.logout(id_user, 4, token);
+        api.enqueue(new Callback<ResponseItems>() {
+            @Override
+            public void onResponse(Call<ResponseItems> call, Response<ResponseItems> response) {
+                pDialog.dismiss();
+                ResponseItems responseItems = response.body();
+                boolean success = responseItems.getSuccess();
+                String message = responseItems.getMessage();
+                if (success) {
+                    deleteTokenFirebaseInstance();
+                } else {
+                    Toast.makeText(getActivity(),
+                            message, Toast.LENGTH_LONG)
+                            .show();
+
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<ResponseItems> call, Throwable t) {
+                pDialog.dismiss();
+                Toast.makeText(getActivity(),
+                        "Error..", Toast.LENGTH_LONG)
+                        .show();
+
+            }
+        });
+
+
+    }
+
+    private void deleteTokenFirebaseInstance() {
+
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... params) {
+                {
+                    try {
+                        FirebaseInstanceId.getInstance().deleteInstanceId();
+                        getActivity().finishAffinity(); //Close all activities
+                        session.logoutUser();
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void result) {
+                //call your activity where you want to land after log out
+            }
+        }.execute();
 
     }
 

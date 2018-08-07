@@ -50,6 +50,7 @@ public class CommentsPhotosActivity extends AppCompatActivity {
             build();
     ApiService API = retrofit.create(ApiService.class);
     private int user_id, photo_id;
+    private int user_idPhoto;
     private SessionManager session;
     private boolean isLoading = false;
     private boolean isLastPage = false;
@@ -72,7 +73,7 @@ public class CommentsPhotosActivity extends AppCompatActivity {
         user_id = session.getUSER_ID();
         userItems = session.getUserDetails();
 
-        int user_idPhoto = getIntent().getIntExtra("user_id", 0);
+        user_idPhoto = getIntent().getIntExtra("user_id", 0);
         photo_id = getIntent().getIntExtra("photo_id", 0);
         postion_photo = getIntent().getIntExtra("position_photo", 0);
 
@@ -249,10 +250,11 @@ public class CommentsPhotosActivity extends AppCompatActivity {
                                     comment.setSelection(0);
                                     CommentItems item = new CommentItems();
                                     item.setComment_id(-1);
-                                    item.setUser_id(user_id);
+                                    item.setUser_id(user_idPhoto);
                                     item.setPhoto_id(photo_id);
                                     item.setFull_name(userItems.getFull_name());
                                     item.setPhoto_profil_path(userItems.getPhoto_profil_path());
+                                    item.setCreated_at("Just now");
                                     item.setComment(charSequence.toString());
 
                                     recyclerView.smoothScrollToPosition(0);

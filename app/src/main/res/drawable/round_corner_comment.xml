@@ -6,15 +6,6 @@
         android:width="1dp"
         android:color="@color/grey_300" />
 
-    <padding
-        android:bottom="2dp"
-        android:left="2dp"
-        android:right="2dp"
-        android:top="2dp" />
 
-    <corners
-        android:bottomLeftRadius="16dp"
-        android:bottomRightRadius="16dp"
-        android:topLeftRadius="16dp"
-        android:topRightRadius="16dp" />
+    <corners android:radius="100dp" />
 </shape>

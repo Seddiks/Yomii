@@ -21,6 +21,9 @@ import com.app.seddik.yomii.config.AppConfig;
 import com.app.seddik.yomii.models.UserItems;
 import com.app.seddik.yomii.networks.ApiService;
 import com.app.seddik.yomii.utils.SessionManager;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import retrofit2.Call;
@@ -37,6 +40,7 @@ public class LoginActivity extends AppCompatActivity {
     private SweetAlertDialog pDialog;
     private SweetAlertDialog sweetDialog;
     private SessionManager session;
+    private String TokenFirebase;
 
 
 
@@ -49,9 +53,12 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.loginactivity_main);
         getSupportActionBar().hide();
 
-        TextView textView = (TextView) findViewById(R.id.title);
+
+        TextView title = findViewById(R.id.title);
+        TextView subTitle = findViewById(R.id.subTitle);
         Typeface typeFace = Typeface.createFromAsset(getAssets(), "ARABOLIC.TTF");
-        textView.setTypeface(typeFace);
+        title.setTypeface(typeFace);
+        subTitle.setTypeface(typeFace);
         etEmail = (EditText) findViewById(R.id.email_xml);
         etMotDePasse = (EditText) findViewById(R.id.motdepasse_xml);
         btnConnexion = (Button) findViewById(R.id.btnConnexion_xml);
@@ -106,7 +113,6 @@ public class LoginActivity extends AppCompatActivity {
 
                 // Check for empty data in the form
                 if (email.isEmpty() || password.isEmpty()) {
-
                     Toast.makeText(getApplicationContext(), "Please enter the credentials!", Toast.LENGTH_LONG).show();
 
                 } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
@@ -114,6 +120,10 @@ public class LoginActivity extends AppCompatActivity {
 
                 } else if (password.trim().length() < 8) {
                     Toast.makeText(getApplicationContext(), "Password must be at least 8 character", Toast.LENGTH_LONG).show();
+
+                } else if (TokenFirebase == null) {
+                    Toast.makeText(getApplicationContext(), "Error, please try again", Toast.LENGTH_LONG).show();
+
                 } else {
                     checkLogin(email, password);
                 }
@@ -128,6 +138,7 @@ public class LoginActivity extends AppCompatActivity {
      * function to verify login details in mysql db
      * */
     private void checkLogin(final String email, final String password) {
+
         pDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
         pDialog.setTitleText("Login ...");
         pDialog.setCancelable(false);
@@ -137,7 +148,7 @@ public class LoginActivity extends AppCompatActivity {
                 addConverterFactory(GsonConverterFactory.create()).
                 build();
         ApiService API = retrofit.create(ApiService.class);
-        Call<UserItems> api =API.login(email,password);
+        Call<UserItems> api = API.login(email, password, TokenFirebase);
         api.enqueue(new Callback<UserItems>() {
             @Override
             public void onResponse(Call<UserItems> call, retrofit2.Response<UserItems> response) {
@@ -156,6 +167,7 @@ public class LoginActivity extends AppCompatActivity {
                 if (success){
                     if (isConfirmed == 1) {
                         session.createLoginSession(user_id, full_name, photo_profil, photo_cover, bio, email, token);
+                        session.saveTokenFirebase(TokenFirebase);
                         Intent intent = new Intent(LoginActivity.this,
                                 MainActivity.class);
                         startActivity(intent);
@@ -293,4 +305,27 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Dispatch onResume() to fragments.  Note that for better inter-operation
+     * with older versions of the platform, at the point of this call the
+     * fragments attached to the activity are <em>not</em> resumed.  This means
+     * that in some cases the previous state may still be saved, not allowing
+     * fragment transactions that modify the state.  To correctly interact
+     * with fragments in their proper state, you should instead override
+     * {@link #onResumeFragments()}.
+     */
+    @Override
+    protected void onResume() {
+        super.onResume();
+        //  Get new Token Firebase
+        FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(LoginActivity.this, new OnSuccessListener<InstanceIdResult>() {
+            @Override
+            public void onSuccess(InstanceIdResult instanceIdResult) {
+                TokenFirebase = instanceIdResult.getToken();
+                Log.e("newTokenLogin Login", TokenFirebase);
+
+            }
+        });
+
+    }
 }

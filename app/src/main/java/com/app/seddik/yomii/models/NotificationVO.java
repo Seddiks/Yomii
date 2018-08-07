@@ -11,6 +11,7 @@ public class NotificationVO {
     private String path_big_photo;
     private String action;
     private String actionDestination;
+    private String path_photo_profil;
 
     public String getTitle() {
         return title;
@@ -48,6 +49,10 @@ public class NotificationVO {
         return actionDestination;
     }
 
+    public void setActionDestination(String actionDestination) {
+        this.actionDestination = actionDestination;
+    }
+
     public String getPath_big_photo() {
         return path_big_photo;
     }
@@ -56,7 +61,11 @@ public class NotificationVO {
         this.path_big_photo = path_big_photo;
     }
 
-    public void setActionDestination(String actionDestination) {
-        this.actionDestination = actionDestination;
+    public String getPath_photo_profil() {
+        return path_photo_profil;
+    }
+
+    public void setPath_photo_profil(String path_photo_profil) {
+        this.path_photo_profil = path_photo_profil;
     }
 }
