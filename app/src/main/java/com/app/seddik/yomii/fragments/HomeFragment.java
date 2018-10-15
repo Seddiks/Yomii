@@ -15,19 +15,14 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ProgressBar;
 
 import com.app.seddik.yomii.R;
 import com.app.seddik.yomii.adapters.HomePaginationAdapter;
-import com.app.seddik.yomii.models.DisplayPhotosPublishedItems;
+import com.app.seddik.yomii.api.ApiService;
 import com.app.seddik.yomii.models.ResponsePhotoItems;
-import com.app.seddik.yomii.networks.ApiService;
-import com.app.seddik.yomii.networks.Client;
 import com.app.seddik.yomii.utils.PaginationScrollListener;
 import com.app.seddik.yomii.utils.SessionManager;
-
-import java.util.ArrayList;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -41,21 +36,24 @@ import static com.app.seddik.yomii.config.AppConfig.URL_UPLOAD_DATA_HOME;
  * A simple {@link Fragment} subclass.
  */
 public class HomeFragment extends Fragment {
+
     private static final int PAGE_START = 1;
     public static int top = -1;
     HomePaginationAdapter adapterPagination;
+    Retrofit retrofit = new Retrofit.Builder().
+            baseUrl(URL_UPLOAD_DATA_HOME).
+            addConverterFactory(GsonConverterFactory.create()).
+            build();
+    ApiService API = retrofit.create(ApiService.class);
     private boolean isLoading = false;
     private boolean isLastPage = false;
     private int TOTAL_PAGES;
     private int currentPage = PAGE_START;
-    private ApiService movieService;
     private SessionManager session;
     private int user_id;
-    private Button btnFollow;
     private RecyclerView recyclerView;
     private LinearLayoutManager layoutManager;
     private ProgressBar progressBar;
-
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -85,7 +83,6 @@ public class HomeFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-
         adapterPagination = new HomePaginationAdapter(getActivity());
         adapterPagination. setHasStableIds(true);
         recyclerView.setAdapter(adapterPagination);
@@ -121,8 +118,6 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        //init service and load data
-        movieService = Client.getClient().create(ApiService.class);
         loadFirstPage();
         // Register to receive messages.
         // We are registering an observer (mMessageReceiver) to receive Intents
@@ -144,14 +139,8 @@ public class HomeFragment extends Fragment {
 
 
     private void loadFirstPage() {
-        Retrofit retrofit = new Retrofit.Builder().
-                baseUrl(URL_UPLOAD_DATA_HOME).
-                addConverterFactory(GsonConverterFactory.create()).
-                build();
-        ApiService API = retrofit.create(ApiService.class);
+
         Call<ResponsePhotoItems> api = API.getDetailsPhotos(0, user_id, currentPage);
-
-
         api.enqueue(new Callback<ResponsePhotoItems>() {
             @Override
             public void onResponse(Call<ResponsePhotoItems> call, Response<ResponsePhotoItems> response) {
@@ -162,16 +151,16 @@ public class HomeFragment extends Fragment {
                 int numberItems = results.getNumber_pages();
                 if (success){
                     TOTAL_PAGES = numberItems;
-                    ArrayList<DisplayPhotosPublishedItems> photosItems = new ArrayList<>();
-
                     progressBar.setVisibility(View.GONE);
-                    photosItems = fillDetails(results.getData());
-                    adapterPagination.addAll(photosItems);
+                    adapterPagination.addAll(results.getData());
 
                     if (currentPage <= TOTAL_PAGES) adapterPagination.addLoadingFooter();
                     else isLastPage = true;
 
                 }else {
+                    progressBar.setVisibility(View.GONE);
+                    if (currentPage != TOTAL_PAGES) adapterPagination.addLoadingFooter();
+                    else isLastPage = true;
 
                 }
             }
@@ -179,6 +168,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void onFailure(Call<ResponsePhotoItems> call, Throwable t) {
                 t.printStackTrace();
+                progressBar.setVisibility(View.GONE);
 
             }
         });
@@ -186,13 +176,8 @@ public class HomeFragment extends Fragment {
     }
 
     private void loadNextPage() {
-        Retrofit retrofit = new Retrofit.Builder().
-                baseUrl(URL_UPLOAD_DATA_HOME).
-                addConverterFactory(GsonConverterFactory.create()).
-                build();
-        ApiService API = retrofit.create(ApiService.class);
-        Call<ResponsePhotoItems> api = API.getDetailsPhotos(0, user_id, currentPage);
 
+        Call<ResponsePhotoItems> api = API.getDetailsPhotos(0, user_id, currentPage);
         api.enqueue(new Callback<ResponsePhotoItems>() {
             @Override
             public void onResponse(Call<ResponsePhotoItems> call, Response<ResponsePhotoItems> response) {
@@ -202,17 +187,16 @@ public class HomeFragment extends Fragment {
                 ResponsePhotoItems results = response.body();
                 boolean success = results.getSuccess();
                 if (success) {
-                    ArrayList<DisplayPhotosPublishedItems> photosItems = new ArrayList<>();
-
                     progressBar.setVisibility(View.GONE);
-                    photosItems = fillDetails(results.getData());
-                    adapterPagination.addAll(photosItems);
+                    adapterPagination.addAll(results.getData());
 
                     if (currentPage != TOTAL_PAGES) adapterPagination.addLoadingFooter();
                     else isLastPage = true;
 
                 } else {
                     progressBar.setVisibility(View.GONE);
+                    if (currentPage != TOTAL_PAGES) adapterPagination.addLoadingFooter();
+                    else isLastPage = true;
 
                 }
 
@@ -227,29 +211,6 @@ public class HomeFragment extends Fragment {
             }
         });
     }
-
-    private ArrayList<DisplayPhotosPublishedItems> fillDetails(ArrayList<ResponsePhotoItems.Paths> data) {
-        ArrayList<DisplayPhotosPublishedItems> photosItems = new ArrayList<>();
-
-        for (int i = 0; i < data.size(); i++) {
-            DisplayPhotosPublishedItems items = new DisplayPhotosPublishedItems();
-            items.setPhoto_id(data.get(i).getPhoto_id());
-            items.setUser_id(data.get(i).getUser_id());
-            items.setPhoto_profil(data.get(i).getPhoto_profil_path());
-            items.setPhoto_published(data.get(i).getPhoto_path());
-            items.setFull_name(data.get(i).getFull_name());
-            items.setNumber_comments(data.get(i).getNumber_comments());
-            items.setNumber_likes(data.get(i).getNumber_likes());
-            items.setLike(data.get(i).isLike());
-            items.setLocation(data.get(i).getLocation());
-            items.setLegende(data.get(i).getLegende());
-            items.setCreated_at(data.get(i).getCreated_at());
-            photosItems.add(items);
-        }
-        return photosItems;
-    }
-
-
 
 
 }

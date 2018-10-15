@@ -10,22 +10,38 @@ public class ResponsePhotoItems {
     private boolean success;
     private String message;
     private int number_pages;
-    private ArrayList<DisplayPhotosPublishedItems> result;
-    private ArrayList<Paths> data;
+    private ArrayList<DisplayPhotosPublishedItems> data;
+    private ArrayList<Paths> data2;
 
 
     public ResponsePhotoItems(boolean success, String message, ArrayList<Paths> data) {
         this.success = success;
         this.message = message;
-        this.data = data;
+        this.data2 = data;
     }
 
     public ResponsePhotoItems(ArrayList<Paths> data) {
-        this.data = data;
+        this.data2 = data;
     }
 
     public ResponsePhotoItems() {
 
+    }
+
+    public ArrayList<Paths> getData2() {
+        return data2;
+    }
+
+    public void setData2(ArrayList<Paths> data2) {
+        this.data2 = data2;
+    }
+
+    public ArrayList<DisplayPhotosPublishedItems> getData() {
+        return data;
+    }
+
+    public void setData(ArrayList<DisplayPhotosPublishedItems> data) {
+        this.data = data;
     }
 
     public String getMessage() {
@@ -40,13 +56,6 @@ public class ResponsePhotoItems {
         return success;
     }
 
-    public ArrayList<Paths> getData() {
-        return data;
-    }
-
-    public void setData(ArrayList<Paths> data) {
-        this.data = data;
-    }
 
     public int getNumber_pages() {
         return number_pages;
@@ -64,13 +73,6 @@ public class ResponsePhotoItems {
         this.success = success;
     }
 
-    public ArrayList<DisplayPhotosPublishedItems> getResult() {
-        return result;
-    }
-
-    public void setResult(ArrayList<DisplayPhotosPublishedItems> result) {
-        this.result = result;
-    }
 
     public class Paths  {
         private int photo_id;

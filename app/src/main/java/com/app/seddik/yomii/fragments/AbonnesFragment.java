@@ -1,49 +1,58 @@
 package com.app.seddik.yomii.fragments;
 
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.LinearLayoutManager;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.app.seddik.yomii.R;
-import com.app.seddik.yomii.adapters.DisplayPhotosPublishedAdapter;
-import com.app.seddik.yomii.models.DisplayPhotosPublishedItems;
-import com.bumptech.glide.Glide;
+import com.app.seddik.yomii.adapters.GalleryPhotosAdapter;
+import com.app.seddik.yomii.adapters.RetryCallback;
+import com.app.seddik.yomii.data.NetworkState;
+import com.app.seddik.yomii.data.Status;
+import com.app.seddik.yomii.ui.GalleryPhotosViewModel;
 
-import java.util.ArrayList;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
+import static com.app.seddik.yomii.R.id.usersSwipeRefreshLayout;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class AbonnesFragment extends Fragment {
-    private final Integer image_ids[] = {
-            R.drawable.bg_milan,
-            R.drawable.bg_paris,
-            R.drawable.bg_london,
-            R.drawable.bg_moscow,
-            R.drawable.bg_madrid,
-            R.drawable.bg_munich,
-            R.drawable.bg_barca,
-            R.drawable.bg_ny,
-    };
-    private final Integer image_pro[] = {
-            R.drawable.bg_milan,
-            R.drawable.bg_paris,
-            R.drawable.bg_london,
-            R.drawable.bg_moscow,
-            R.drawable.bg_madrid,
-            R.drawable.bg_munich,
-            R.drawable.bg_barca,
-            R.drawable.bg_ny,
-    };
 
+public class AbonnesFragment extends Fragment implements RetryCallback {
 
+    @BindView(R.id.test)
+    Button btn;
 
+    @BindView(usersSwipeRefreshLayout)
+    SwipeRefreshLayout mSwipeRefreshLayout;
+
+    @BindView(R.id.usersRecyclerView)
+    RecyclerView usersRecyclerView;
+
+    @BindView(R.id.errorMessageTextView)
+    TextView errorMessageTextView;
+
+    @BindView(R.id.retryLoadingButton)
+    Button retryLoadingButton;
+
+    @BindView(R.id.loadingProgressBar)
+    ProgressBar loadingProgressBar;
+    View rootView;
+    private GalleryPhotosViewModel viewModel;
+    private GalleryPhotosAdapter Adapter;
 
     public AbonnesFragment() {
         // Required empty public constructor
@@ -53,40 +62,101 @@ public class AbonnesFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_abonnes, container, false);
+        rootView = inflater.inflate(R.layout.fragment_photos, container, false);
 
-        RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.recycleview);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setItemViewCacheSize(20);
-        recyclerView.setDrawingCacheEnabled(true);
-        recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
-        recyclerView.setNestedScrollingEnabled(false);
-
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
-
-        ArrayList<DisplayPhotosPublishedItems> PhotosItemses = prepareData();
-        DisplayPhotosPublishedAdapter adapter = new DisplayPhotosPublishedAdapter(Glide.with(this),getActivity(), PhotosItemses,false);
-        adapter.setHasStableIds(true);
-        recyclerView.setAdapter(adapter);
-
-
-
+        ButterKnife.bind(this, rootView);
+        viewModel = ViewModelProviders.of(this).get(GalleryPhotosViewModel.class);
+        initAdapter();
+        initSwipeToRefresh();
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //      Intent intent = new Intent(getActivity(), TestingActivity.class);
+                //      startActivity(intent);
+            }
+        });
         return rootView;
     }
 
-    private ArrayList<DisplayPhotosPublishedItems> prepareData(){
 
-        ArrayList<DisplayPhotosPublishedItems> item = new ArrayList<>();
-        for(int i = 0; i< image_ids.length; i++){
-            DisplayPhotosPublishedItems photosItems = new DisplayPhotosPublishedItems();
-          //  photosItems.setImage_published(image_ids[i]);
-          //  photosItems.setImage_profile(image_pro[i]);
-            item.add(photosItems);
-        }
-        return item;
+    private void initAdapter() {
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 3);
+        gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                switch (Adapter.getItemViewType(position)) {
+                    case R.layout.gallery_photos_items:
+                        return 1;
+                    case R.layout.item_network_state:
+                        return 3;
+                    default:
+                        return -1;
+                }
+            }
+        });
+
+        Adapter = new GalleryPhotosAdapter(this);
+        usersRecyclerView.setLayoutManager(gridLayoutManager);
+        usersRecyclerView.setAdapter(Adapter);
+
+        viewModel.photosList.observe(this, Adapter::submitList);
+        viewModel.getNetworkState().observe(this, Adapter::setNetworkState);
     }
 
+    /**
+     * Init swipe to refresh and enable pull to refresh only when there are items in the adapter
+     */
+    private void initSwipeToRefresh() {
+        viewModel.getRefreshState().observe(this, networkState -> {
+            if (networkState != null) {
+                if (Adapter.getCurrentList() != null) {
+                    if (Adapter.getCurrentList().size() > 0) {
+                        mSwipeRefreshLayout.setRefreshing(networkState.getStatus() == NetworkState.LOADING.getStatus());
+                    } else {
+                        setInitialLoadingState(networkState);
+                    }
+                } else {
+                    setInitialLoadingState(networkState);
+                }
+            }
+        });
+        mSwipeRefreshLayout.setOnRefreshListener(() -> viewModel.refresh());
 
+    }
+
+    /**
+     * Show the current network state for the first load when the user list
+     * in the adapter is empty and disable swipe to scroll at the first loading
+     *
+     * @param networkState the new network state
+     */
+    private void setInitialLoadingState(NetworkState networkState) {
+        //error message
+        errorMessageTextView.setVisibility(networkState.getMessage() != null ? View.VISIBLE : View.GONE);
+        if (networkState.getMessage() != null) {
+            errorMessageTextView.setText(networkState.getMessage());
+        }
+
+        //loading and retry
+        retryLoadingButton.setVisibility(networkState.getStatus() == Status.FAILED ? View.VISIBLE : View.GONE);
+        loadingProgressBar.setVisibility(networkState.getStatus() == Status.RUNNING ? View.VISIBLE : View.GONE);
+        if (networkState.getStatus() == Status.SUCCESS) {
+            mSwipeRefreshLayout.setEnabled(true);
+        } else {
+            mSwipeRefreshLayout.setEnabled(false);
+
+        }
+    }
+
+    @OnClick(R.id.retryLoadingButton)
+    void retryInitialLoading() {
+        viewModel.retry();
+
+    }
+
+    @Override
+    public void retry() {
+        viewModel.retry();
+
+    }
 }

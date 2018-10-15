@@ -1,63 +1,42 @@
 package com.app.seddik.yomii.adapters;
 
+/**
+ * Created by Seddik on 20/12/2017.
+ */
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.view.ViewGroup;
+import android.support.v4.app.FragmentStatePagerAdapter;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.app.seddik.yomii.fragments.GuideFragment;
+import com.app.seddik.yomii.ui.PhotosFragment;
 
-import com.app.seddik.yomii.fragments.AlbumsFragment;
-import com.app.seddik.yomii.utils.CustomViewPager;
+public class ProfilPagerAdapter extends FragmentStatePagerAdapter {
+    int mNumOfTabs;
 
-/**
- * Created by Seddik on 23/02/2018.
- */
-
-public class ProfilPagerAdapter extends FragmentPagerAdapter {
-    private final List<Fragment> mFragmentList = new ArrayList<>();
-    private final List<String> mFragmentTitleList = new ArrayList<>();
-    private int mCurrentPosition = -1;
-    AlbumsFragment albums;
-
-    public ProfilPagerAdapter(FragmentManager manager) {
-        super(manager);
+    public ProfilPagerAdapter(FragmentManager fm, int NumOfTabs) {
+        super(fm);
+        this.mNumOfTabs = NumOfTabs;
     }
+
 
     @Override
     public Fragment getItem(int position) {
-        return mFragmentList.get(position);
+
+        switch (position) {
+            case 0:
+                PhotosFragment tab1 = new PhotosFragment();
+                return tab1;
+            case 1:
+                GuideFragment tab2 = new GuideFragment();
+                return tab2;
+            default:
+                return null;
+        }
     }
 
     @Override
     public int getCount() {
-        return mFragmentList.size();
+        return mNumOfTabs;
     }
-
-    public void addFragment(Fragment fragment, String title) {
-        mFragmentList.add(fragment);
-        mFragmentTitleList.add(title);
-    }
-
-    @Override
-    public void setPrimaryItem(ViewGroup container, int position, Object object) {
-        super.setPrimaryItem(container, position, object);
-        if (position != mCurrentPosition) {
-            Fragment fragment = (Fragment) object;
-            CustomViewPager pager = (CustomViewPager) container;
-            if (fragment != null && fragment.getView() != null) {
-                mCurrentPosition = position;
-                pager.measureCurrentView(fragment.getView());
-            }
-        }
-    }
-
-
-    @Override
-    public CharSequence getPageTitle(int position) {
-        return mFragmentTitleList.get(position);
-    }
-
 }
 

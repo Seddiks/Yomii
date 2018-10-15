@@ -9,9 +9,9 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 
 import com.app.seddik.yomii.fragments.HomeFragment;
 import com.app.seddik.yomii.fragments.NotificationFragment;
-import com.app.seddik.yomii.fragments.AbonnesFragment;
-import com.app.seddik.yomii.fragments.ProfileFragment;
 import com.app.seddik.yomii.fragments.PopulairCategoriesFragment;
+import com.app.seddik.yomii.fragments.ProfileFragment;
+import com.app.seddik.yomii.fragments.TestingFragment;
 
 public class MainPagerAdapter extends FragmentStatePagerAdapter {
     int mNumOfTabs;
@@ -33,7 +33,7 @@ public class MainPagerAdapter extends FragmentStatePagerAdapter {
                 PopulairCategoriesFragment tab2 = new PopulairCategoriesFragment();
                 return tab2;
             case 2:
-                AbonnesFragment tab3 = new AbonnesFragment();
+                TestingFragment tab3 = new TestingFragment();
                 return tab3;
             case 3:
                 NotificationFragment tab4 = new NotificationFragment();

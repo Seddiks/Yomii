@@ -5,40 +5,77 @@ package com.app.seddik.yomii.models;
  */
 
 public class NotificationItems {
-    private int image_profile ;
-    private String name_profile ;
-    private String text;
-    private String date;
+    private int notification_id;
+    private String photo_profil_sender;
+    private int photo_id;
+    private int action_type;
+    private String full_name;
+    private String notification;
+    private String created_at;
+    private boolean is_read;
 
-    public int getImage_profile() {
-        return image_profile;
+
+    public int getNotification_id() {
+        return notification_id;
     }
 
-    public void setImage_profile(int image_profile) {
-        this.image_profile = image_profile;
+    public void setNotification_id(int notification_id) {
+        this.notification_id = notification_id;
     }
 
-    public String getName_profile() {
-        return name_profile;
+    public String getPhoto_profil_sender() {
+        return photo_profil_sender;
     }
 
-    public void setName_profile(String name_profile) {
-        this.name_profile = name_profile;
+    public void setPhoto_profil_sender(String photo_profil_sender) {
+        this.photo_profil_sender = photo_profil_sender;
     }
 
-    public String getText() {
-        return text;
+    public int getPhoto_id() {
+        return photo_id;
     }
 
-    public void setText(String text) {
-        this.text = text;
+    public void setPhoto_id(int photo_id) {
+        this.photo_id = photo_id;
     }
 
-    public String getDate() {
-        return date;
+    public int getAction_type() {
+        return action_type;
     }
 
-    public void setDate(String date) {
-        this.date = date;
+    public void setAction_type(int action_type) {
+        this.action_type = action_type;
+    }
+
+    public boolean is_read() {
+        return is_read;
+    }
+
+    public void setIs_read(boolean is_read) {
+        this.is_read = is_read;
+    }
+
+    public String getFull_name() {
+        return full_name;
+    }
+
+    public void setFull_name(String full_name) {
+        this.full_name = full_name;
+    }
+
+    public String getNotification() {
+        return notification;
+    }
+
+    public void setNotification(String notification) {
+        this.notification = notification;
+    }
+
+    public String getCreated_at() {
+        return created_at;
+    }
+
+    public void setCreated_at(String created_at) {
+        this.created_at = created_at;
     }
 }

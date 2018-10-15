@@ -14,10 +14,10 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.app.seddik.yomii.R;
+import com.app.seddik.yomii.api.ApiService;
 import com.app.seddik.yomii.models.GuideItems;
 import com.app.seddik.yomii.models.ResponseItems;
 import com.app.seddik.yomii.models.UserItems;
-import com.app.seddik.yomii.networks.ApiService;
 import com.app.seddik.yomii.utils.FileUtils;
 import com.app.seddik.yomii.utils.SessionManager;
 import com.bumptech.glide.Glide;
@@ -45,15 +45,18 @@ import static com.app.seddik.yomii.config.AppConfig.URL_UPLOAD_PHOTOS;
 
 
 public class CreateGuideActivity extends AppCompatActivity implements View.OnClickListener{
+    static final int REQUEST_CODE_CHOOSE = 1001;
+    Retrofit retrofit = new Retrofit.Builder().
+            baseUrl(URL_UPLOAD_PHOTOS).
+            addConverterFactory(GsonConverterFactory.create()).
+            build();
+    ApiService API = retrofit.create(ApiService.class);
     private SessionManager session;
     private UserItems user ;
     private int id_user;
-
-    static final int REQUEST_CODE_CHOOSE = 1001;
     private ArrayList<Uri> mSelected;
     private File compressedImageFile;
     private MultipartBody.Part mImageRequest;
-
     private EditText title_guide, location, experience, history, budget_advice, best_time_to_visit, best_place_to_visit, restaurant_suggestions, transportation_advice, language, other_informations;
     private ImageView photo, exit, done, add_photo;
     private RelativeLayout layout_addPhoto_exit_done;
@@ -63,16 +66,6 @@ public class CreateGuideActivity extends AppCompatActivity implements View.OnCli
     private int guide_id = -1;
     private String mPathPhoto;
     private boolean forUpdate;
-
-
-
-    Retrofit retrofit = new Retrofit.Builder().
-            baseUrl(URL_UPLOAD_PHOTOS).
-            addConverterFactory(GsonConverterFactory.create()).
-            build();
-    ApiService API = retrofit.create(ApiService.class);
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

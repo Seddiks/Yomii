@@ -17,9 +17,9 @@ import android.widget.Toast;
 
 import com.app.seddik.yomii.MainActivity;
 import com.app.seddik.yomii.R;
+import com.app.seddik.yomii.api.ApiService;
 import com.app.seddik.yomii.config.AppConfig;
 import com.app.seddik.yomii.models.UserItems;
-import com.app.seddik.yomii.networks.ApiService;
 import com.app.seddik.yomii.utils.SessionManager;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.iid.FirebaseInstanceId;

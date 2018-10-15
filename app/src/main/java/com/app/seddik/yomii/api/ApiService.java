@@ -1,7 +1,10 @@
-package com.app.seddik.yomii.networks;
+package com.app.seddik.yomii.api;
 
+import com.app.seddik.yomii.models.GalleryPhotosItems;
 import com.app.seddik.yomii.models.GuideItems;
+import com.app.seddik.yomii.models.ResponseGalleryPhotosItems;
 import com.app.seddik.yomii.models.ResponseItems;
+import com.app.seddik.yomii.models.ResponseNotificationItems;
 import com.app.seddik.yomii.models.ResponsePhotoItems;
 import com.app.seddik.yomii.models.ResponsePostComments;
 import com.app.seddik.yomii.models.TravelStoryItems;
@@ -9,6 +12,7 @@ import com.app.seddik.yomii.models.UserItems;
 
 import java.util.List;
 
+import io.reactivex.Single;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
@@ -21,13 +25,23 @@ import retrofit2.http.Part;
 import retrofit2.http.Query;
 
 /**
- * Created by Seddik on 17/12/2017.
+ * Created by Seddik on 17/12/f.
  */
 
 public interface ApiService {
     //Send token in request
     // @GET("getSth.php")
     //Call<UserItems> login(@Header("token")String t);
+
+
+    @FormUrlEncoded
+    @POST("treatment_photos.php")
+    Single<List<GalleryPhotosItems>> getPhotosGallery(@Field("action") int act,
+                                                      @Field("user_id") int user_id,
+                                                      @Field("photo_id") int photo_id,
+                                                      @Field("per_page") int perPage);
+
+
 
     //Login
     @FormUrlEncoded
@@ -68,11 +82,12 @@ public interface ApiService {
                                      @Part List<MultipartBody.Part> images,
                                      @Part("legende") RequestBody legende);
 
-    //Get Paths photos published by user
+    //Get Paths photos published by user (PHOTOS Fragment)
     @FormUrlEncoded
     @POST("treatment_photos.php")
-    Call<ResponsePhotoItems> getUserPathPhotosPublished(@Field("action") int act,
-                                                        @Field("user_id") int user_id);
+    Call<ResponseGalleryPhotosItems> getPhotosGallery(@Field("action") int act,
+                                                      @Field("user_id") int user_id,
+                                                      @Field("currentPage") int currentPage);
 
 
     //Get Paths Child photos published by user
@@ -189,6 +204,18 @@ public interface ApiService {
                                    @Field("photo_id") int photo_id);
 
 
+    //Get Notification per user
+    @FormUrlEncoded
+    @POST("notifications.php")
+    Call<ResponseNotificationItems> getNotifications(@Field("action") int act,
+                                                     @Field("user_id") int user_id,
+                                                     @Field("currentPage") int currentPage);
 
+
+    //Hide or Read notification (update is_hide to 1 or update is_read to 1)
+    @FormUrlEncoded
+    @POST("notifications.php")
+    Call<ResponseItems> actionNotification(@Field("action") int act,
+                                           @Field("notification_id") int notification_id);
 
 }

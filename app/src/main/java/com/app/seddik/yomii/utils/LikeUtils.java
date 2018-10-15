@@ -1,7 +1,7 @@
 package com.app.seddik.yomii.utils;
 
+import com.app.seddik.yomii.api.ApiService;
 import com.app.seddik.yomii.models.ResponseItems;
-import com.app.seddik.yomii.networks.ApiService;
 
 import retrofit2.Call;
 import retrofit2.Callback;

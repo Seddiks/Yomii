@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -12,7 +13,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -30,11 +30,11 @@ import com.app.seddik.yomii.MainActivity;
 import com.app.seddik.yomii.R;
 import com.app.seddik.yomii.adapters.ProfilPagerAdapter;
 import com.app.seddik.yomii.adapters.TravelStoryAdapter;
+import com.app.seddik.yomii.api.ApiService;
 import com.app.seddik.yomii.config.AppConfig;
 import com.app.seddik.yomii.models.ResponseItems;
 import com.app.seddik.yomii.models.TravelStoryItems;
 import com.app.seddik.yomii.models.UserItems;
-import com.app.seddik.yomii.networks.ApiService;
 import com.app.seddik.yomii.utils.CustomViewPager;
 import com.app.seddik.yomii.utils.FileUtils;
 import com.app.seddik.yomii.utils.SessionManager;
@@ -101,6 +101,11 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
     private RecyclerView recyclerView;
     private LinearLayoutManager layoutManager;
     private SweetAlertDialog pDialog;
+
+    private int[] tabIcons = {
+            R.drawable.ic_home_grey_500_24dp,
+            R.drawable.ic_whatshot_grey_500_24dp,
+    };
 
 
 
@@ -171,9 +176,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
         recyclerView.setLayoutManager(layoutManager);
 
         viewPager = rootView.findViewById(R.id.viewpager);
-        setupViewPager(viewPager);
         tabLayout =  rootView.findViewById(R.id.tabs);
-        tabLayout.setupWithViewPager(viewPager);
+        //   tabLayout.setupWithViewPager(viewPager);
         createTabLayout();
 
         update_profil.setOnClickListener(this);
@@ -187,26 +191,37 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
         return rootView;
     }
 
-
     private void createTabLayout(){
-        tabLayout.setSelectedTabIndicatorColor(Color.parseColor("#000000"));
-        tabLayout.setSelectedTabIndicatorHeight((int) (1 * getResources().getDisplayMetrics().density));
-        tabLayout.setTabTextColors(Color.parseColor("#9E9E9E"), Color.parseColor("#000000"));
-        tabLayout.setupWithViewPager(viewPager);
+        tabLayout.addTab(tabLayout.newTab().setIcon(tabIcons[0]));
+        tabLayout.addTab(tabLayout.newTab().setIcon(tabIcons[1]));
+        tabLayout.getTabAt(0).getIcon().setColorFilter(Color.BLACK, PorterDuff.Mode.SRC_IN);
 
-
-    }
-
-
-    private void setupViewPager(ViewPager viewPager) {
-        adapter = new ProfilPagerAdapter(getChildFragmentManager());
-        adapter.addFragment(new PhotosFragment(), "Photos");
-        adapter.addFragment(new AlbumsFragment(), "Albums");
-        adapter.addFragment(new GuideFragment(), "My Guide");
+        adapter = new ProfilPagerAdapter(getChildFragmentManager(), tabLayout.getTabCount());
         viewPager.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
-    }
 
+        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                tab.getIcon().setColorFilter(Color.BLACK, PorterDuff.Mode.SRC_IN);
+                viewPager.setCurrentItem(tab.getPosition());
+
+
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+                tab.getIcon().setColorFilter(Color.parseColor("#757575"), PorterDuff.Mode.SRC_IN);
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+
+    }
 
      //Get details profil
      private void getUserProfilDetail(final String typeCall) {
@@ -395,6 +410,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
                         FirebaseInstanceId.getInstance().deleteInstanceId();
                         getActivity().finishAffinity(); //Close all activities
                         session.logoutUser();
+                        AppConfig.NOTIFICATION_COUNTER = 0;
 
                     } catch (IOException e) {
                         e.printStackTrace();

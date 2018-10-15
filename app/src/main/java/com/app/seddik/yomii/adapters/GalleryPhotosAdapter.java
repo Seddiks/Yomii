@@ -1,83 +1,114 @@
 package com.app.seddik.yomii.adapters;
 
-/**
- * Created by Seddik on 23/12/2017.
- */
-
-import android.content.Context;
-import android.content.Intent;
+import android.arch.paging.PagedListAdapter;
+import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import com.app.seddik.yomii.R;
-import com.app.seddik.yomii.activities.DisplayPhotosPublishedActivity;
+import com.app.seddik.yomii.data.NetworkState;
 import com.app.seddik.yomii.models.GalleryPhotosItems;
-import com.bumptech.glide.Glide;
 
-import java.util.ArrayList;
+import java.util.Objects;
 
-import static com.app.seddik.yomii.config.AppConfig.URL_UPLOAD_PHOTOS;
+import io.reactivex.annotations.NonNull;
 
-public class GalleryPhotosAdapter extends RecyclerView.Adapter<GalleryPhotosAdapter.ViewHolder> {
-    private ArrayList<GalleryPhotosItems> galleryList;
-    private Context context;
-    private String path;
-    private int parent;
+/**
+ * Created by Seddik on 16/08/2018.
+ */
 
+public class GalleryPhotosAdapter extends PagedListAdapter<GalleryPhotosItems, RecyclerView.ViewHolder> {
 
-    public GalleryPhotosAdapter(Context context, ArrayList<GalleryPhotosItems> galleryList) {
-        this.galleryList = galleryList;
-        this.context = context;
-    }
-
-    @Override
-    public GalleryPhotosAdapter.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.gallery_photos_items, viewGroup, false);
-        return new ViewHolder(view);
-    }
-
-    @Override
-    public void onBindViewHolder(GalleryPhotosAdapter.ViewHolder viewHolder, final int i) {
-        path = URL_UPLOAD_PHOTOS+galleryList.get(i).getPhoto_path();
-        parent = galleryList.get(i).getParent();
-        if (parent == -1){
-            viewHolder.img_multiple.setVisibility(View.VISIBLE);
+    private static DiffUtil.ItemCallback<GalleryPhotosItems> DiffCallback = new DiffUtil.ItemCallback<GalleryPhotosItems>() {
+        @Override
+        public boolean areItemsTheSame(@NonNull GalleryPhotosItems oldItem, @NonNull GalleryPhotosItems newItem) {
+            return oldItem.getPhoto_id() == newItem.getPhoto_id();
         }
-        viewHolder.img.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        Glide.with(context).load(path).into(viewHolder.img);
 
-        viewHolder.img.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(context, DisplayPhotosPublishedActivity.class);
-                intent.putExtra("PHOTOS_Fragment_Photo_id",galleryList.get(i).getPhoto_id());
-                intent.putExtra("PHOTOS_Fragment_PathParent",galleryList.get(i).getPhoto_path());
-                intent.putExtra("PHOTOS_Fragment_Parent",galleryList.get(i).getParent());
-                context.startActivity(intent);
+        @Override
+        public boolean areContentsTheSame(@NonNull GalleryPhotosItems oldItem, @NonNull GalleryPhotosItems newItem) {
+            return Objects.equals(oldItem.getPhoto_id(), newItem.getPhoto_id())
+                    && Objects.equals(oldItem.getPhoto_path(), newItem.getPhoto_path());
+        }
+    };
+    private NetworkState networkState;
+    private RetryCallback retryCallback;
 
-
-            }
-        });
+    public GalleryPhotosAdapter(RetryCallback retryCallback) {
+        super(DiffCallback);
+        this.retryCallback = retryCallback;
     }
-//2560*1920
+
+    @Override
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        switch (viewType) {
+            case R.layout.gallery_photos_items:
+                return GalleryPhotoViewHolder.create(parent);
+            case R.layout.item_network_state:
+                return NetworkStateViewHolder.create(parent, retryCallback);
+            default:
+                throw new IllegalArgumentException("unknown view type");
+        }
+
+    }
+
+    @Override
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        switch (getItemViewType(position)) {
+            case R.layout.gallery_photos_items:
+                ((GalleryPhotoViewHolder) holder).bindTo(getItem(position));
+                break;
+            case R.layout.item_network_state:
+                ((NetworkStateViewHolder) holder).bindTo(networkState);
+                break;
+        }
+    }
+
+    private boolean hasExtraRow() {
+        return networkState != null && networkState != NetworkState.LOADED;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if (hasExtraRow() && position == getItemCount() - 1) {
+            return R.layout.item_network_state;
+        } else {
+            return R.layout.gallery_photos_items;
+        }
+    }
+
     @Override
     public int getItemCount() {
-        return galleryList.size();
+        return super.getItemCount() + (hasExtraRow() ? 1 : 0);
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
-        private ImageView img;
-        private ImageView img_multiple;
-        public ViewHolder(View view) {
-            super(view);
-
-            img = view.findViewById(R.id.img);
-            img_multiple = view.findViewById(R.id.img_multiple);
+    /**
+     * Set the current network state to the adapter
+     * but this work only after the initial load
+     * and the adapter already have list to add new loading raw to it
+     * so the initial loading state the activity responsible for handle it
+     *
+     * @param newNetworkState the new network state
+     */
+    public void setNetworkState(NetworkState newNetworkState) {
+        if (getCurrentList() != null) {
+            if (getCurrentList().size() != 0) {
+                NetworkState previousState = this.networkState;
+                boolean hadExtraRow = hasExtraRow();
+                this.networkState = newNetworkState;
+                boolean hasExtraRow = hasExtraRow();
+                if (hadExtraRow != hasExtraRow) {
+                    if (hadExtraRow) {
+                        notifyItemRemoved(super.getItemCount());
+                    } else {
+                        notifyItemInserted(super.getItemCount());
+                    }
+                } else if (hasExtraRow && previousState != newNetworkState) {
+                    notifyItemChanged(getItemCount() - 1);
+                }
+            }
         }
     }
+
 
 }

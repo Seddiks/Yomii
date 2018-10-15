@@ -6,11 +6,13 @@ package com.app.seddik.yomii.models;
 
 public class DisplayPhotosPublishedItems {
     private int photo_id;
+    private String photo_path;
+    private String city;
+    private int parent;
+
     private int user_id;
-    private String photo_profil;
-    private String photo_published;
+    private String photo_profil_path;
     private String full_name;
-    private String date;
     private int number_comments;
     private boolean isLike;
     private int number_likes;
@@ -18,22 +20,6 @@ public class DisplayPhotosPublishedItems {
     private String legende;
     private String created_at;
 
-    public String getLegende() {
-        return legende;
-    }
-
-    public void setLegende(String legende) {
-        this.legende = legende;
-    }
-
-    public String getLocation() {
-
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
 
     public int getPhoto_id() {
         return photo_id;
@@ -43,36 +29,28 @@ public class DisplayPhotosPublishedItems {
         this.photo_id = photo_id;
     }
 
-    public String getPhoto_profil() {
-        return photo_profil;
+    public String getPhoto_path() {
+        return photo_path;
     }
 
-    public void setPhoto_profil(String photo_profil) {
-        this.photo_profil = photo_profil;
+    public void setPhoto_path(String photo_path) {
+        this.photo_path = photo_path;
     }
 
-    public String getPhoto_published() {
-        return photo_published;
+    public String getCity() {
+        return city;
     }
 
-    public void setPhoto_published(String photo_published) {
-        this.photo_published = photo_published;
+    public void setCity(String city) {
+        this.city = city;
     }
 
-    public String getFull_name() {
-        return full_name;
+    public int getParent() {
+        return parent;
     }
 
-    public void setFull_name(String full_name) {
-        this.full_name = full_name;
-    }
-
-    public String getDate() {
-        return date;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
+    public void setParent(int parent) {
+        this.parent = parent;
     }
 
     public int getUser_id() {
@@ -81,6 +59,22 @@ public class DisplayPhotosPublishedItems {
 
     public void setUser_id(int user_id) {
         this.user_id = user_id;
+    }
+
+    public String getPhoto_profil_path() {
+        return photo_profil_path;
+    }
+
+    public void setPhoto_profil_path(String photo_profil_path) {
+        this.photo_profil_path = photo_profil_path;
+    }
+
+    public String getFull_name() {
+        return full_name;
+    }
+
+    public void setFull_name(String full_name) {
+        this.full_name = full_name;
     }
 
     public int getNumber_comments() {
@@ -107,6 +101,13 @@ public class DisplayPhotosPublishedItems {
         isLike = like;
     }
 
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
 
     public String getCreated_at() {
         return created_at;
@@ -114,5 +115,13 @@ public class DisplayPhotosPublishedItems {
 
     public void setCreated_at(String created_at) {
         this.created_at = created_at;
+    }
+
+    public String getLegende() {
+        return legende;
+    }
+
+    public void setLegende(String legende) {
+        this.legende = legende;
     }
 }

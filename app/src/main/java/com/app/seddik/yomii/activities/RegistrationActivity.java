@@ -14,9 +14,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.app.seddik.yomii.R;
+import com.app.seddik.yomii.api.ApiService;
 import com.app.seddik.yomii.config.AppConfig;
 import com.app.seddik.yomii.models.UserItems;
-import com.app.seddik.yomii.networks.ApiService;
 import com.app.seddik.yomii.utils.SessionManager;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;

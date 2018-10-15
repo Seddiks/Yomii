@@ -11,12 +11,12 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.app.seddik.yomii.R;
+import com.app.seddik.yomii.api.ApiService;
+import com.app.seddik.yomii.config.AppConfig;
+import com.app.seddik.yomii.models.ResponseItems;
 
 import java.util.List;
 
-import com.app.seddik.yomii.config.AppConfig;
-import com.app.seddik.yomii.networks.ApiService;
-import com.app.seddik.yomii.models.ResponseItems;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;

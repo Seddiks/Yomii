@@ -14,7 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.app.seddik.yomii.R;
-import com.app.seddik.yomii.adapters.GalleryPhotosAdapter;
+import com.app.seddik.yomii.adapters.GalleryPhotosAdapterTest;
 import com.app.seddik.yomii.models.GalleryPhotosItems;
 
 import java.util.ArrayList;
@@ -95,7 +95,7 @@ public class ProfileAbonneActivity extends AppCompatActivity {
 
 
         ArrayList<GalleryPhotosItems> galleryPhotosItemses = prepareData();
-        GalleryPhotosAdapter adapter = new GalleryPhotosAdapter(getApplicationContext(), galleryPhotosItemses);
+        GalleryPhotosAdapterTest adapter = new GalleryPhotosAdapterTest(getApplicationContext(), galleryPhotosItemses);
         recyclerView.setAdapter(adapter);
 
 
@@ -106,7 +106,7 @@ public class ProfileAbonneActivity extends AppCompatActivity {
         ArrayList<GalleryPhotosItems> theimage = new ArrayList<>();
         for(int i = 0; i< image_ids.length; i++){
             GalleryPhotosItems galleryPhotosItems = new GalleryPhotosItems();
-            galleryPhotosItems.setImage_ID(image_ids[i]);
+            //  galleryPhotosItems.setImage_ID(image_ids[i]);
             theimage.add(galleryPhotosItems);
         }
         return theimage;

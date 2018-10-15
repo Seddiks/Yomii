@@ -23,26 +23,6 @@ import java.util.ArrayList;
  * A simple {@link Fragment} subclass.
  */
 public class AlbumsFragment extends Fragment {
-    private final Integer image_ids[] = {
-            R.drawable.bgvenise,
-            R.drawable.bg_paris,
-            R.drawable.bg_london,
-            R.drawable.bg_moscow,
-            R.drawable.bg_madrid,
-            R.drawable.bg_munich,
-            R.drawable.bg_barca,
-            R.drawable.bg_ny,
-    };
-    private final String title[] = {
-            "Venise",
-            "Paris",
-            "London",
-            "Moscow",
-            "Madrid",
-            "Munich",
-            "Barçelone",
-            "New York",
-    };
     private GridLayoutManager mGridLayoutManager;
     private GalleryAlbumsAdapter adapter;
     private RecyclerView recyclerView;
@@ -72,7 +52,7 @@ public class AlbumsFragment extends Fragment {
 
         mGridLayoutManager = new GridLayoutManager(getActivity(), 2);
         recyclerView.setLayoutManager(mGridLayoutManager);
-        recyclerView.setFocusable(false);
+        // recyclerView.setFocusable(false);
 
         return rootView;
     }
@@ -97,11 +77,11 @@ public class AlbumsFragment extends Fragment {
             isFoundCity = false;
             if (albums.size()> 0){
                 for(int j=0; j<albums.size(); j++){
-                    if (albums.get(j).getTitle().equals(items.getData().get(i).getCity())){
+                    if (albums.get(j).getTitle().equals(items.getData2().get(i).getCity())) {
                         isFoundCity = true;
 
                         GalleryAlbumsItems.Paths path = new GalleryAlbumsItems.Paths();
-                        path.setPhoto_path(items.getData().get(i).getPhoto_path());
+                        path.setPhoto_path(items.getData2().get(i).getPhoto_path());
                         albums.get(j).getData().add(path);
 
                     }
@@ -112,8 +92,8 @@ public class AlbumsFragment extends Fragment {
                 galleryPhotosItems = new GalleryAlbumsItems();
                 ListPathsAlbum = new ArrayList<>();
                 PathsAlbum = new GalleryAlbumsItems.Paths();
-                galleryPhotosItems.setTitle(items.getData().get(i).getCity());
-                PathsAlbum.setPhoto_path(items.getData().get(i).getPhoto_path());
+                galleryPhotosItems.setTitle(items.getData2().get(i).getCity());
+                PathsAlbum.setPhoto_path(items.getData2().get(i).getPhoto_path());
                 ListPathsAlbum.add(PathsAlbum);
                 galleryPhotosItems.setData(ListPathsAlbum);
                 albums.add(galleryPhotosItems);

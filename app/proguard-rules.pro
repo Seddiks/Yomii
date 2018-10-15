@@ -35,3 +35,5 @@
 #-renamesourcefileattribute SourceFile
 
 -dontwarn com.bumptech.glide.**
+-dontwarn java.lang.invoke.*
+-dontwarn **$$Lambda$*

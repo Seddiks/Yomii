@@ -12,17 +12,17 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.app.seddik.yomii.R;
-
 import com.app.seddik.yomii.adapters.GuideAdapter;
+import com.app.seddik.yomii.api.ApiService;
 import com.app.seddik.yomii.models.GuideItems;
 import com.app.seddik.yomii.models.UserItems;
-import com.app.seddik.yomii.networks.ApiService;
+import com.app.seddik.yomii.utils.SessionManager;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import com.app.seddik.yomii.utils.SessionManager;
 
 import static com.app.seddik.yomii.config.AppConfig.URL_UPLOAD_PHOTOS;
 
@@ -31,22 +31,20 @@ import static com.app.seddik.yomii.config.AppConfig.URL_UPLOAD_PHOTOS;
  * A simple {@link Fragment} subclass.
  */
 public class GuideFragment extends Fragment {
-    private SessionManager session;
-    private UserItems user ;
-    private int id_user;
     boolean success ;
     String message ;
-
-    private GuideAdapter adapter;
-    private GuideItems guideItems;
-    private RecyclerView recyclerView;
-    private LinearLayoutManager layoutManager;
-
     Retrofit retrofit = new Retrofit.Builder().
             baseUrl(URL_UPLOAD_PHOTOS).
             addConverterFactory(GsonConverterFactory.create()).
             build();
     ApiService API = retrofit.create(ApiService.class);
+    private SessionManager session;
+    private UserItems user;
+    private int id_user;
+    private GuideAdapter adapter;
+    private GuideItems guideItems;
+    private RecyclerView recyclerView;
+    private LinearLayoutManager layoutManager;
 
 
 

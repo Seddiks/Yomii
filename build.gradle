@@ -12,6 +12,9 @@ buildscript {
         // in the individual module build.gradle files
         //  classpath 'com.google.gms:google-services:3.0.0'
         classpath 'com.google.gms:google-services:4.0.1' // google-services plugin
+        //Lambda
+        classpath 'me.tatarka:gradle-retrolambda:3.7.0'
+
 
     }
 }

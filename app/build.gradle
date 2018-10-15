@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'me.tatarka.retrolambda'
 
 android {
     compileSdkVersion 27
@@ -18,6 +19,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {
@@ -27,18 +32,67 @@ dependencies {
 
     })
 
+    //compile 'com.squareup.retrofit2:retrofit:2.4.0'
+    //compile 'com.squareup.retrofit2:converter-gson:2.4.0'
+    //compile 'com.squareup.retrofit2:adapter-rxjava2:2.4.0'
+    compile('com.squareup.retrofit2:retrofit:2.4.0') {
+        exclude module: 'appcompat-v7'
+        exclude group: 'com.android.support'
+    }
+    compile('com.squareup.retrofit2:converter-gson:2.4.0') {
+        exclude module: 'appcompat-v7'
+        exclude group: 'com.android.support'
+    }
+    compile('com.squareup.retrofit2:adapter-rxjava2:2.4.0') {
+        exclude module: 'appcompat-v7'
+        exclude group: 'com.android.support'
+    }
 
-    compile 'com.google.code.findbugs:jsr305:2.0.1'
+    // find bugs
 
-    compile 'com.android.support:appcompat-v7:27.0.0'
+    // Butter knife
+
+    // Timber for logging
+    // compile 'com.jakewharton.timber:timber:4.6.1'
+    compile('com.jakewharton.timber:timber:4.6.1') {
+        exclude module: 'appcompat-v7'
+        exclude group: 'com.android.support'
+    }
+
+    //Architecture Components
+    //compile "android.arch.lifecycle:extensions:1.1.0"
+    compile('android.arch.lifecycle:extensions:1.1.0') {
+        exclude module: 'appcompat-v7'
+        exclude group: 'com.android.support'
+    }
+
+    //Paging
+    //compile "android.arch.paging:runtime:1.0.1"
+    compile('android.arch.paging:runtime:1.0.1') {
+        exclude module: 'appcompat-v7'
+        exclude group: 'com.android.support'
+    }
+
+    //Rx
+    //compile 'io.reactivex.rxjava2:rxjava:2.2.0'
+    compile('io.reactivex.rxjava2:rxjava:2.1.0') {
+        exclude module: 'appcompat-v7'
+        exclude group: 'com.android.support'
+    }
+    // compile  'io.reactivex.rxjava2:rxandroid:2.1.0'
+    compile('io.reactivex.rxjava2:rxandroid:2.1.0') {
+        exclude module: 'appcompat-v7'
+        exclude group: 'com.android.support'
+    }
+
+
+    compile 'com.android.support:appcompat-v7:27.1.0'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
-    compile 'com.android.support:design:27.0.0'
-    compile 'com.android.support:support-v4:27.0.0'
-    compile 'com.squareup.retrofit2:retrofit:2.2.0'
-    compile 'com.squareup.retrofit2:converter-gson:2.2.0'
+    compile 'com.android.support:design:27.1.0'
+    compile 'com.android.support:support-v4:27.1.0'
     compile 'de.hdodenhof:circleimageview:2.2.0'
-    compile 'com.android.support:recyclerview-v7:27.0.0'
-    compile 'com.android.support:cardview-v7:27.0.0'
+    compile 'com.android.support:recyclerview-v7:27.1.0'
+    compile 'com.android.support:cardview-v7:27.1.0'
     compile 'com.github.bumptech.glide:glide:4.6.1'
     compile 'com.github.bumptech.glide:compiler:4.6.1'
     compile 'com.github.bumptech.glide:okhttp3-integration:4.6.1'
@@ -58,10 +112,11 @@ dependencies {
     compile 'com.android.support:multidex:1.0.1'
     compile 'com.google.android.gms:play-services-location:15.0.0'
     compile 'com.google.android.gms:play-services-places:15.0.0'
-
+    compile 'com.google.code.findbugs:jsr305:2.0.1'
+    compile 'com.jakewharton:butterknife:8.8.1'
     testCompile 'junit:junit:4.12'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
+    retrolambdaConfig 'net.orfjackal.retrolambda:retrolambda:2.5.1'
 }
-
-
 
 apply plugin: 'com.google.gms.google-services'

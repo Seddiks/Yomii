@@ -12,10 +12,10 @@ import android.widget.Toast;
 
 import com.app.seddik.yomii.R;
 import com.app.seddik.yomii.adapters.DisplayPhotosPublishedAdapter;
+import com.app.seddik.yomii.api.ApiService;
 import com.app.seddik.yomii.models.DisplayPhotosPublishedItems;
 import com.app.seddik.yomii.models.GalleryAlbumsItems;
 import com.app.seddik.yomii.models.ResponsePhotoItems;
-import com.app.seddik.yomii.networks.ApiService;
 import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
@@ -29,20 +29,10 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import static com.app.seddik.yomii.config.AppConfig.URL_UPLOAD_PHOTOS;
 
 public class DisplayPhotosPublishedActivity extends AppCompatActivity {
+    private static ArrayList<ResponsePhotoItems.Paths> paths;
     DisplayPhotosPublishedAdapter adapter;
     RecyclerView recyclerView;
     ArrayList<GalleryAlbumsItems.Paths> ListPathsPhotos;
-    private final Integer image_ids[] = {
-            R.drawable.bg_milan,
-            R.drawable.bg_paris,
-            R.drawable.bg_london,
-            R.drawable.bg_moscow,
-            R.drawable.bg_madrid,
-            R.drawable.bg_munich,
-            R.drawable.bg_barca,
-            R.drawable.bg_ny,
-    };
-    private  static ArrayList<ResponsePhotoItems.Paths> paths;
     private ProgressDialog pDialog;
 
     @Override
@@ -77,7 +67,7 @@ public class DisplayPhotosPublishedActivity extends AppCompatActivity {
             ListPathsPhotos = (ArrayList<GalleryAlbumsItems.Paths>) getIntent().getExtras().getSerializable("ListPaths");
             for(int i = 0; i< ListPathsPhotos.size(); i++){
                 DisplayPhotosPublishedItems photosItems = new DisplayPhotosPublishedItems();
-                photosItems.setPhoto_published(ListPathsPhotos.get(i).getPhoto_path());
+                photosItems.setPhoto_path(ListPathsPhotos.get(i).getPhoto_path());
               //  photosItems.setPhoto_profil(R.drawable.bgmoi);
                 item.add(photosItems);
             }
@@ -99,7 +89,7 @@ public class DisplayPhotosPublishedActivity extends AppCompatActivity {
             }else {
                 // in case there is one photo in Photos Fragment
                     DisplayPhotosPublishedItems photosItems = new DisplayPhotosPublishedItems();
-                    photosItems.setPhoto_published(path);
+                photosItems.setPhoto_path(path);
                   //  photosItems.setPhoto_profil(R.drawable.bgmoi);
                     item.add(photosItems);
                     adapter = new DisplayPhotosPublishedAdapter(Glide.with(this),getApplicationContext(), item,false);
@@ -130,15 +120,15 @@ public class DisplayPhotosPublishedActivity extends AppCompatActivity {
                 boolean success = List.getSuccess();
                 String message = List.getMessage();
                 if (success){
-                    paths = List.getData();
+                    //    paths = List.getData();
                     DisplayPhotosPublishedItems photosItems = new DisplayPhotosPublishedItems();
-                    photosItems.setPhoto_published(path_parent);
+                    photosItems.setPhoto_path(path_parent);
                  //   photosItems.setPhoto_profil(R.drawable.bgmoi);
                     item.add(photosItems);
 
                     for(int i = 0; i< paths.size(); i++){
                      DisplayPhotosPublishedItems photosItems2 = new DisplayPhotosPublishedItems();
-                        photosItems2.setPhoto_published(paths.get(i).getPhoto_path());
+                        photosItems2.setPhoto_path(paths.get(i).getPhoto_path());
                       //  photosItems2.setPhoto_profil(R.drawable.bgmoi);
                      item.add(photosItems2);
 

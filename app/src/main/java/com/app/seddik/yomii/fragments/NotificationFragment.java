@@ -2,49 +2,53 @@ package com.app.seddik.yomii.fragments;
 
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.app.seddik.yomii.R;
-
-import java.util.ArrayList;
-
-import com.app.seddik.yomii.adapters.NotificationAdapter;
-import com.app.seddik.yomii.models.NotificationItems;
+import com.app.seddik.yomii.adapters.NotificationsPaginationAdapter;
+import com.app.seddik.yomii.api.ApiService;
+import com.app.seddik.yomii.models.ResponseNotificationItems;
+import com.app.seddik.yomii.utils.PaginationScrollListener;
 import com.app.seddik.yomii.utils.SessionManager;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
+import static com.app.seddik.yomii.config.AppConfig.URL_UPLOAD_DATA_HOME;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class NotificationFragment extends Fragment {
-    SessionManager session;
-    private final String text[] = {
-            "Mohamed Salah a publié dans Annaba Tech Meetups.",
-            "Zai Bet a ajouté une photo dans DZ DÉVELOPPEURS lundi.",
-            "Akram Azoug a publié dans Les Petites Annonces Annaba",
-            "Tarik Zakaria Benmerar a commenté une publication dans DZ DÉVELOPPEURS Tarik Zakaria Benmerar a commenté une publication dans DZ DÉVELOPPEURS.",
-            "RENAULT R4 tl à vendre dans Les Petites Annonces Annaba.",
-            "Kenza Louna a publié dans DZ DÉVELOPPEURS vendredi ",
-            "Chaouki Haniche a également commenté la photo de ANNABA.",
-            "Wâîl MH a ajouté une photo dans Les Petites Annonces Annaba.",
-    };
-    private final Integer image_pro[] = {
-            R.drawable.bg_milan,
-            R.drawable.bg_paris,
-            R.drawable.bg_london,
-            R.drawable.bg_moscow,
-            R.drawable.bg_madrid,
-            R.drawable.bg_munich,
-            R.drawable.bg_barca,
-            R.drawable.bg_ny,
-    };
 
+    private static final int PAGE_START = 1;
+    RecyclerView recyclerView;
+    NotificationsPaginationAdapter adapterPagination;
+    private Retrofit retrofit = new Retrofit.Builder().
+            baseUrl(URL_UPLOAD_DATA_HOME).
+            addConverterFactory(GsonConverterFactory.create()).
+            build();
+    private ApiService API = retrofit.create(ApiService.class);
+    private boolean isLoading = false;
+    private boolean isLastPage = false;
+    private int TOTAL_PAGES;
+    private int currentPage = PAGE_START;
+    private SessionManager session;
+    private int user_id;
+    private ProgressBar progressBar;
 
 
     public NotificationFragment() {
@@ -59,35 +63,130 @@ public class NotificationFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_notification, container, false) ;
 
         session = new SessionManager(getActivity());
-        RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.recycleview);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setNestedScrollingEnabled(false);
+        user_id = session.getUSER_ID();
+        recyclerView = rootView.findViewById(R.id.recycleview);
+        progressBar = rootView.findViewById(R.id.main_progress);
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
 
-        //GridLayoutManager mGridLayoutManager = new GridLayoutManager(getActivity(),1);
-        //recyclerView.setLayoutManager(mGridLayoutManager);
+        adapterPagination = new NotificationsPaginationAdapter(getActivity());
+        adapterPagination.setHasStableIds(true);
+        recyclerView.setAdapter(adapterPagination);
 
-        ArrayList<NotificationItems> notificationItems = prepareData();
-        NotificationAdapter adapter = new NotificationAdapter(getActivity(), notificationItems);
-        adapter.setHasStableIds(true);
-        recyclerView.setAdapter(adapter);
+        recyclerView.addOnScrollListener(new PaginationScrollListener(layoutManager) {
+            @Override
+            protected void loadMoreItems() {
+                isLoading = true;
+                currentPage += 1;
 
+                // mocking network delay for API call
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        loadNextPage();
+                    }
+                }, 1000);
+            }
+
+            @Override
+            public int getTotalPageCount() {
+                return TOTAL_PAGES;
+            }
+
+            @Override
+            public boolean isLastPage() {
+                return isLastPage;
+            }
+
+            @Override
+            public boolean isLoading() {
+                return isLoading;
+            }
+        });
+
+        //init service and load data
+        loadFirstPage();
 
         return rootView;
     }
 
-    private ArrayList<NotificationItems> prepareData(){
+    private void loadFirstPage() {
 
-        ArrayList<NotificationItems> item = new ArrayList<>();
-        for(int i = 0; i< text.length; i++){
-            NotificationItems notifItems = new NotificationItems();
-            notifItems.setName_profile(text[i]);
-            notifItems.setImage_profile(image_pro[i]);
-            item.add(notifItems);
-        }
-        return item;
+        Call<ResponseNotificationItems> api = API.getNotifications(0, user_id, currentPage);
+        api.enqueue(new Callback<ResponseNotificationItems>() {
+            @Override
+            public void onResponse(Call<ResponseNotificationItems> call, Response<ResponseNotificationItems> response) {
+                // Got data. Send it to adapter
+                ResponseNotificationItems results = response.body();
+                boolean success = results.isSuccess();
+                int numberItems = results.getNumber_pages();
+                if (success) {
+                    TOTAL_PAGES = numberItems;
+                    progressBar.setVisibility(View.GONE);
+                    adapterPagination.addAll(results.getData());
+
+                    if (currentPage < TOTAL_PAGES) adapterPagination.addLoadingFooter();
+                    else isLastPage = true;
+
+                } else {
+                    Log.d("Home", "Error1");
+                    progressBar.setVisibility(View.GONE);
+                    if (currentPage != TOTAL_PAGES) adapterPagination.addLoadingFooter();
+                    else isLastPage = true;
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseNotificationItems> call, Throwable t) {
+                t.printStackTrace();
+                Log.d("Home", "Error2" + t.toString());
+                progressBar.setVisibility(View.GONE);
+
+            }
+        });
+
+    }
+
+    private void loadNextPage() {
+
+        Call<ResponseNotificationItems> api = API.getNotifications(0, user_id, currentPage);
+        api.enqueue(new Callback<ResponseNotificationItems>() {
+            @Override
+            public void onResponse(Call<ResponseNotificationItems> call, Response<ResponseNotificationItems> response) {
+
+                adapterPagination.removeLoadingFooter();
+                isLoading = false;
+
+                ResponseNotificationItems results = response.body();
+                boolean success = results.isSuccess();
+                if (success) {
+                    progressBar.setVisibility(View.GONE);
+                    adapterPagination.addAll(results.getData());
+
+                    if (currentPage != TOTAL_PAGES) adapterPagination.addLoadingFooter();
+                    else isLastPage = true;
+
+                } else {
+                    progressBar.setVisibility(View.GONE);
+                    if (currentPage != TOTAL_PAGES) adapterPagination.addLoadingFooter();
+                    else isLastPage = true;
+
+
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<ResponseNotificationItems> call, Throwable t) {
+                t.printStackTrace();
+                progressBar.setVisibility(View.GONE);
+
+            }
+        });
     }
 
 

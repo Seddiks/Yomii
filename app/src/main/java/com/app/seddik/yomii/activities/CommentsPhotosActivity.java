@@ -22,10 +22,11 @@ import android.widget.ProgressBar;
 
 import com.app.seddik.yomii.R;
 import com.app.seddik.yomii.adapters.CommentsPaginationAdapter;
+import com.app.seddik.yomii.api.ApiService;
 import com.app.seddik.yomii.models.CommentItems;
 import com.app.seddik.yomii.models.ResponsePostComments;
 import com.app.seddik.yomii.models.UserItems;
-import com.app.seddik.yomii.networks.ApiService;
+import com.app.seddik.yomii.utils.Helpers;
 import com.app.seddik.yomii.utils.PaginationScrollListener;
 import com.app.seddik.yomii.utils.SessionManager;
 import com.bumptech.glide.Glide;
@@ -43,12 +44,12 @@ import static com.app.seddik.yomii.config.AppConfig.URL_UPLOAD_PHOTOS;
 public class CommentsPhotosActivity extends AppCompatActivity {
 
     private static final int PAGE_START = 1;
-    CommentsPaginationAdapter adapterPagination;
-    Retrofit retrofit = new Retrofit.Builder().
+    private CommentsPaginationAdapter adapterPagination;
+    private Retrofit retrofit = new Retrofit.Builder().
             baseUrl(URL_UPLOAD_DATA_HOME).
             addConverterFactory(GsonConverterFactory.create()).
             build();
-    ApiService API = retrofit.create(ApiService.class);
+    private ApiService API = retrofit.create(ApiService.class);
     private int user_id, photo_id;
     private int user_idPhoto;
     private SessionManager session;
@@ -169,6 +170,8 @@ public class CommentsPhotosActivity extends AppCompatActivity {
                 } else {
                     Log.d("Home", "Error1");
                     progressBar.setVisibility(View.GONE);
+                    if (currentPage != TOTAL_PAGES) adapterPagination.addLoadingFooter();
+                    else isLastPage = true;
 
                 }
             }
@@ -206,6 +209,8 @@ public class CommentsPhotosActivity extends AppCompatActivity {
 
                 } else {
                     progressBar.setVisibility(View.GONE);
+                    if (currentPage != TOTAL_PAGES) adapterPagination.addLoadingFooter();
+                    else isLastPage = true;
 
                 }
 
@@ -246,8 +251,10 @@ public class CommentsPhotosActivity extends AppCompatActivity {
 
                             if (event.getAction() == MotionEvent.ACTION_UP) {
                                 if (event.getRawX() >= (comment.getRight() - comment.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
-                                    comment.setText("");
-                                    comment.setSelection(0);
+                                    Helpers.hideKeyboard(CommentsPhotosActivity.this);
+                                    comment.setText(null);
+                                    comment.getText().clear();
+                                    //comment.setSelection(0);
                                     CommentItems item = new CommentItems();
                                     item.setComment_id(-1);
                                     item.setUser_id(user_idPhoto);

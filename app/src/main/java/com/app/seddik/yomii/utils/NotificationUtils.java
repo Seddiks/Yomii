@@ -9,25 +9,32 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 import android.text.Html;
-import android.text.SpannableString;
-import android.text.style.StyleSpan;
+import android.util.Log;
 
 import com.app.seddik.yomii.MainActivity;
 import com.app.seddik.yomii.R;
 import com.app.seddik.yomii.activities.CreateTravelStoryActivity;
+import com.app.seddik.yomii.api.ApiService;
 import com.app.seddik.yomii.config.AppConfig;
 import com.app.seddik.yomii.models.NotificationVO;
+import com.app.seddik.yomii.models.ResponseItems;
 
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
+import static com.app.seddik.yomii.config.AppConfig.URL_UPLOAD_DATA_HOME;
 import static com.app.seddik.yomii.utils.MyBitmapConfigs.getBitmapFromURL;
 
 /**
@@ -35,12 +42,18 @@ import static com.app.seddik.yomii.utils.MyBitmapConfigs.getBitmapFromURL;
  */
 
 public class NotificationUtils {
+
     private static final int NOTIFICATION_ID = 200;
     private static final String PUSH_NOTIFICATION = "pushNotification";
     private static final String CHANNEL_ID = "myChannel";
     private static final String URL = "url";
     private static final String ACTIVITY = "activity";
     Map<String, Class> activityMap = new HashMap<>();
+    private Retrofit retrofit = new Retrofit.Builder().
+            baseUrl(URL_UPLOAD_DATA_HOME).
+            addConverterFactory(GsonConverterFactory.create()).
+            build();
+    private ApiService API = retrofit.create(ApiService.class);
     private Context mContext;
 
     public NotificationUtils(Context mContext) {
@@ -48,6 +61,9 @@ public class NotificationUtils {
         //Populate activity map
         activityMap.put("MainActivity", MainActivity.class);
         activityMap.put("SecondActivity", CreateTravelStoryActivity.class);
+    }
+
+    public NotificationUtils() {
     }
 
     /**
@@ -129,16 +145,14 @@ public class NotificationUtils {
 
             } else {
                 //If Bitmap is created from URL, show big icon
-                SpannableString spanString = new SpannableString(title);
-                spanString.setSpan(new StyleSpan(Typeface.BOLD), 0, spanString.length(), 0);
 
                 NotificationCompat.BigPictureStyle bigPictureStyle = new NotificationCompat.BigPictureStyle();
-                bigPictureStyle.setBigContentTitle(spanString);
+                bigPictureStyle.setBigContentTitle(title);
                 bigPictureStyle.setSummaryText(Html.fromHtml(message).toString());
                 bigPictureStyle.bigPicture(largeBitMap);
                 notification = mBuilder.setSmallIcon(icon).setTicker(title).setWhen(0)
                         .setAutoCancel(true)
-                        .setContentTitle(spanString)
+                        .setContentTitle(title)
                         .setContentIntent(resultPendingIntent)
                         .setStyle(bigPictureStyle)
                         .setSmallIcon(R.drawable.ic_notifications_light_blue_200_18dp)
@@ -169,4 +183,55 @@ public class NotificationUtils {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }}
+    }
+
+    public void hideNotification(int notification_id) {
+        Call<ResponseItems> api = API.actionNotification(1, notification_id);
+        api.enqueue(new Callback<ResponseItems>() {
+            @Override
+            public void onResponse(Call<ResponseItems> call, Response<ResponseItems> response) {
+                ResponseItems results = response.body();
+                boolean success = results.getSuccess();
+                if (success) {
+
+                } else {
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseItems> call, Throwable t) {
+                t.printStackTrace();
+
+            }
+        });
+
+    }
+
+    public void isReadNotification(int notification_id) {
+        Call<ResponseItems> api = API.actionNotification(2, notification_id);
+        api.enqueue(new Callback<ResponseItems>() {
+            @Override
+            public void onResponse(Call<ResponseItems> call, Response<ResponseItems> response) {
+                ResponseItems results = response.body();
+                boolean success = results.getSuccess();
+                if (success) {
+                    Log.d("Utils", "Error1");
+
+                } else {
+                    Log.d("Utils", "Error2");
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseItems> call, Throwable t) {
+                t.printStackTrace();
+                Log.d("Utils", "Error3" + t.toString());
+
+            }
+        });
+
+    }
+
+}

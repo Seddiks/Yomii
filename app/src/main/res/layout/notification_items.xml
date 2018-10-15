@@ -1,31 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="horizontal"
-    android:background="#FFFFFF"
+    android:id="@+id/parent_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
- >
-    <de.hdodenhof.circleimageview.CircleImageView
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="#819FF7"
+    android:orientation="horizontal"
+    android:padding="2dp">
+
+    <ImageView
         android:id="@+id/profile_image"
-        android:layout_width="45dp"
-        android:layout_height="45dp"
-        android:layout_margin="8dp"
-        android:layout_alignParentTop="true"
-        android:layout_centerVertical="true"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_margin="12dp"
+        android:src="@drawable/bgmoi"
         />
+
+    <ImageView
+        android:id="@+id/type_notification"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="40dp"
+        android:background="@drawable/green_light_circle"
+        android:padding="4dp"
+        android:src="@drawable/ic_comment_white_18dp" />
+
     <TextView
-        android:id="@+id/profile_name"
+        android:id="@+id/notification"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Seddik"
-        android:textStyle="bold"
-        android:layout_toRightOf="@+id/profile_image"
-        android:layout_toLeftOf="@+id/more_image"
-        android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
+        android:layout_marginTop="10dp"
+        android:layout_toLeftOf="@+id/more_image"
+        android:layout_toRightOf="@+id/profile_image"
+        android:ellipsize="end"
+        android:maxLines="3"
+        android:text="Fredj Seddik has commented your photo mmm mmmm mmmm mmmmm mmmmmm mmmmm  mmmmmmmmm mmmmm mmmmmmm"
+        android:textColor="@color/black"
         />
 
     <ImageView
@@ -34,19 +45,22 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:layout_margin="8dp"
-        android:background="@drawable/ic_more_action"
+        android:paddingBottom="8dp"
+        android:paddingLeft="2dp"
+        android:paddingRight="8dp"
+        android:paddingTop="8dp"
+        android:src="@drawable/ic_more_vert_black_24dp"
 />
 
     <TextView
         android:id="@+id/date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="dateeeee"
-        android:textSize="12sp"
-        android:layout_toRightOf="@+id/profile_image"
-        android:layout_below="@+id/profile_name"
+        android:layout_below="@+id/notification"
         android:layout_marginBottom="8dp"
+        android:layout_toRightOf="@+id/profile_image"
+        android:text="8 minutes ago"
+        android:textSize="12sp"
         />
 
 </RelativeLayout>

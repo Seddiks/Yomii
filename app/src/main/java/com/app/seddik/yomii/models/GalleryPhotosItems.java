@@ -5,25 +5,17 @@ package com.app.seddik.yomii.models;
  */
 
 public class GalleryPhotosItems {
+
+    //@SerializedName("photo_id")
     private int photo_id;
-    private Integer image_id;
+    //@SerializedName("photo_path")
     private String photo_path;
+    //@SerializedName("parent")
     private int parent;
 
 
     public int getPhoto_id() {
         return photo_id;
-    }
-
-    public void setPhoto_id(int photo_id) {
-        this.photo_id = photo_id;
-    }
-    public Integer getImage_ID() {
-        return image_id;
-    }
-
-    public void setImage_ID(Integer android_image_url) {
-        this.image_id = android_image_url;
     }
 
     public String getPhoto_path() {
@@ -41,4 +33,15 @@ public class GalleryPhotosItems {
     public void setParent(int parent) {
         this.parent = parent;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this)
+            return true;
+
+        GalleryPhotosItems user = (GalleryPhotosItems) obj;
+
+        return user.photo_id == this.photo_id;
+    }
+
 }

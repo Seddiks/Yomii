@@ -50,15 +50,15 @@ public class HomePaginationAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     private boolean isLoadingAdded = false;
     private boolean clicked = false;
     private SessionManager session;
-
+    private Typeface typeJosefinSansBold;
 
     public HomePaginationAdapter(Context context) {
         this.context = context;
         photoResults = new ArrayList<>();
         session = new SessionManager(context);
+        typeJosefinSansBold = Typeface.createFromAsset(context.getAssets(), "JosefinSans-Bold.ttf");
 
     }
-
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -99,7 +99,8 @@ public class HomePaginationAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             case ITEM:
                 final ViewHolder viewHolder = (ViewHolder) holder;
                 RequestOptions requestOptions = new RequestOptions()
-                        .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC);
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .skipMemoryCache(true);
                 viewHolder.tv_name.setText(result.getFull_name());
                 viewHolder.tv_date.setText(result.getCreated_at());
                 viewHolder.btnLike.setChecked(result.isLike());
@@ -120,7 +121,7 @@ public class HomePaginationAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                     viewHolder.img_legende.setVisibility(View.GONE);
                 }
 
-                Typeface typeJosefinSansBold = Typeface.createFromAsset(context.getAssets(), "JosefinSans-Bold.ttf");
+                // typeJosefinSansBold = Typeface.createFromAsset(context.getAssets(), "JosefinSans-Bold.ttf");
                 viewHolder.tv_location.setTypeface(typeJosefinSansBold);
 
                 if (numberLikes > 0) {
@@ -136,16 +137,16 @@ public class HomePaginationAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
                 }
 
-                String path_photo_profil = URL_UPLOAD_PHOTOS + result.getPhoto_profil();
+                String path_photo_profil = URL_UPLOAD_PHOTOS + result.getPhoto_profil_path();
                 Glide.with(context)
                         .load(path_photo_profil)
                         .apply(new RequestOptions().
                                 placeholder(R.drawable.ic_person_circle_blue_a400_36dp).
                                 error(R.drawable.ic_person_circle_blue_a400_36dp).
-                                apply(RequestOptions.circleCropTransform()))
+                                apply(RequestOptions.circleCropTransform().apply(requestOptions)))
                         .into(viewHolder.img_profile);
 
-                String path_photo_published = URL_UPLOAD_PHOTOS+result.getPhoto_published();
+                String path_photo_published = URL_UPLOAD_PHOTOS + result.getPhoto_path();
                 // Glide.with(context).load(path_photo_published).into(viewHolder.img_published);
                 new GlideImageLoader(viewHolder.img_published,
                         viewHolder.progressBar).load(path_photo_published, requestOptions);
@@ -163,7 +164,7 @@ public class HomePaginationAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                     @Override
                     public void onClick(View v) {
                         Intent intent = new Intent(context, FullScreenImageActivity.class);
-                        intent.putExtra("PathPhoto", URL_UPLOAD_PHOTOS + result.getPhoto_published());
+                        intent.putExtra("PathPhoto", URL_UPLOAD_PHOTOS + result.getPhoto_path());
                         context.startActivity(intent);
 
                     }
@@ -297,7 +298,7 @@ public class HomePaginationAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
                             viewHolder.btnFollowing.setBackgroundResource(R.drawable.round_border_follwing);
                             viewHolder.btnFollowing.setText("Following");
-                            viewHolder.btnFollowing.setTextColor(Color.parseColor("#607D8B"));
+                            viewHolder.btnFollowing.setTextColor(Color.parseColor("#04B431"));
                             clicked = true;
                         } else {
                             Animation fadeIn = AnimationUtils.loadAnimation(context, R.anim.fade_in);

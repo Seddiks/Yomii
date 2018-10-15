@@ -7,10 +7,10 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.app.seddik.yomii.api.ApiService;
 import com.app.seddik.yomii.models.CommentItems;
 import com.app.seddik.yomii.models.ResponseItems;
 import com.app.seddik.yomii.models.ResponsePostComments;
-import com.app.seddik.yomii.networks.ApiService;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import retrofit2.Call;

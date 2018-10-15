@@ -70,6 +70,7 @@
 
     <Button
         android:id="@+id/following"
+        style="?android:attr/borderlessButtonStyle"
         android:layout_width="76dp"
         android:layout_height="27dp"
         android:layout_marginTop="12dp"
@@ -79,8 +80,7 @@
         android:textAllCaps="false"
         android:textColor="@color/white"
         android:textSize="12sp"
-        android:textStyle="bold"
-        />
+        android:textStyle="bold" />
 
 <RelativeLayout
     android:id="@+id/rl_photo"
@@ -172,6 +172,8 @@
             android:layout_marginBottom="@dimen/standard_12"
             android:layout_marginLeft="@dimen/standard_12"
             android:layout_marginRight="4dp"
+            android:background="@drawable/grey_light_circle"
+            android:padding="1dp"
             android:src="@drawable/ic_format_quote_black_18dp" />
 
         <TextView

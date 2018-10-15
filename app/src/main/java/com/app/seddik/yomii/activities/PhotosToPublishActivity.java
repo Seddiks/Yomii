@@ -19,10 +19,10 @@ import android.widget.Toast;
 
 import com.app.seddik.yomii.MainActivity;
 import com.app.seddik.yomii.R;
+import com.app.seddik.yomii.api.ApiService;
 import com.app.seddik.yomii.config.AppConfig;
 import com.app.seddik.yomii.models.ResponseItems;
 import com.app.seddik.yomii.models.UserItems;
-import com.app.seddik.yomii.networks.ApiService;
 import com.app.seddik.yomii.utils.FileUtils;
 import com.app.seddik.yomii.utils.MyBitmapConfigs;
 import com.app.seddik.yomii.utils.SessionManager;

@@ -70,12 +70,12 @@ public class DisplayPhotosPublishedAdapter extends RecyclerView.Adapter<DisplayP
 
         //Profile photo
         DisplayPhotosPublishedItems photo = galleryList.get(i);
-        path_photo_profil= URL_UPLOAD_PHOTOS+photo.getPhoto_published();
+        path_photo_profil = URL_UPLOAD_PHOTOS + photo.getPhoto_path();
         viewHolder.img_profile.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
 
         //Published photo
-        path_photo_published = URL_UPLOAD_PHOTOS+galleryList.get(i).getPhoto_published();
+        path_photo_published = URL_UPLOAD_PHOTOS + galleryList.get(i).getPhoto_path();
 
         viewHolder.img_published.setScaleType(ImageView.ScaleType.FIT_CENTER);
 
@@ -117,7 +117,7 @@ public class DisplayPhotosPublishedAdapter extends RecyclerView.Adapter<DisplayP
             public void onClick(View v) {
                 Intent intent = new Intent(context,  FullScreenImageActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                intent.putExtra("PathPhoto",URL_UPLOAD_PHOTOS+galleryList.get(i).getPhoto_published());
+                intent.putExtra("PathPhoto", URL_UPLOAD_PHOTOS + galleryList.get(i).getPhoto_path());
                 context.startActivity(intent);
 
             }
