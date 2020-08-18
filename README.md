@@ -6,7 +6,5 @@ This project is a mobile app dedicated to people who travel around the world, wh
 - Adding Comments and Likes in shared photos. 
 - Notiﬁcation System (notify the user if a comment or I like added in his shared photos ..)
 
-![alt tag](https://seddiks.github.io./photos/login.png)
-![alt tag](https://seddiks.github.io./photos/login.png)
-![alt tag](https://seddiks.github.io./photos/login.png)
-![alt tag](https://seddiks.github.io./photos/login.png)
+![alt tag](https://seddiks.github.io./photos/login.png) ![alt tag](https://seddiks.github.io./photos/login.png)
+![alt tag](https://seddiks.github.io./photos/login.png) ![alt tag](https://seddiks.github.io./photos/login.png)
