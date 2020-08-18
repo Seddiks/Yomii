@@ -1,4 +1,4 @@
-package com.app.seddik.yomii.ui;
+package com.app.seddik.yomii.test.ui;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Transformations;
@@ -6,9 +6,9 @@ import android.arch.lifecycle.ViewModel;
 import android.arch.paging.LivePagedListBuilder;
 import android.arch.paging.PagedList;
 
-import com.app.seddik.yomii.data.NetworkState;
-import com.app.seddik.yomii.data.datasource.GalleryPhotosDataSource;
-import com.app.seddik.yomii.data.datasource.GalleryPhotosDataSourceFactory;
+import com.app.seddik.yomii.test.ui.data.NetworkState;
+import com.app.seddik.yomii.test.ui.data.datasource.GalleryPhotosDataSource;
+import com.app.seddik.yomii.test.ui.data.datasource.GalleryPhotosDataSourceFactory;
 import com.app.seddik.yomii.models.GalleryPhotosItems;
 
 import io.reactivex.disposables.CompositeDisposable;

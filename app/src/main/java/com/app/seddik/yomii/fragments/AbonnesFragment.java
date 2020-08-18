@@ -17,9 +17,9 @@ import android.widget.TextView;
 import com.app.seddik.yomii.R;
 import com.app.seddik.yomii.adapters.GalleryPhotosAdapter;
 import com.app.seddik.yomii.adapters.RetryCallback;
-import com.app.seddik.yomii.data.NetworkState;
-import com.app.seddik.yomii.data.Status;
-import com.app.seddik.yomii.ui.GalleryPhotosViewModel;
+import com.app.seddik.yomii.test.ui.data.NetworkState;
+import com.app.seddik.yomii.test.ui.data.Status;
+import com.app.seddik.yomii.test.ui.GalleryPhotosViewModel;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

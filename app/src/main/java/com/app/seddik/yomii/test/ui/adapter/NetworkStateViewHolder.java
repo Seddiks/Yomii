@@ -1,4 +1,4 @@
-package com.app.seddik.yomii.adapter;
+package com.app.seddik.yomii.test.ui.adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -9,8 +9,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.app.seddik.yomii.R;
-import com.app.seddik.yomii.data.NetworkState;
-import com.app.seddik.yomii.data.Status;
+import com.app.seddik.yomii.test.ui.data.NetworkState;
+import com.app.seddik.yomii.test.ui.data.Status;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

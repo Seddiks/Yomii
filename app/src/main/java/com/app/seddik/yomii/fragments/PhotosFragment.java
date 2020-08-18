@@ -1,10 +1,11 @@
-package com.app.seddik.yomii.ui;
+package com.app.seddik.yomii.fragments;
 
 
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -16,12 +17,13 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.app.seddik.yomii.R;
-import com.app.seddik.yomii.adapter.UserAdapter;
+import com.app.seddik.yomii.test.ui.adapter.UserAdapter;
 import com.app.seddik.yomii.adapters.GalleryPhotosPaginationAdapter;
 import com.app.seddik.yomii.api.ApiService;
 import com.app.seddik.yomii.config.AppConfig;
 import com.app.seddik.yomii.models.ResponseGalleryPhotosItems;
-import com.app.seddik.yomii.utils.PaginationScrollListener;
+import com.app.seddik.yomii.test.ui.UsersViewModel;
+import com.app.seddik.yomii.utils.PaginationGridScrollListener;
 import com.app.seddik.yomii.utils.SessionManager;
 
 import butterknife.BindView;
@@ -87,8 +89,8 @@ public class PhotosFragment extends Fragment {
 
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
 
-        //GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 3);
-        /** gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 3, GridLayoutManager.VERTICAL, false);
+        gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
         @Override public int getSpanSize(int position) {
         switch(adapterPagination.getItemViewType(position)){
         case ITEM:
@@ -99,16 +101,16 @@ public class PhotosFragment extends Fragment {
         return -1;
         }
         }
-        });**/
+        });
 
 
         //recyclerView.setNestedScrollingEnabled(false);
-        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setLayoutManager(gridLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         adapterPagination = new GalleryPhotosPaginationAdapter(getActivity());
         recyclerView.setAdapter(adapterPagination);
 
-        recyclerView.addOnScrollListener(new PaginationScrollListener(layoutManager) {
+        recyclerView.addOnScrollListener(new PaginationGridScrollListener(gridLayoutManager) {
             @Override
             protected void loadMoreItems() {
                 isLoading = true;

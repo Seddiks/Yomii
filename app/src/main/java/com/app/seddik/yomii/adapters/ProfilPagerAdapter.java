@@ -8,7 +8,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
 import com.app.seddik.yomii.fragments.GuideFragment;
-import com.app.seddik.yomii.ui.PhotosFragment;
+import com.app.seddik.yomii.fragments.PhotosFragment;
 
 public class ProfilPagerAdapter extends FragmentStatePagerAdapter {
     int mNumOfTabs;

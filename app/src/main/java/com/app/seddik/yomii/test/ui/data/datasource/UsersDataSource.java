@@ -1,4 +1,4 @@
-package com.app.seddik.yomii.data.datasource;
+package com.app.seddik.yomii.test.ui.data.datasource;
 
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.paging.ItemKeyedDataSource;
@@ -6,7 +6,7 @@ import android.support.annotation.NonNull;
 
 import com.app.seddik.yomii.api.ApiService;
 import com.app.seddik.yomii.api.Client;
-import com.app.seddik.yomii.data.NetworkState;
+import com.app.seddik.yomii.test.ui.data.NetworkState;
 import com.app.seddik.yomii.models.GalleryPhotosItems;
 
 import io.reactivex.Completable;

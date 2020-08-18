@@ -1,4 +1,4 @@
-package com.app.seddik.yomii.ui;
+package com.app.seddik.yomii.test.ui;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
@@ -13,10 +13,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.app.seddik.yomii.R;
-import com.app.seddik.yomii.adapter.RetryCallback;
-import com.app.seddik.yomii.adapter.UserAdapter;
-import com.app.seddik.yomii.data.NetworkState;
-import com.app.seddik.yomii.data.Status;
+import com.app.seddik.yomii.test.ui.adapter.RetryCallback;
+import com.app.seddik.yomii.test.ui.adapter.UserAdapter;
+import com.app.seddik.yomii.test.ui.data.NetworkState;
+import com.app.seddik.yomii.test.ui.data.Status;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

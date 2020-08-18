@@ -9,8 +9,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.app.seddik.yomii.R;
-import com.app.seddik.yomii.data.NetworkState;
-import com.app.seddik.yomii.data.Status;
+import com.app.seddik.yomii.test.ui.data.NetworkState;
+import com.app.seddik.yomii.test.ui.data.Status;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

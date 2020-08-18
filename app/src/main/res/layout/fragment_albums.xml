@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.app.seddik.yomii.ui.PhotosFragment">
+    tools:context="com.app.seddik.yomii.fragments.PhotosFragment">
 
     <!-- TODO: Update blank fragment layout -->
     <android.support.v7.widget.RecyclerView

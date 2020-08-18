@@ -1,4 +1,4 @@
-package com.app.seddik.yomii.data.datasource;
+package com.app.seddik.yomii.test.ui.data.datasource;
 
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.paging.DataSource;

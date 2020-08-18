@@ -6,7 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 
 import com.app.seddik.yomii.R;
-import com.app.seddik.yomii.data.NetworkState;
+import com.app.seddik.yomii.test.ui.data.NetworkState;
 import com.app.seddik.yomii.models.GalleryPhotosItems;
 
 import java.util.Objects;

@@ -11,7 +11,7 @@ import com.app.seddik.yomii.fragments.HomeFragment;
 import com.app.seddik.yomii.fragments.NotificationFragment;
 import com.app.seddik.yomii.fragments.PopulairCategoriesFragment;
 import com.app.seddik.yomii.fragments.ProfileFragment;
-import com.app.seddik.yomii.fragments.TestingFragment;
+import com.app.seddik.yomii.test.ui.TestingFragment;
 
 public class MainPagerAdapter extends FragmentStatePagerAdapter {
     int mNumOfTabs;

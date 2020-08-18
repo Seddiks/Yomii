@@ -1,4 +1,4 @@
-package com.app.seddik.yomii.adapter;
+package com.app.seddik.yomii.test.ui.adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
