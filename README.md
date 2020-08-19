@@ -6,7 +6,7 @@ This project is a mobile app dedicated to people who travel around the world, wh
 - Create Stories and Guides. 
 - Adding Comments and Likes in shared photos. 
 - Notiﬁcation System (notify the user if a comment or I like added in his shared photos ..)
-Link ; https://seddiks.github.io./portfolio_gallery2.html
+  Link ; https://seddiks.github.io./portfolio_gallery2.html
 
 ![alt tag](https://seddiks.github.io./photos/login.png) ![alt tag](https://seddiks.github.io./photos/registration.png)
 ![alt tag](https://seddiks.github.io./photos/home_1.png) ![alt tag](https://seddiks.github.io./photos/home_2.png)
